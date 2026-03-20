@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #FAF7F5;
+  --color-blush: #F5EBE8;
+  --color-dusty-rose: #D4A5A5;
+  --color-mauve: #9B6B8D;
+  --color-plum: #4A2545;
+  --color-gold: #C8A87C;
+  --color-dark: #2A1A28;
+  --color-deep: #1A0E1A;
+
+  --font-display: "Cinzel Decorative", serif;
+  --font-body: "Cormorant Garamond", serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
