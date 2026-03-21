@@ -11,11 +11,84 @@
   --color-deep: #1A0E1A;
 
   --font-display: "Cinzel Decorative", serif;
-  --font-body: "Cormorant Garamond", serif;
+  --font-body: "Antic Didone", Georgia, serif;
 }
 
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+}
+
+/* Global text contrast boost */
+h1, h2, h3, h4, h5, h6 {
+  color: #2a1a28;
+  font-weight: 600;
+}
+
+p {
+  color: #3d2e3d;
+}
+
+/* Page titles — big, bold, unmissable */
+header h1 {
+  font-size: 1rem;
+  letter-spacing: 0.35em;
+  color: #4A2545;
+  font-weight: 500;
+}
+
+/* Navigation buttons (Back, Sign out, etc.) */
+header button, header a {
+  font-size: 0.875rem;
+  color: #6b5270;
+}
+
+/* Card titles */
+button h3, a h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2a1a28;
+}
+
+/* Card descriptions */
+button p, a p {
+  font-size: 0.875rem;
+  color: #5a4a5a;
+}
+
+/* Form inputs — better contrast */
+input, textarea {
+  color: #2a1a28;
+  font-size: 1rem;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9b8a8a;
+}
+
+/* Buttons — more prominent */
+button[type="submit"], .primary-button {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Mood/emotion pills — bigger, more readable */
+.rounded-full {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(155, 107, 141, 0.2);
+  border-radius: 3px;
 }
