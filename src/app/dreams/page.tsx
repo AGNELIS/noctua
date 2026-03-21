@@ -48,10 +48,7 @@ function ConfirmModal({
           boxShadow: "0 8px 32px rgba(42, 26, 40, 0.15)",
         }}
       >
-        <p
-          className="text-center text-base leading-relaxed"
-          style={{ color: "#2a1a28" }}
-        >
+        <p className="text-center text-base leading-relaxed" style={{ color: "#2a1a28" }}>
           {message}
         </p>
         <div className="flex justify-center gap-3">
@@ -70,11 +67,7 @@ function ConfirmModal({
           <button
             onClick={onConfirm}
             className="px-6 py-2.5 rounded-xl text-sm transition-all"
-            style={{
-              background: "#6b5270",
-              color: "#ffffff",
-              fontWeight: 600,
-            }}
+            style={{ background: "#6b5270", color: "#ffffff", fontWeight: 600 }}
           >
             Delete
           </button>
@@ -136,16 +129,29 @@ export default function DreamsPage() {
         />
       )}
 
-      <header className="flex items-center justify-between px-6 py-5">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="text-sm tracking-wide"
-          style={{ color: "#5a3a5a", fontWeight: 500 }}
-        >
-          ← Back
-        </button>
+      <header className="px-6 pt-5 pb-2">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-sm tracking-wide"
+            style={{ color: "#5a3a5a", fontWeight: 500 }}
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => router.push("/dreams/new")}
+            className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors"
+            style={{
+              background: "rgba(107,94,139,0.1)",
+              color: "#5a3a5a",
+              fontWeight: 500,
+            }}
+          >
+            + New
+          </button>
+        </div>
         <h1
-          className="text-lg md:text-xl tracking-[0.25em] uppercase"
+          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
           style={{
             color: "#4A2545",
             fontFamily: "'Antic Didone', Georgia, serif",
@@ -154,17 +160,6 @@ export default function DreamsPage() {
         >
           Dream Journal
         </h1>
-        <button
-          onClick={() => router.push("/dreams/new")}
-          className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors"
-          style={{
-            background: "rgba(107,94,139,0.1)",
-            color: "#5a3a5a",
-            fontWeight: 500,
-          }}
-        >
-          + New
-        </button>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12">

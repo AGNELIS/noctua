@@ -73,8 +73,6 @@ export default function ShopPage() {
       .from("profiles")
       .update({ active_theme: productId })
       .eq("id", user.id);
-
-    // TODO: apply theme visually
   };
 
   const grouped = CATEGORY_ORDER.map((cat) => ({
@@ -90,16 +88,19 @@ export default function ShopPage() {
         background: "linear-gradient(to bottom, #faf5f0, #f5ede6, #f0e6de)",
       }}
     >
-      <header className="flex items-center justify-between px-6 py-5">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="text-sm tracking-wide"
-          style={{ color: "#5a3a5a", fontWeight: 500 }}
-        >
-          ← Back
-        </button>
+      <header className="px-6 pt-5 pb-2">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-sm tracking-wide"
+            style={{ color: "#5a3a5a", fontWeight: 500 }}
+          >
+            ← Back
+          </button>
+          <div className="w-12" />
+        </div>
         <h1
-          className="text-lg md:text-xl tracking-[0.25em] uppercase"
+          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
           style={{
             color: "#4A2545",
             fontFamily: "'Antic Didone', Georgia, serif",
@@ -108,7 +109,6 @@ export default function ShopPage() {
         >
           Shop
         </h1>
-        <div className="w-12" />
       </header>
 
       <main className="max-w-2xl mx-auto px-6 pb-16">
