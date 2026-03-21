@@ -10,7 +10,7 @@ const NAV_CARDS = [
     title: "Journal",
     description: "Reflect on your inner world",
     href: "/journal",
-    icon: "✦",
+    icon: "\u270E",
     bg: "bg-[#f0e4ec]",
     border: "border-[#d4b5c7]/40",
     iconColor: "text-[#8b5e7c]",
@@ -19,7 +19,7 @@ const NAV_CARDS = [
     title: "Dream Journal",
     description: "Capture the messages of the night",
     href: "/dreams",
-    icon: "☽",
+    icon: "\u263D",
     bg: "bg-[#e4e0f0]",
     border: "border-[#9b8ec4]/40",
     iconColor: "text-[#6b5e8b]",
@@ -28,7 +28,7 @@ const NAV_CARDS = [
     title: "Cycle Tracker",
     description: "Honour your body's rhythm",
     href: "/cycle",
-    icon: "◯",
+    icon: "\u25EF",
     bg: "bg-[#f0e0e4]",
     border: "border-[#c49b8e]/40",
     iconColor: "text-[#8b5e5e]",
@@ -37,7 +37,7 @@ const NAV_CARDS = [
     title: "Dream Symbols",
     description: "Decode the language of dreams",
     href: "/symbols",
-    icon: "⟡",
+    icon: "\u27D0",
     bg: "bg-[#ede8dc]",
     border: "border-[#c4b68e]/40",
     iconColor: "text-[#7c6b3f]",
@@ -46,7 +46,7 @@ const NAV_CARDS = [
     title: "Grounding",
     description: "Return to yourself",
     href: "/grounding",
-    icon: "🌿",
+    icon: "\uD83C\uDF3F",
     bg: "bg-[#e0eddc]",
     border: "border-[#8eb482]/40",
     iconColor: "text-[#4a6040]",
@@ -55,7 +55,7 @@ const NAV_CARDS = [
     title: "Shop",
     description: "Themes, symbols & more",
     href: "/shop",
-    icon: "✦",
+    icon: "\u2661",
     bg: "bg-[#f0ece4]",
     border: "border-[#c8b896]/40",
     iconColor: "text-[#8a7a50]",
@@ -235,15 +235,9 @@ export default function DashboardPage() {
         </section>
 
         <div className="flex items-center justify-center gap-4">
-          <div
-            className="h-px w-20"
-            style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3))" }}
-          />
-          <span style={{ color: "#d4af37", fontSize: "12px", opacity: 0.6 }}>✧</span>
-          <div
-            className="h-px w-20"
-            style={{ background: "linear-gradient(to left, transparent, rgba(212,175,55,0.3))" }}
-          />
+          <div className="h-px w-20" style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3))" }} />
+          <span style={{ color: "#d4af37", fontSize: "12px", opacity: 0.6 }}>&#10023;</span>
+          <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, rgba(212,175,55,0.3))" }} />
         </div>
 
         <section className="grid grid-cols-2 gap-4">
@@ -251,26 +245,25 @@ export default function DashboardPage() {
             <button
               key={card.title}
               onClick={() => router.push(card.href)}
-              className={`group text-left p-5 md:p-6 rounded-2xl border ${card.border} ${card.bg}
+              className={`group p-5 md:p-6 rounded-2xl border ${card.border} ${card.bg}
                 hover:scale-[1.03] hover:shadow-lg
                 transition-all duration-300 ease-out
                 focus:outline-none focus:ring-2 focus:ring-[#9b8ec4]/30`}
             >
-              <span
-                className={`text-2xl md:text-3xl ${card.iconColor} group-hover:scale-110 inline-block transition-transform duration-300`}
-              >
-                {card.icon}
-              </span>
-              <h3
-                className="text-lg md:text-xl font-medium tracking-wide mt-1"
-                style={{ color: "#3d2e4a", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-              >
-                {card.title}
-              </h3>
-              <p
-                className="mt-1 text-sm leading-relaxed"
-                style={{ color: "#6b5e5e" }}
-              >
+              <div className="flex flex-col items-center mb-3">
+                <span
+                  className={`text-2xl md:text-3xl ${card.iconColor} group-hover:scale-110 inline-block transition-transform duration-300`}
+                >
+                  {card.icon}
+                </span>
+                <h3
+                  className="text-lg md:text-xl font-medium tracking-wide mt-2"
+                  style={{ color: "#3d2e4a", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                >
+                  {card.title}
+                </h3>
+              </div>
+              <p className="text-sm leading-relaxed text-left" style={{ color: "#6b5e5e" }}>
                 {card.description}
               </p>
             </button>

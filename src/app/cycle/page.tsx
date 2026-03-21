@@ -178,13 +178,13 @@ export default function CycleTrackerPage() {
         <button
           onClick={() => router.push("/dashboard")}
           className="text-xs tracking-wide"
-          style={{ color: "#9b8a7a" }}
+          style={{ color: "#6b5e5e" }}
         >
           ← Back
         </button>
         <h1
           className="text-sm tracking-[0.35em] uppercase font-light"
-          style={{ color: "#8b5e5e" }}
+          style={{ color: "#5e3a3a" }}
         >
           Cycle Tracker
         </h1>
@@ -222,7 +222,7 @@ export default function CycleTrackerPage() {
               <div
                 key={d}
                 className="text-center text-xs py-1"
-                style={{ color: "#9b8a7a" }}
+                style={{ color: "#6b5e5e" }}
               >
                 {d}
               </div>
@@ -257,7 +257,7 @@ export default function CycleTrackerPage() {
                   {day}
                   {entry && (
                     <span
-                      className="absolute bottom-0.5 w-1.5 h-1.5 rounded-full"
+                      className="absolute bottom-1 w-1 h-1 rounded-full"
                       style={{ background: phaseColor(entry.cycle_phase) }}
                     />
                   )}
@@ -284,7 +284,7 @@ export default function CycleTrackerPage() {
 
         {/* Entry form for selected date */}
         <section className="space-y-5">
-          <p className="text-xs text-center tracking-wide" style={{ color: "#9b8a7a" }}>
+          <p className="text-xs text-center tracking-wide" style={{ color: "#6b5e5e" }}>
             {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-GB", {
               weekday: "long",
               day: "numeric",
@@ -348,7 +348,7 @@ export default function CycleTrackerPage() {
 
           {/* Energy level */}
           <div className="text-center space-y-1">
-            <p className="text-xs" style={{ color: "#9b8a7a" }}>
+            <p className="text-xs" style={{ color: "#6b5e5e" }}>
               Energy level
             </p>
             <div className="flex justify-center gap-1">
@@ -367,7 +367,7 @@ export default function CycleTrackerPage() {
 
           {/* Symptoms */}
           <div className="space-y-2">
-            <p className="text-xs text-center" style={{ color: "#9b8a7a" }}>
+            <p className="text-xs text-center" style={{ color: "#6b5e5e" }}>
               Symptoms
             </p>
             <div className="flex justify-center gap-1.5 flex-wrap">
