@@ -49,8 +49,12 @@ export default function LoginPage() {
         }}
       >
         <h1
-          className="text-2xl text-center font-light tracking-wide"
-          style={{ color: "#3d2e4a", fontFamily: "Georgia, 'Times New Roman', serif" }}
+          className="text-2xl text-center tracking-wide"
+          style={{
+            color: "#3d2e4a",
+            fontFamily: "'Antic Didone', Georgia, serif",
+            fontWeight: 700,
+          }}
         >
           Welcome back
         </h1>
@@ -90,21 +94,25 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 rounded-xl text-sm transition-all disabled:opacity-50"
-          style={{ background: "#6b5270", color: "#ffffff" }}
+          className="w-full py-3 rounded-xl text-base tracking-wide transition-all disabled:opacity-50"
+          style={{
+            background: "#6b5270",
+            color: "#ffffff",
+            fontWeight: 600,
+          }}
         >
           {loading ? "Signing in..." : "Sign in"}
         </button>
 
         <p className="text-sm text-center" style={{ color: "#9b8a7a" }}>
-          <a href="/forgot-password" style={{ color: "#6b5270" }}>
+          <a href="/forgot-password" className="hover:underline" style={{ color: "#6b5270", fontWeight: 500 }}>
             Forgot your password?
           </a>
         </p>
 
-        <p className="text-sm text-center" style={{ color: "#9b8a7a" }}>
+        <p className="text-sm text-center" style={{ color: "#5a4a5a" }}>
           Don&apos;t have an account?{" "}
-          <a href="/register" style={{ color: "#6b5270" }}>
+          <a href="/register" className="hover:underline" style={{ color: "#6b5270", fontWeight: 500 }}>
             Sign up
           </a>
         </p>

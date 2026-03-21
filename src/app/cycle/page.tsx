@@ -43,7 +43,6 @@ export default function CycleTrackerPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [loading, setLoading] = useState(true);
 
-  // Form state
   const [phase, setPhase] = useState("");
   const [flow, setFlow] = useState("");
   const [symptoms, setSymptoms] = useState<string[]>([]);
@@ -53,9 +52,7 @@ export default function CycleTrackerPage() {
   const [saved, setSaved] = useState(false);
   const [existingId, setExistingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadEntries();
-  }, []);
+  useEffect(() => { loadEntries(); }, []);
 
   useEffect(() => {
     const entry = entries.find((e) => e.entry_date === selectedDate);
@@ -67,12 +64,7 @@ export default function CycleTrackerPage() {
       setNotes(entry.notes || "");
       setExistingId(entry.id);
     } else {
-      setPhase("");
-      setFlow("");
-      setSymptoms([]);
-      setEnergy(0);
-      setNotes("");
-      setExistingId(null);
+      setPhase(""); setFlow(""); setSymptoms([]); setEnergy(0); setNotes(""); setExistingId(null);
     }
   }, [selectedDate, entries]);
 
@@ -95,30 +87,21 @@ export default function CycleTrackerPage() {
   const handleSave = async () => {
     setSaving(true);
     const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      router.push("/login");
-      return;
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push("/login"); return; }
 
     const payload = {
       user_id: user.id,
       entry_date: selectedDate,
       cycle_phase: phase || null,
       flow_intensity: flow || null,
-      symptoms: symptoms,
+      symptoms,
       energy_level: energy || null,
       notes: notes.trim() || null,
     };
 
     if (existingId) {
-      await supabase
-        .from("cycle_entries")
-        .update(payload)
-        .eq("id", existingId);
+      await supabase.from("cycle_entries").update(payload).eq("id", existingId);
     } else {
       await supabase.from("cycle_entries").insert(payload);
     }
@@ -137,12 +120,11 @@ export default function CycleTrackerPage() {
     await loadEntries();
   };
 
-  // Calendar helpers
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startOffset = firstDay === 0 ? 6 : firstDay - 1; // Monday start
+  const startOffset = firstDay === 0 ? 6 : firstDay - 1;
 
   const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1));
@@ -153,9 +135,8 @@ export default function CycleTrackerPage() {
     return `${year}-${m}-${d}`;
   };
 
-  const getEntryForDay = (day: number) => {
-    return entries.find((e) => e.entry_date === getDateStr(day));
-  };
+  const getEntryForDay = (day: number) =>
+    entries.find((e) => e.entry_date === getDateStr(day));
 
   const phaseColor = (p: string | null) => {
     switch (p) {
@@ -177,14 +158,18 @@ export default function CycleTrackerPage() {
       <header className="flex items-center justify-between px-6 py-5">
         <button
           onClick={() => router.push("/dashboard")}
-          className="text-xs tracking-wide"
-          style={{ color: "#6b5e5e" }}
+          className="text-sm tracking-wide"
+          style={{ color: "#5a3a5a", fontWeight: 500 }}
         >
           ← Back
         </button>
         <h1
-          className="text-sm tracking-[0.35em] uppercase font-light"
-          style={{ color: "#5e3a3a" }}
+          className="text-lg md:text-xl tracking-[0.25em] uppercase"
+          style={{
+            color: "#4A2545",
+            fontFamily: "'Antic Didone', Georgia, serif",
+            fontWeight: 700,
+          }}
         >
           Cycle Tracker
         </h1>
@@ -200,18 +185,21 @@ export default function CycleTrackerPage() {
             borderColor: "rgba(196,155,142,0.3)",
           }}
         >
-          {/* Month navigation */}
           <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth} className="text-sm px-2" style={{ color: "#8b5e5e" }}>
+            <button onClick={prevMonth} className="text-lg px-2" style={{ color: "#5a3a5a" }}>
               ‹
             </button>
-            <h2 className="text-sm font-medium tracking-wide" style={{ color: "#3d2e4a" }}>
-              {currentMonth.toLocaleDateString("en-GB", {
-                month: "long",
-                year: "numeric",
-              })}
+            <h2
+              className="text-base font-medium tracking-wide"
+              style={{
+                color: "#2a1a28",
+                fontFamily: "'Antic Didone', Georgia, serif",
+                fontWeight: 600,
+              }}
+            >
+              {currentMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
             </h2>
-            <button onClick={nextMonth} className="text-sm px-2" style={{ color: "#8b5e5e" }}>
+            <button onClick={nextMonth} className="text-lg px-2" style={{ color: "#5a3a5a" }}>
               ›
             </button>
           </div>
@@ -219,17 +207,13 @@ export default function CycleTrackerPage() {
           {/* Day headers */}
           <div className="grid grid-cols-7 gap-1 mb-1">
             {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d) => (
-              <div
-                key={d}
-                className="text-center text-xs py-1"
-                style={{ color: "#6b5e5e" }}
-              >
+              <div key={d} className="text-center text-xs py-1" style={{ color: "#5a4a5a", fontWeight: 600 }}>
                 {d}
               </div>
             ))}
           </div>
 
-          {/* Days */}
+          {/* Days grid */}
           <div className="grid grid-cols-7 gap-1">
             {Array.from({ length: startOffset }).map((_, i) => (
               <div key={`empty-${i}`} />
@@ -245,20 +229,27 @@ export default function CycleTrackerPage() {
                 <button
                   key={day}
                   onClick={() => setSelectedDate(dateStr)}
-                  className="relative w-full aspect-square flex items-center justify-center rounded-full text-xs transition-all"
+                  className="relative w-full aspect-square flex flex-col items-center justify-center text-sm transition-all"
                   style={{
+                    borderRadius: "50%",
                     background: isSelected
                       ? "rgba(139,94,94,0.15)"
                       : "transparent",
-                    color: isSelected ? "#3d2e4a" : "#5e4e5e",
+                    color: isSelected ? "#2a1a28" : "#4a3a4a",
                     fontWeight: isToday ? 700 : 400,
                   }}
                 >
-                  {day}
+                  <span>{day}</span>
                   {entry && (
                     <span
-                      className="absolute bottom-1 w-1 h-1 rounded-full"
-                      style={{ background: phaseColor(entry.cycle_phase) }}
+                      style={{
+                        display: "block",
+                        width: "5px",
+                        height: "5px",
+                        borderRadius: "50%",
+                        background: phaseColor(entry.cycle_phase),
+                        marginTop: "1px",
+                      }}
                     />
                   )}
                 </button>
@@ -266,15 +257,20 @@ export default function CycleTrackerPage() {
             })}
           </div>
 
-          {/* Phase legend */}
-          <div className="flex justify-center gap-3 mt-3 flex-wrap">
+          {/* Legend */}
+          <div className="flex justify-center gap-4 mt-4 flex-wrap">
             {PHASES.map((p) => (
-              <div key={p.value} className="flex items-center gap-1">
+              <div key={p.value} className="flex items-center gap-1.5">
                 <span
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: phaseColor(p.value) }}
+                  style={{
+                    display: "inline-block",
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    background: phaseColor(p.value),
+                  }}
                 />
-                <span className="text-xs" style={{ color: "#8a7a6a" }}>
+                <span className="text-xs" style={{ color: "#5a4a5a" }}>
                   {p.value}
                 </span>
               </div>
@@ -282,9 +278,9 @@ export default function CycleTrackerPage() {
           </div>
         </section>
 
-        {/* Entry form for selected date */}
+        {/* Entry form */}
         <section className="space-y-5">
-          <p className="text-xs text-center tracking-wide" style={{ color: "#6b5e5e" }}>
+          <p className="text-sm text-center tracking-wide" style={{ color: "#4a3a4a", fontWeight: 500 }}>
             {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-GB", {
               weekday: "long",
               day: "numeric",
@@ -292,7 +288,7 @@ export default function CycleTrackerPage() {
               year: "numeric",
             })}
             {existingId && (
-              <span style={{ color: "#c49b8e" }}> — editing</span>
+              <span style={{ color: "#9b6b8d", fontWeight: 400 }}> — editing</span>
             )}
           </p>
 
@@ -302,17 +298,12 @@ export default function CycleTrackerPage() {
               <button
                 key={p.value}
                 onClick={() => setPhase(phase === p.value ? "" : p.value)}
-                className="px-3 py-1.5 rounded-full text-xs transition-all border"
+                className="px-3 py-2 rounded-full text-sm transition-all border"
                 style={{
-                  background:
-                    phase === p.value
-                      ? "rgba(139,94,94,0.15)"
-                      : "rgba(255,255,255,0.4)",
-                  borderColor:
-                    phase === p.value
-                      ? "rgba(139,94,94,0.3)"
-                      : "rgba(196,155,142,0.3)",
-                  color: phase === p.value ? "#3d2e4a" : "#8a7a6a",
+                  background: phase === p.value ? "rgba(139,94,94,0.15)" : "rgba(255,255,255,0.4)",
+                  borderColor: phase === p.value ? "rgba(139,94,94,0.3)" : "rgba(196,155,142,0.3)",
+                  color: phase === p.value ? "#2a1a28" : "#5a4a5a",
+                  fontWeight: phase === p.value ? 600 : 400,
                 }}
               >
                 {p.label}
@@ -320,24 +311,19 @@ export default function CycleTrackerPage() {
             ))}
           </div>
 
-          {/* Flow intensity */}
+          {/* Flow */}
           {phase === "menstruation" && (
             <div className="flex justify-center gap-2">
               {FLOW.map((f) => (
                 <button
                   key={f.value}
                   onClick={() => setFlow(flow === f.value ? "" : f.value)}
-                  className="px-3 py-1.5 rounded-full text-xs transition-all border"
+                  className="px-3 py-2 rounded-full text-sm transition-all border"
                   style={{
-                    background:
-                      flow === f.value
-                        ? "rgba(196,80,80,0.12)"
-                        : "rgba(255,255,255,0.4)",
-                    borderColor:
-                      flow === f.value
-                        ? "rgba(196,80,80,0.3)"
-                        : "rgba(196,155,142,0.3)",
-                    color: flow === f.value ? "#c45050" : "#8a7a6a",
+                    background: flow === f.value ? "rgba(196,80,80,0.12)" : "rgba(255,255,255,0.4)",
+                    borderColor: flow === f.value ? "rgba(196,80,80,0.3)" : "rgba(196,155,142,0.3)",
+                    color: flow === f.value ? "#c45050" : "#5a4a5a",
+                    fontWeight: flow === f.value ? 600 : 400,
                   }}
                 >
                   {f.label}
@@ -346,17 +332,15 @@ export default function CycleTrackerPage() {
             </div>
           )}
 
-          {/* Energy level */}
-          <div className="text-center space-y-1">
-            <p className="text-xs" style={{ color: "#6b5e5e" }}>
-              Energy level
-            </p>
-            <div className="flex justify-center gap-1">
+          {/* Energy */}
+          <div className="text-center space-y-2">
+            <p className="text-sm" style={{ color: "#3d2040", fontWeight: 600 }}>Energy level</p>
+            <div className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((n) => (
                 <button
                   key={n}
                   onClick={() => setEnergy(energy === n ? 0 : n)}
-                  className="text-lg transition-all"
+                  className="text-xl transition-all"
                   style={{ color: n <= energy ? "#8b5e5e" : "#d4ccc8" }}
                 >
                   ●
@@ -367,23 +351,18 @@ export default function CycleTrackerPage() {
 
           {/* Symptoms */}
           <div className="space-y-2">
-            <p className="text-xs text-center" style={{ color: "#6b5e5e" }}>
-              Symptoms
-            </p>
-            <div className="flex justify-center gap-1.5 flex-wrap">
+            <p className="text-sm text-center" style={{ color: "#3d2040", fontWeight: 600 }}>Symptoms</p>
+            <div className="flex justify-center gap-2 flex-wrap">
               {COMMON_SYMPTOMS.map((s) => (
                 <button
                   key={s}
                   onClick={() => toggleSymptom(s)}
-                  className="px-2.5 py-1 rounded-full text-xs transition-all border"
+                  className="px-3 py-1.5 rounded-full text-sm transition-all border"
                   style={{
-                    background: symptoms.includes(s)
-                      ? "rgba(139,94,94,0.12)"
-                      : "rgba(255,255,255,0.3)",
-                    borderColor: symptoms.includes(s)
-                      ? "rgba(139,94,94,0.3)"
-                      : "rgba(196,155,142,0.2)",
-                    color: symptoms.includes(s) ? "#8b5e5e" : "#8a7a6a",
+                    background: symptoms.includes(s) ? "rgba(139,94,94,0.12)" : "rgba(255,255,255,0.3)",
+                    borderColor: symptoms.includes(s) ? "rgba(139,94,94,0.3)" : "rgba(196,155,142,0.2)",
+                    color: symptoms.includes(s) ? "#6b3a3a" : "#5a4a5a",
+                    fontWeight: symptoms.includes(s) ? 600 : 400,
                   }}
                 >
                   {s}
@@ -399,7 +378,7 @@ export default function CycleTrackerPage() {
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
             className="w-full bg-transparent text-sm leading-relaxed outline-none resize-none placeholder:text-[#c4b0a0]"
-            style={{ color: "#4a3a3a" }}
+            style={{ color: "#2a1a28" }}
           />
 
           {/* Save / Delete */}
@@ -407,16 +386,24 @@ export default function CycleTrackerPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-6 py-2.5 rounded-xl text-sm text-white transition-all disabled:opacity-50"
-              style={{ background: "#8b5e5e" }}
+              className="px-8 py-3 rounded-xl text-base transition-all disabled:opacity-50"
+              style={{
+                background: "#6b5270",
+                color: "#ffffff",
+                fontWeight: 600,
+              }}
             >
               {saving ? "Saving..." : saved ? "✓ Saved!" : existingId ? "Update" : "Save"}
             </button>
             {existingId && (
               <button
                 onClick={handleDelete}
-                className="px-4 py-2.5 rounded-xl text-sm transition-all border"
-                style={{ borderColor: "rgba(196,80,80,0.3)", color: "#c45050" }}
+                className="px-5 py-3 rounded-xl text-base transition-all border"
+                style={{
+                  borderColor: "rgba(196,80,80,0.4)",
+                  color: "#c45050",
+                  fontWeight: 500,
+                }}
               >
                 Delete
               </button>

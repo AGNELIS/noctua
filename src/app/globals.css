@@ -11,7 +11,8 @@
   --color-deep: #1A0E1A;
 
   --font-display: "Cinzel Decorative", serif;
-  --font-body: "Antic Didone", Georgia, serif;
+  --font-heading: "Antic Didone", Georgia, serif;
+  --font-body: Georgia, "Times New Roman", serif;
 }
 
 html, body {
@@ -20,21 +21,24 @@ html, body {
   min-height: 100vh;
 }
 
-/* ===== GLOBAL CONTRAST & HIERARCHY ===== */
+/* ===== FONT HIERARCHY =====
+   Antic Didone  → titles, quotes, decorative
+   Georgia       → everything else
+===== */
 
-/* All headings — dark, bold, unmissable */
 h1, h2, h3, h4, h5, h6 {
+  font-family: "Antic Didone", Georgia, serif;
   color: #2a1a28;
   font-weight: 700;
 }
 
-/* Body text — darker than before */
 p, span, li, label, td, th {
   color: #2e1f2e;
 }
 
-/* ===== PAGE TITLES — big and prominent ===== */
+/* ===== PAGE TITLES ===== */
 header h1 {
+  font-family: "Antic Didone", Georgia, serif;
   font-size: 1.5rem;
   letter-spacing: 0.25em;
   color: #4A2545;
@@ -43,20 +47,19 @@ header h1 {
 }
 
 @media (min-width: 768px) {
-  header h1 {
-    font-size: 1.75rem;
-  }
+  header h1 { font-size: 1.75rem; }
 }
 
-/* ===== SECTION TITLES (Dream Journal, Journal, Cycle Tracker etc.) ===== */
+/* ===== SECTION HEADINGS ===== */
 main h1 {
+  font-family: "Antic Didone", Georgia, serif;
   font-size: 1.75rem;
   font-weight: 700;
   color: #2a1a28;
-  letter-spacing: 0.05em;
 }
 
 main h2 {
+  font-family: "Antic Didone", Georgia, serif;
   font-size: 1.35rem;
   font-weight: 700;
   color: #3d2040;
@@ -69,18 +72,17 @@ main h3 {
 }
 
 @media (min-width: 768px) {
-  main h1 {
-    font-size: 2.25rem;
-  }
-  main h2 {
-    font-size: 1.6rem;
-  }
-  main h3 {
-    font-size: 1.3rem;
-  }
+  main h1 { font-size: 2.25rem; }
+  main h2 { font-size: 1.6rem; }
+  main h3 { font-size: 1.3rem; }
 }
 
-/* ===== NAVIGATION CARDS on dashboard ===== */
+/* ===== ITALIC / QUOTES ===== */
+em, i, .italic {
+  font-family: "Antic Didone", Georgia, serif;
+}
+
+/* ===== NAV CARDS ===== */
 button h3, a h3 {
   font-size: 1.15rem;
   font-weight: 700;
@@ -92,17 +94,17 @@ button p, a p {
   color: #4a3a4a;
 }
 
-/* ===== HEADER NAV (Back, Sign out) ===== */
+/* ===== HEADER NAV ===== */
 header button, header a {
   font-size: 0.95rem;
   color: #5a3a5a;
   font-weight: 500;
 }
 
-/* ===== SMALL TEXT — "25 symbols", dates, counters ===== */
-small, .text-xs, .text-sm {
-  font-size: 0.875rem !important;
-  color: #4a3a4a !important;
+/* ===== SMALL TEXT ===== */
+small {
+  font-size: 0.875rem;
+  color: #4a3a4a;
 }
 
 /* ===== FORM INPUTS ===== */
@@ -122,19 +124,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 2px rgba(155, 107, 141, 0.25);
 }
 
-/* ===== BUTTONS ===== */
-button[type="submit"], .primary-button {
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
-/* ===== MOOD/EMOTION PILLS ===== */
-.rounded-full {
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
-}
-
-/* ===== TABS & TOGGLE BUTTONS ===== */
+/* ===== TABS ===== */
 [role="tab"], [role="tablist"] button {
   font-size: 1rem;
   font-weight: 600;
@@ -142,14 +132,8 @@ button[type="submit"], .primary-button {
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: rgba(155, 107, 141, 0.25);
   border-radius: 3px;

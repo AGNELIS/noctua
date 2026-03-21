@@ -21,7 +21,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body style={{ fontFamily: "'Antic Didone', Georgia, serif" }}>{children}</body>
+      <body style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>{children}</body>
     </html>
   );
 }
