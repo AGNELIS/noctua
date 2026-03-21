@@ -21,8 +21,6 @@ html, body {
   min-height: 100vh;
 }
 
-/* ===== FONT HIERARCHY ===== */
-
 h1, h2, h3, h4, h5, h6 {
   font-family: "Antic Didone", Georgia, serif;
   color: #2a1a28;
@@ -33,7 +31,6 @@ p, span, li, label, td, th {
   color: #2e1f2e;
 }
 
-/* ===== HEADER — always centered title ===== */
 header {
   position: relative;
 }
@@ -56,7 +53,6 @@ header h1 {
   header h1 { font-size: 1.5rem; }
 }
 
-/* ===== SECTION HEADINGS ===== */
 main h1 {
   font-family: "Antic Didone", Georgia, serif;
   font-size: 1.75rem;
@@ -83,12 +79,10 @@ main h3 {
   main h3 { font-size: 1.3rem; }
 }
 
-/* ===== ITALIC / QUOTES ===== */
 em, i, .italic {
   font-family: "Antic Didone", Georgia, serif;
 }
 
-/* ===== NAV CARDS ===== */
 button h3, a h3 {
   font-size: 1.15rem;
   font-weight: 700;
@@ -100,20 +94,17 @@ button p, a p {
   color: #4a3a4a;
 }
 
-/* ===== HEADER NAV ===== */
 header button, header a {
   font-size: 0.95rem;
   color: #5a3a5a;
   font-weight: 500;
 }
 
-/* ===== SMALL TEXT ===== */
 small {
   font-size: 0.875rem;
   color: #4a3a4a;
 }
 
-/* ===== FORM INPUTS ===== */
 input, textarea, select {
   color: #2a1a28;
   font-size: 1rem;
@@ -130,38 +121,15 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 2px rgba(155, 107, 141, 0.25);
 }
 
-/* ===== TABS ===== */
 [role="tab"], [role="tablist"] button {
   font-size: 1rem;
   font-weight: 600;
   color: #3d2040;
 }
 
-/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background: rgba(155, 107, 141, 0.25);
   border-radius: 3px;
 }
-```
-
-Zmiana: tytuł w headerze ma teraz `position: absolute; left: 50%; transform: translateX(-50%)` — czyli jest **zawsze idealnie wyśrodkowany** niezależnie od przycisku Back.
-
-**Krok 2 — Dashboard opisy na lewo.** Otwórz `src/app/dashboard/page.tsx` i znajdź tę linię (jest blisko końca pliku, w sekcji z kartami):
-```
-                style={{ color: "#4a3a4a" }}
-              >
-                {card.description}
-```
-
-Kilka linii wyżej znajdź:
-```
-              <p
-                className="text-sm md:text-base leading-relaxed text-center"
-```
-
-Zamień `text-center` na `text-left`:
-```
-              <p
-                className="text-sm md:text-base leading-relaxed text-left"
