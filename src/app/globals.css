@@ -20,66 +20,128 @@ html, body {
   min-height: 100vh;
 }
 
-/* Global text contrast boost */
+/* ===== GLOBAL CONTRAST & HIERARCHY ===== */
+
+/* All headings — dark, bold, unmissable */
 h1, h2, h3, h4, h5, h6 {
   color: #2a1a28;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-p {
-  color: #3d2e3d;
+/* Body text — darker than before */
+p, span, li, label, td, th {
+  color: #2e1f2e;
 }
 
-/* Page titles — big, bold, unmissable */
+/* ===== PAGE TITLES — big and prominent ===== */
 header h1 {
-  font-size: 1rem;
-  letter-spacing: 0.35em;
+  font-size: 1.5rem;
+  letter-spacing: 0.25em;
   color: #4A2545;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  header h1 {
+    font-size: 1.75rem;
+  }
+}
+
+/* ===== SECTION TITLES (Dream Journal, Journal, Cycle Tracker etc.) ===== */
+main h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2a1a28;
+  letter-spacing: 0.05em;
+}
+
+main h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #3d2040;
+}
+
+main h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2a1a28;
+}
+
+@media (min-width: 768px) {
+  main h1 {
+    font-size: 2.25rem;
+  }
+  main h2 {
+    font-size: 1.6rem;
+  }
+  main h3 {
+    font-size: 1.3rem;
+  }
+}
+
+/* ===== NAVIGATION CARDS on dashboard ===== */
+button h3, a h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2a1a28;
+}
+
+button p, a p {
+  font-size: 0.95rem;
+  color: #4a3a4a;
+}
+
+/* ===== HEADER NAV (Back, Sign out) ===== */
+header button, header a {
+  font-size: 0.95rem;
+  color: #5a3a5a;
   font-weight: 500;
 }
 
-/* Navigation buttons (Back, Sign out, etc.) */
-header button, header a {
-  font-size: 0.875rem;
-  color: #6b5270;
+/* ===== SMALL TEXT — "25 symbols", dates, counters ===== */
+small, .text-xs, .text-sm {
+  font-size: 0.875rem !important;
+  color: #4a3a4a !important;
 }
 
-/* Card titles */
-button h3, a h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2a1a28;
-}
-
-/* Card descriptions */
-button p, a p {
-  font-size: 0.875rem;
-  color: #5a4a5a;
-}
-
-/* Form inputs — better contrast */
-input, textarea {
+/* ===== FORM INPUTS ===== */
+input, textarea, select {
   color: #2a1a28;
   font-size: 1rem;
+  border-color: #c8b0c8;
 }
 
 input::placeholder, textarea::placeholder {
-  color: #9b8a8a;
+  color: #8a7a8a;
 }
 
-/* Buttons — more prominent */
+input:focus, textarea:focus, select:focus {
+  border-color: #9B6B8D;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(155, 107, 141, 0.25);
+}
+
+/* ===== BUTTONS ===== */
 button[type="submit"], .primary-button {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
-/* Mood/emotion pills — bigger, more readable */
+/* ===== MOOD/EMOTION PILLS ===== */
 .rounded-full {
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
 }
 
-/* Scrollbar styling */
+/* ===== TABS & TOGGLE BUTTONS ===== */
+[role="tab"], [role="tablist"] button {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3d2040;
+}
+
+/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -89,6 +151,6 @@ button[type="submit"], .primary-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(155, 107, 141, 0.2);
+  background: rgba(155, 107, 141, 0.25);
   border-radius: 3px;
 }
