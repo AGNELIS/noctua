@@ -236,8 +236,8 @@ export default function DashboardPage() {
                 {card.icon}
               </span>
               <h3
-                className="mt-3 text-base md:text-lg font-medium tracking-wide"
-                style={{ color: "#3d2e4a" }}
+                className="text-3xl md:text-4xl font-light tracking-wide"
+              style={{ color: "#3d2e4a", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               >
                 {card.title}
               </h3>
