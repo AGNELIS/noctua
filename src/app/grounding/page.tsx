@@ -97,6 +97,7 @@ export default function GroundingPage() {
   const router = useRouter();
   const [activeExercise, setActiveExercise] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
+  const [showResources, setShowResources] = useState(false);
   const exercise = GROUNDING_EXERCISES.find((e) => e.id === activeExercise);
 
   const nextStep = () => {
@@ -154,17 +155,22 @@ export default function GroundingPage() {
               ))}
             </section>
             <section className="space-y-3">
-              <div className="text-center py-3 px-4 rounded-xl" style={{ background: "rgba(120,160,100,0.12)" }}>
-                <p className="text-sm font-medium" style={{ color: "#3a4a30" }}>Need to talk to someone?</p>
-              </div>
-              <p className="text-xs text-center leading-relaxed" style={{ color: "#5a6a4a" }}>You are not alone. These services are confidential and available when you need them.</p>
-              {CRISIS_RESOURCES.map((r) => (
-                <div key={r.name} onClick={() => window.open(r.url, "_blank")} className="cursor-pointer p-4 rounded-2xl border hover:scale-[1.01] transition-all" style={{ background: "rgba(255,255,255,0.5)", borderColor: "rgba(120,160,100,0.25)" }}>
-                  <h3 className="text-sm font-medium" style={{ color: "#3a4a30" }}>{r.name}</h3>
-                  <p className="text-base font-medium mt-1" style={{ color: "#4a6040" }}>{r.phone}</p>
-                  <p className="text-xs mt-0.5" style={{ color: "#7a8a6a" }}>{r.description}</p>
+              <button onClick={() => setShowResources(!showResources)} className="w-full text-center py-4 px-4 rounded-xl transition-all" style={{ background: "rgba(120,160,100,0.18)", border: "1px solid rgba(120,160,100,0.3)" }}>
+                <p className="text-base font-medium" style={{ color: "#3a4a30" }}>Need to talk to someone?</p>
+                <p className="text-xs mt-1" style={{ color: "#5a6a4a" }}>{showResources ? "Tap to hide" : "Tap to see support resources"}</p>
+              </button>
+              {showResources && (
+                <div className="space-y-2">
+                  <p className="text-xs text-center leading-relaxed" style={{ color: "#5a6a4a" }}>You are not alone. These services are confidential and available when you need them.</p>
+                  {CRISIS_RESOURCES.map((r) => (
+                    <div key={r.name} onClick={() => window.open(r.url, "_blank")} className="cursor-pointer p-4 rounded-2xl border hover:scale-[1.01] transition-all" style={{ background: "rgba(255,255,255,0.5)", borderColor: "rgba(120,160,100,0.25)" }}>
+                      <h3 className="text-sm font-medium" style={{ color: "#3a4a30" }}>{r.name}</h3>
+                      <p className="text-base font-medium mt-1" style={{ color: "#4a6040" }}>{r.phone}</p>
+                      <p className="text-xs mt-0.5" style={{ color: "#7a8a6a" }}>{r.description}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </section>
           </div>
         )}
