@@ -26,14 +26,71 @@ const TONE_LABELS: Record<string, string> = {
   angry: "🔥 Angry",
 };
 
+function ConfirmModal({
+  message,
+  onConfirm,
+  onCancel,
+}: {
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      style={{ background: "rgba(42, 26, 40, 0.4)", backdropFilter: "blur(4px)" }}
+    >
+      <div
+        className="w-full max-w-sm p-6 rounded-2xl space-y-5"
+        style={{
+          background: "linear-gradient(to bottom, #faf7f5, #f5ede6)",
+          border: "1px solid rgba(212,181,199,0.3)",
+          boxShadow: "0 8px 32px rgba(42, 26, 40, 0.15)",
+        }}
+      >
+        <p
+          className="text-center text-base leading-relaxed"
+          style={{ color: "#2a1a28" }}
+        >
+          {message}
+        </p>
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={onCancel}
+            className="px-6 py-2.5 rounded-xl text-sm transition-all border"
+            style={{
+              borderColor: "rgba(212,181,199,0.4)",
+              color: "#5a3a5a",
+              background: "rgba(255,255,255,0.5)",
+              fontWeight: 500,
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-6 py-2.5 rounded-xl text-sm transition-all"
+            style={{
+              background: "#6b5270",
+              color: "#ffffff",
+              fontWeight: 600,
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DreamsPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<DreamEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadEntries();
-  }, []);
+  useEffect(() => { loadEntries(); }, []);
 
   const loadEntries = async () => {
     const supabase = createClient();
@@ -56,11 +113,12 @@ export default function DreamsPage() {
     );
   };
 
-  const deleteEntry = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this dream?")) return;
+  const confirmDelete = async () => {
+    if (!deleteId) return;
     const supabase = createClient();
-    await supabase.from("dream_entries").delete().eq("id", id);
-    setEntries((prev) => prev.filter((e) => e.id !== id));
+    await supabase.from("dream_entries").delete().eq("id", deleteId);
+    setEntries((prev) => prev.filter((e) => e.id !== deleteId));
+    setDeleteId(null);
   };
 
   return (
@@ -70,24 +128,40 @@ export default function DreamsPage() {
         background: "linear-gradient(to bottom, #f5f0fa, #f0eaf5, #ebe4f0)",
       }}
     >
+      {deleteId && (
+        <ConfirmModal
+          message="Are you sure you want to delete this dream?"
+          onConfirm={confirmDelete}
+          onCancel={() => setDeleteId(null)}
+        />
+      )}
+
       <header className="flex items-center justify-between px-6 py-5">
         <button
           onClick={() => router.push("/dashboard")}
-          className="text-xs tracking-wide"
-          style={{ color: "#9b8a9e" }}
+          className="text-sm tracking-wide"
+          style={{ color: "#5a3a5a", fontWeight: 500 }}
         >
           ← Back
         </button>
         <h1
-          className="text-sm tracking-[0.35em] uppercase font-light"
-          style={{ color: "#6b5e8b" }}
+          className="text-lg md:text-xl tracking-[0.25em] uppercase"
+          style={{
+            color: "#4A2545",
+            fontFamily: "'Antic Didone', Georgia, serif",
+            fontWeight: 700,
+          }}
         >
           Dream Journal
         </h1>
         <button
           onClick={() => router.push("/dreams/new")}
-          className="text-xs tracking-wide px-3 py-1.5 rounded-lg transition-colors"
-          style={{ background: "rgba(107,94,139,0.1)", color: "#6b5e8b" }}
+          className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors"
+          style={{
+            background: "rgba(107,94,139,0.1)",
+            color: "#5a3a5a",
+            fontWeight: 500,
+          }}
         >
           + New
         </button>
@@ -101,16 +175,16 @@ export default function DreamsPage() {
         ) : entries.length === 0 ? (
           <div className="text-center pt-20 space-y-4">
             <p className="text-4xl">☽</p>
-            <p className="text-sm" style={{ color: "#6b5e8b" }}>
+            <p className="text-base" style={{ color: "#3d2e4a", fontWeight: 500 }}>
               No dreams recorded yet.
             </p>
-            <p className="text-xs" style={{ color: "#9b8a9e" }}>
+            <p className="text-sm" style={{ color: "#5a4a5a" }}>
               Capture the messages of the night.
             </p>
             <button
               onClick={() => router.push("/dreams/new")}
-              className="mt-4 px-6 py-2.5 rounded-xl text-sm text-white transition-all"
-              style={{ background: "#6b5e8b" }}
+              className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all"
+              style={{ background: "#6b5270", color: "#ffffff", fontWeight: 600 }}
             >
               Record first dream
             </button>
@@ -132,56 +206,54 @@ export default function DreamsPage() {
                     onClick={() => router.push(`/dreams/${entry.id}/edit`)}
                   >
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-xs" style={{ color: "#9b8a9e" }}>
+                      <span className="text-xs" style={{ color: "#7a6a7a" }}>
                         {new Date(entry.dream_date).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
                         })}
                       </span>
-                      {entry.emotional_tone && entry.emotional_tone.length > 0 && entry.emotional_tone.map((t) => (
-                        <span key={t} className="text-xs" style={{ color: "#6b5e8b" }}>
+                      {entry.emotional_tone?.map((t) => (
+                        <span key={t} className="text-xs" style={{ color: "#5a4a6a" }}>
                           {TONE_LABELS[t] || t}
                         </span>
                       ))}
                       {entry.is_recurring && (
                         <span
                           className="text-xs px-1.5 py-0.5 rounded-full"
-                          style={{ background: "rgba(155,142,196,0.15)", color: "#6b5e8b" }}
+                          style={{ background: "rgba(155,142,196,0.15)", color: "#5a4a6a" }}
                         >
                           recurring
                         </span>
                       )}
                       {entry.lucidity && (
-                        <span className="text-xs" style={{ color: "#9b8a9e" }}>
+                        <span className="text-xs" style={{ color: "#7a6a7a" }}>
                           {"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}
                         </span>
                       )}
                     </div>
                     {entry.title && (
                       <h3
-                        className="text-sm font-medium mb-1"
-                        style={{ color: "#3d2e4a" }}
+                        className="text-base mb-1"
+                        style={{
+                          color: "#2a1a28",
+                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontWeight: 600,
+                        }}
                       >
                         {entry.title}
                       </h3>
                     )}
-                    <p
-                      className="text-xs leading-relaxed line-clamp-2"
-                      style={{ color: "#5e4e6b" }}
-                    >
+                    <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "#4a3a4a" }}>
                       {entry.content}
                     </p>
-                    {entry.symbols && entry.symbols.length > 0 && (
+                    {entry.symbols?.length > 0 && (
                       <div className="flex gap-1.5 mt-2 flex-wrap">
                         {entry.symbols.map((s) => (
                           <span
                             key={s}
                             className="text-xs px-2 py-0.5 rounded-full"
-                            style={{
-                              background: "rgba(155,142,196,0.12)",
-                              color: "#6b5e8b",
-                            }}
+                            style={{ background: "rgba(155,142,196,0.12)", color: "#5a4a6a" }}
                           >
                             {s}
                           </span>
@@ -193,12 +265,13 @@ export default function DreamsPage() {
                     <button
                       onClick={() => toggleFavorite(entry.id, entry.is_favorite)}
                       className="text-lg leading-none"
+                      style={{ color: entry.is_favorite ? "#6b5270" : "#c4b0c4" }}
                     >
                       {entry.is_favorite ? "♥" : "♡"}
                     </button>
                     <button
-                      onClick={() => deleteEntry(entry.id)}
-                      className="text-xs leading-none"
+                      onClick={() => setDeleteId(entry.id)}
+                      className="text-sm leading-none"
                       style={{ color: "#c49bb8" }}
                     >
                       ✕

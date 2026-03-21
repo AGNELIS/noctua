@@ -21,10 +21,7 @@ html, body {
   min-height: 100vh;
 }
 
-/* ===== FONT HIERARCHY =====
-   Antic Didone  → titles, quotes, decorative
-   Georgia       → everything else
-===== */
+/* ===== FONT HIERARCHY ===== */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Antic Didone", Georgia, serif;
@@ -36,18 +33,27 @@ p, span, li, label, td, th {
   color: #2e1f2e;
 }
 
-/* ===== PAGE TITLES ===== */
+/* ===== HEADER — always centered title ===== */
+header {
+  position: relative;
+}
+
 header h1 {
   font-family: "Antic Didone", Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   letter-spacing: 0.25em;
   color: #4A2545;
   font-weight: 700;
   text-transform: uppercase;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 @media (min-width: 768px) {
-  header h1 { font-size: 1.75rem; }
+  header h1 { font-size: 1.5rem; }
 }
 
 /* ===== SECTION HEADINGS ===== */
@@ -138,3 +144,24 @@ input:focus, textarea:focus, select:focus {
   background: rgba(155, 107, 141, 0.25);
   border-radius: 3px;
 }
+```
+
+Zmiana: tytuł w headerze ma teraz `position: absolute; left: 50%; transform: translateX(-50%)` — czyli jest **zawsze idealnie wyśrodkowany** niezależnie od przycisku Back.
+
+**Krok 2 — Dashboard opisy na lewo.** Otwórz `src/app/dashboard/page.tsx` i znajdź tę linię (jest blisko końca pliku, w sekcji z kartami):
+```
+                style={{ color: "#4a3a4a" }}
+              >
+                {card.description}
+```
+
+Kilka linii wyżej znajdź:
+```
+              <p
+                className="text-sm md:text-base leading-relaxed text-center"
+```
+
+Zamień `text-center` na `text-left`:
+```
+              <p
+                className="text-sm md:text-base leading-relaxed text-left"

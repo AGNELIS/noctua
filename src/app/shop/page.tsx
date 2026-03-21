@@ -17,12 +17,9 @@ type Product = {
 const CATEGORY_LABELS: Record<string, string> = {
   theme: "Themes",
   symbol_pack: "Symbol Packs",
-  workbook: "Workbooks",
-  meditation: "Meditations",
-  planner: "Planners",
 };
 
-const CATEGORY_ORDER = ["theme", "symbol_pack", "workbook", "meditation", "planner"];
+const CATEGORY_ORDER = ["theme", "symbol_pack"];
 
 export default function ShopPage() {
   const router = useRouter();
@@ -31,17 +28,15 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadShop();
-  }, []);
+  useEffect(() => { loadShop(); }, []);
 
   const loadShop = async () => {
     const supabase = createClient();
-
     const { data: prods } = await supabase
       .from("shop_products")
       .select("*")
       .eq("is_active", true)
+      .in("category", ["theme", "symbol_pack"])
       .order("sort_order");
 
     const { data: purch } = await supabase
@@ -56,17 +51,9 @@ export default function ShopPage() {
   const handlePurchase = async (productId: string) => {
     setBuying(productId);
     const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push("/login"); return; }
 
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    // For now — direct "purchase" (free or mock)
-    // Later: integrate Stripe checkout here
     const { error } = await supabase
       .from("user_purchases")
       .insert({ user_id: user.id, product_id: productId });
@@ -79,9 +66,7 @@ export default function ShopPage() {
 
   const handleActivateTheme = async (productId: string) => {
     const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     await supabase
@@ -89,7 +74,7 @@ export default function ShopPage() {
       .update({ active_theme: productId })
       .eq("id", user.id);
 
-    alert("Theme activated! (Visual switching coming soon)");
+    // TODO: apply theme visually
   };
 
   const grouped = CATEGORY_ORDER.map((cat) => ({
@@ -108,14 +93,18 @@ export default function ShopPage() {
       <header className="flex items-center justify-between px-6 py-5">
         <button
           onClick={() => router.push("/dashboard")}
-          className="text-xs tracking-wide"
-          style={{ color: "#9b8a7a" }}
+          className="text-sm tracking-wide"
+          style={{ color: "#5a3a5a", fontWeight: 500 }}
         >
           ← Back
         </button>
         <h1
-          className="text-sm tracking-[0.35em] uppercase font-light"
-          style={{ color: "#6b5270" }}
+          className="text-lg md:text-xl tracking-[0.25em] uppercase"
+          style={{
+            color: "#4A2545",
+            fontFamily: "'Antic Didone', Georgia, serif",
+            fontWeight: 700,
+          }}
         >
           Shop
         </h1>
@@ -124,8 +113,11 @@ export default function ShopPage() {
 
       <main className="max-w-2xl mx-auto px-6 pb-16">
         <p
-          className="text-center text-sm leading-relaxed mb-8 italic"
-          style={{ color: "#7a6580" }}
+          className="text-center text-base md:text-lg leading-relaxed mb-10 italic"
+          style={{
+            color: "#5a4560",
+            fontFamily: "'Antic Didone', Georgia, serif",
+          }}
         >
           &ldquo;Adorn your sacred space.&rdquo;
         </p>
@@ -139,14 +131,17 @@ export default function ShopPage() {
             {grouped.map((group) => (
               <section key={group.category}>
                 <h2
-                  className="text-xs tracking-[0.3em] uppercase mb-4"
-                  style={{ color: "#9b8a7a" }}
+                  className="text-sm tracking-[0.2em] uppercase mb-4"
+                  style={{
+                    color: "#7a6580",
+                    fontWeight: 600,
+                    fontFamily: "Georgia, 'Times New Roman', serif",
+                  }}
                 >
                   {group.label}
                 </h2>
 
                 {group.category === "theme" ? (
-                  // Themes — visual card grid
                   <div className="grid grid-cols-2 gap-3">
                     {group.items.map((product) => {
                       const owned = purchased.has(product.id);
@@ -159,40 +154,37 @@ export default function ShopPage() {
                             background: "rgba(255,255,255,0.5)",
                           }}
                         >
-                          {/* Color preview strip */}
                           <div className="h-16 flex">
                             {product.preview_colors.map((c, i) => (
-                              <div
-                                key={i}
-                                className="flex-1"
-                                style={{ background: c }}
-                              />
+                              <div key={i} className="flex-1" style={{ background: c }} />
                             ))}
                           </div>
                           <div className="p-4 space-y-2">
                             <div className="flex items-center gap-2">
                               <span className="text-lg">{product.preview_emoji}</span>
                               <h3
-                                className="text-sm font-medium"
-                                style={{ color: "#3d2e4a" }}
+                                className="text-base"
+                                style={{
+                                  color: "#2a1a28",
+                                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                                  fontWeight: 600,
+                                }}
                               >
                                 {product.name}
                               </h3>
                             </div>
-                            <p
-                              className="text-xs leading-relaxed"
-                              style={{ color: "#8a7a6a" }}
-                            >
+                            <p className="text-sm leading-relaxed" style={{ color: "#4a3a4a" }}>
                               {product.description}
                             </p>
                             {owned ? (
                               <button
                                 onClick={() => handleActivateTheme(product.id)}
-                                className="w-full py-2 rounded-lg text-xs tracking-wide border transition-colors"
+                                className="w-full py-2.5 rounded-lg text-sm tracking-wide border transition-colors"
                                 style={{
                                   borderColor: "rgba(107,82,112,0.3)",
                                   color: "#6b5270",
                                   background: "rgba(107,82,112,0.05)",
+                                  fontWeight: 500,
                                 }}
                               >
                                 Activate theme
@@ -201,12 +193,14 @@ export default function ShopPage() {
                               <button
                                 onClick={() => handlePurchase(product.id)}
                                 disabled={buying === product.id}
-                                className="w-full py-2 rounded-lg text-xs tracking-wide transition-colors disabled:opacity-50"
-                                style={{ background: "#6b5270", color: "#ffffff" }}
+                                className="w-full py-2.5 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
+                                style={{
+                                  background: "#6b5270",
+                                  color: "#ffffff",
+                                  fontWeight: 600,
+                                }}
                               >
-                                {buying === product.id
-                                  ? "Processing..."
-                                  : `£${product.price_gbp.toFixed(2)}`}
+                                {buying === product.id ? "Processing..." : `£${product.price_gbp.toFixed(2)}`}
                               </button>
                             )}
                           </div>
@@ -215,7 +209,6 @@ export default function ShopPage() {
                     })}
                   </div>
                 ) : (
-                  // Other products — list
                   <div className="space-y-3">
                     {group.items.map((product) => {
                       const owned = purchased.has(product.id);
@@ -228,41 +221,39 @@ export default function ShopPage() {
                             borderColor: "rgba(212,181,199,0.3)",
                           }}
                         >
-                          <span className="text-3xl shrink-0">
-                            {product.preview_emoji}
-                          </span>
+                          <span className="text-3xl shrink-0">{product.preview_emoji}</span>
                           <div className="flex-1 min-w-0">
                             <h3
-                              className="text-sm font-medium"
-                              style={{ color: "#3d2e4a" }}
+                              className="text-base"
+                              style={{
+                                color: "#2a1a28",
+                                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                                fontWeight: 600,
+                              }}
                             >
                               {product.name}
                             </h3>
-                            <p
-                              className="text-xs leading-relaxed mt-0.5"
-                              style={{ color: "#8a7a6a" }}
-                            >
+                            <p className="text-sm leading-relaxed mt-0.5" style={{ color: "#4a3a4a" }}>
                               {product.description}
                             </p>
                           </div>
                           <div className="shrink-0">
                             {owned ? (
-                              <span
-                                className="text-xs tracking-wide"
-                                style={{ color: "#6b5270" }}
-                              >
+                              <span className="text-sm tracking-wide" style={{ color: "#6b5270", fontWeight: 500 }}>
                                 Owned ✓
                               </span>
                             ) : (
                               <button
                                 onClick={() => handlePurchase(product.id)}
                                 disabled={buying === product.id}
-                                className="px-4 py-2 rounded-lg text-xs tracking-wide transition-colors disabled:opacity-50"
-                                style={{ background: "#6b5270", color: "#ffffff" }}
+                                className="px-5 py-2.5 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
+                                style={{
+                                  background: "#6b5270",
+                                  color: "#ffffff",
+                                  fontWeight: 600,
+                                }}
                               >
-                                {buying === product.id
-                                  ? "..."
-                                  : `£${product.price_gbp.toFixed(2)}`}
+                                {buying === product.id ? "..." : `£${product.price_gbp.toFixed(2)}`}
                               </button>
                             )}
                           </div>
