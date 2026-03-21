@@ -90,8 +90,8 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 rounded-xl text-sm text-white transition-all disabled:opacity-50"
-          style={{ background: "#6b5270" }}
+          className="w-full py-3 rounded-xl text-sm transition-all disabled:opacity-50"
+          style={{ background: "#6b5270", color: "#ffffff" }}
         >
           {loading ? "Signing in..." : "Sign in"}
         </button>

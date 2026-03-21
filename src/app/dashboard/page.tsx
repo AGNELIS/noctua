@@ -182,7 +182,7 @@ export default function DashboardPage() {
       <header className="relative z-10 flex items-center justify-between px-6 py-5">
         <h1
           className="text-base md:text-lg tracking-[0.35em] uppercase font-light"
-          style={{ color: "#6b5270" }}
+          style={{ color: "#4a2545" }}
         >
           Noctua
         </h1>
@@ -190,7 +190,7 @@ export default function DashboardPage() {
           onClick={handleLogout}
           disabled={loading}
           className="text-sm tracking-wide transition-colors duration-300"
-          style={{ color: "#9b8a7a" }}
+          style={{ color: "#6b5e5e" }}
         >
           {loading ? "..." : "Sign out"}
         </button>
@@ -198,10 +198,10 @@ export default function DashboardPage() {
 
       <main className="relative z-10 max-w-2xl mx-auto px-6 pb-12 space-y-10">
         <section className="text-center space-y-2 pt-6">
-          <p className="text-lg md:text-xl tracking-wide font-light" style={{ color: "#6b5270" }}>
+          <p className="text-lg md:text-xl tracking-wide font-light" style={{ color: "#4a2545" }}>
             {greeting}
           </p>
-          <p className="text-sm md:text-base tracking-wide" style={{ color: "#9b8a7a" }}>
+          <p className="text-sm md:text-base tracking-wide" style={{ color: "#7a6a5a" }}>
             {new Date().toLocaleDateString("en-GB", {
               weekday: "long",
               day: "numeric",
@@ -220,14 +220,14 @@ export default function DashboardPage() {
             >
               {moon.phase}
             </h2>
-            <p className="text-sm md:text-base tracking-widest uppercase" style={{ color: "#9b8a7a" }}>
+            <p className="text-sm md:text-base tracking-widest uppercase" style={{ color: "#7a6a5a" }}>
               {moon.illumination}% illuminated
             </p>
           </div>
           <div className="max-w-md mx-auto">
             <p
               className="text-center text-base md:text-lg leading-relaxed italic"
-              style={{ color: "#7a6580" }}
+              style={{ color: "#5a4560" }}
             >
               &ldquo;{moon.description}&rdquo;
             </p>
@@ -262,14 +262,14 @@ export default function DashboardPage() {
                 {card.icon}
               </span>
               <h3
-                className="text-3xl md:text-4xl font-light tracking-wide"
+                className="text-lg md:text-xl font-medium tracking-wide mt-1"
                 style={{ color: "#3d2e4a", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               >
                 {card.title}
               </h3>
               <p
                 className="mt-1 text-sm leading-relaxed"
-                style={{ color: "#8a7a6a" }}
+                style={{ color: "#6b5e5e" }}
               >
                 {card.description}
               </p>
