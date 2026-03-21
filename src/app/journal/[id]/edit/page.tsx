@@ -112,8 +112,8 @@ export default function EditJournalEntry() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="text-xs tracking-wide px-3 py-1.5 rounded-lg text-white transition-colors disabled:opacity-50"
-          style={{ background: "#6b5270" }}
+          className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
+          style={{ background: "#6b5270", color: "#ffffff" }}
         >
           {saving ? "Saving..." : "Save"}
         </button>

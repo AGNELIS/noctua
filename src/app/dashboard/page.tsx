@@ -51,6 +51,15 @@ const NAV_CARDS = [
     border: "border-[#8eb482]/40",
     iconColor: "text-[#4a6040]",
   },
+  {
+    title: "Shop",
+    description: "Themes, symbols & more",
+    href: "/shop",
+    icon: "✦",
+    bg: "bg-[#f0ece4]",
+    border: "border-[#c8b896]/40",
+    iconColor: "text-[#8a7a50]",
+  },
 ];
 
 function ElegantMoon({ phase, illumination }: { phase: string; illumination: number }) {
@@ -58,53 +67,70 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
   const isNewMoon = phase === "New Moon";
   const isFullMoon = phase === "Full Moon";
   const frac = illumination / 100;
-  const curve = (1 - frac * 2) * 44;
+  const r = 44;
+  const cx = 50, cy = 50;
+  const curve = (1 - frac * 2) * r;
 
   let shadowPath = "";
   if (isNewMoon) {
-    shadowPath = "M 50 6 A 44 44 0 0 1 50 94 A 44 44 0 0 1 50 6 Z";
+    shadowPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} A ${r} ${r} 0 0 1 ${cx} ${cy - r} Z`;
+  } else if (isFullMoon) {
+    shadowPath = "";
   } else if (isWaxing) {
-    shadowPath = `M 50 6 A 44 44 0 0 0 50 94 A ${curve} 44 0 0 1 50 6 Z`;
+    shadowPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 0 ${cx} ${cy + r} A ${Math.abs(curve)} ${r} 0 0 ${curve > 0 ? 1 : 0} ${cx} ${cy - r} Z`;
   } else {
-    shadowPath = `M 50 6 A 44 44 0 0 1 50 94 A ${-curve} 44 0 0 0 50 6 Z`;
+    shadowPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} A ${Math.abs(curve)} ${r} 0 0 ${curve > 0 ? 0 : 1} ${cx} ${cy - r} Z`;
   }
+
+  const craters = [
+    { x: 36, y: 30, r: 7, op: 0.14 },
+    { x: 56, y: 26, r: 4, op: 0.10 },
+    { x: 44, y: 54, r: 10, op: 0.10 },
+    { x: 62, y: 48, r: 3.5, op: 0.08 },
+    { x: 30, y: 50, r: 5.5, op: 0.12 },
+    { x: 52, y: 40, r: 5, op: 0.08 },
+    { x: 38, y: 68, r: 4, op: 0.10 },
+    { x: 60, y: 64, r: 5, op: 0.09 },
+    { x: 48, y: 72, r: 3, op: 0.07 },
+  ];
 
   return (
     <div className="relative flex items-center justify-center">
       <div
-        className="absolute w-60 h-60 md:w-80 md:h-80 rounded-full"
+        className="absolute w-52 h-52 md:w-64 md:h-64 rounded-full"
         style={{
-          background: "radial-gradient(circle, rgba(192,188,200,0.12) 0%, transparent 65%)",
+          background: "radial-gradient(circle, rgba(210,195,170,0.12) 0%, transparent 65%)",
         }}
       />
-      <svg viewBox="0 0 100 100" className="relative w-40 h-40 md:w-56 md:h-56">
+      <svg
+        viewBox="0 0 100 100"
+        className="relative w-40 h-40 md:w-56 md:h-56"
+        style={{ filter: "drop-shadow(0 2px 16px rgba(190,170,140,0.2))" }}
+      >
         <defs>
-          <radialGradient id="litSurface" cx="42%" cy="38%" r="55%">
-            <stop offset="0%" stopColor="#f0eff2" />
-            <stop offset="35%" stopColor="#e0dde5" />
-            <stop offset="70%" stopColor="#c8c4d0" />
-            <stop offset="100%" stopColor="#b0aab8" />
+          <radialGradient id="moonSurface" cx="42%" cy="38%" r="58%">
+            <stop offset="0%" stopColor="#f6f0e6" />
+            <stop offset="40%" stopColor="#ece2d2" />
+            <stop offset="80%" stopColor="#ddd0bc" />
+            <stop offset="100%" stopColor="#cfc0a8" />
           </radialGradient>
-          <radialGradient id="darkSide" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#3d2e4a" stopOpacity="0.75" />
-            <stop offset="100%" stopColor="#2a1f35" stopOpacity="0.92" />
+          <radialGradient id="moonShadow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#302820" stopOpacity="0.90" />
+            <stop offset="60%" stopColor="#28201a" stopOpacity="0.94" />
+            <stop offset="100%" stopColor="#201810" stopOpacity="0.97" />
           </radialGradient>
           <clipPath id="moonClip">
-            <circle cx="50" cy="50" r="44" />
+            <circle cx={cx} cy={cy} r={r} />
           </clipPath>
         </defs>
         <g clipPath="url(#moonClip)">
-          <circle cx="50" cy="50" r="44" fill="url(#litSurface)" />
-          <circle cx="36" cy="33" r="6" fill="#b8b2c0" opacity="0.2" />
-          <circle cx="56" cy="26" r="3.5" fill="#b8b2c0" opacity="0.15" />
-          <circle cx="43" cy="55" r="7" fill="#b0aab8" opacity="0.15" />
-          <circle cx="60" cy="48" r="4" fill="#b8b2c0" opacity="0.12" />
-          <circle cx="30" cy="52" r="3" fill="#b0aab8" opacity="0.18" />
-          <circle cx="52" cy="68" r="5" fill="#b8b2c0" opacity="0.12" />
-          <ellipse cx="40" cy="36" rx="12" ry="9" fill="#e8e6ec" opacity="0.25" />
-          {!isFullMoon && <path d={shadowPath} fill="url(#darkSide)" />}
+          <circle cx={cx} cy={cy} r={r} fill="url(#moonSurface)" />
+          {craters.map((c, i) => (
+            <circle key={i} cx={c.x} cy={c.y} r={c.r} fill="#b8a890" opacity={c.op} />
+          ))}
+          {shadowPath && <path d={shadowPath} fill="url(#moonShadow)" />}
         </g>
-        <circle cx="50" cy="50" r="44" fill="none" stroke="#c8c4d0" strokeWidth="0.4" opacity="0.5" />
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#c4b49c" strokeWidth="0.4" opacity="0.4" />
       </svg>
     </div>
   );
@@ -237,7 +263,7 @@ export default function DashboardPage() {
               </span>
               <h3
                 className="text-3xl md:text-4xl font-light tracking-wide"
-              style={{ color: "#3d2e4a", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                style={{ color: "#3d2e4a", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
               >
                 {card.title}
               </h3>

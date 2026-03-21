@@ -4,23 +4,32 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    if (password !== confirm) {
+      setError("Passwords do not match.");
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       setError(error.message);
@@ -41,7 +50,7 @@ export default function LoginPage() {
       }}
     >
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSubmit}
         className="w-full max-w-sm space-y-5 p-8 rounded-2xl"
         style={{
           background: "rgba(255,255,255,0.6)",
@@ -52,18 +61,22 @@ export default function LoginPage() {
           className="text-2xl text-center font-light tracking-wide"
           style={{ color: "#3d2e4a", fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
-          Welcome back
+          Set new password
         </h1>
+
+        <p className="text-sm text-center leading-relaxed" style={{ color: "#9b8a7a" }}>
+          Choose a new password for your account.
+        </p>
 
         {error && (
           <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>
         )}
 
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="password"
+          placeholder="New password (min. 8 characters)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
           className="w-full px-4 py-3 rounded-xl text-sm outline-none placeholder:text-[#c4b0a0]"
           style={{
@@ -75,9 +88,9 @@ export default function LoginPage() {
 
         <input
           type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Confirm new password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
           required
           className="w-full px-4 py-3 rounded-xl text-sm outline-none placeholder:text-[#c4b0a0]"
           style={{
@@ -93,21 +106,8 @@ export default function LoginPage() {
           className="w-full py-3 rounded-xl text-sm text-white transition-all disabled:opacity-50"
           style={{ background: "#6b5270" }}
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? "Updating..." : "Update password"}
         </button>
-
-        <p className="text-sm text-center" style={{ color: "#9b8a7a" }}>
-          <a href="/forgot-password" style={{ color: "#6b5270" }}>
-            Forgot your password?
-          </a>
-        </p>
-
-        <p className="text-sm text-center" style={{ color: "#9b8a7a" }}>
-          Don&apos;t have an account?{" "}
-          <a href="/register" style={{ color: "#6b5270" }}>
-            Sign up
-          </a>
-        </p>
       </form>
     </div>
   );

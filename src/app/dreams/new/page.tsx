@@ -107,8 +107,8 @@ export default function NewDreamEntry() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="text-xs tracking-wide px-3 py-1.5 rounded-lg text-white transition-colors disabled:opacity-50"
-          style={{ background: "#6b5e8b" }}
+          className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
+          style={{ color: "#ffffff", background: "#6b5e8b" }}
         >
           {saving ? "Saving..." : "Save"}
         </button>
