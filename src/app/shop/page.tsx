@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useTheme } from "@/context/ThemeContext";
 
 type Product = {
   id: string;
@@ -27,8 +28,11 @@ export default function ShopPage() {
   const [purchased, setPurchased] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState<string | null>(null);
+  const { switchTheme, activeThemeId, resetTheme } = useTheme();
 
-  useEffect(() => { loadShop(); }, []);
+  useEffect(() => {
+    loadShop();
+  }, []);
 
   const loadShop = async () => {
     const supabase = createClient();
@@ -44,15 +48,22 @@ export default function ShopPage() {
       .select("product_id");
 
     setProducts(prods || []);
-    setPurchased(new Set((purch || []).map((p: { product_id: string }) => p.product_id)));
+    setPurchased(
+      new Set((purch || []).map((p: { product_id: string }) => p.product_id))
+    );
     setLoading(false);
   };
 
   const handlePurchase = async (productId: string) => {
     setBuying(productId);
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push("/login"); return; }
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
 
     const { error } = await supabase
       .from("user_purchases")
@@ -64,15 +75,15 @@ export default function ShopPage() {
     setBuying(null);
   };
 
-  const handleActivateTheme = async (productId: string) => {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await supabase
-      .from("profiles")
-      .update({ active_theme: productId })
-      .eq("id", user.id);
+  const handleActivateTheme = async (
+    productId: string,
+    productName: string
+  ) => {
+    if (activeThemeId === productId) {
+      await resetTheme();
+    } else {
+      await switchTheme(productId, productName);
+    }
   };
 
   const grouped = CATEGORY_ORDER.map((cat) => ({
@@ -123,7 +134,10 @@ export default function ShopPage() {
         </p>
 
         {loading ? (
-          <p className="text-center text-sm pt-12" style={{ color: "#9b8a7a" }}>
+          <p
+            className="text-center text-sm pt-12"
+            style={{ color: "#9b8a7a" }}
+          >
             Loading...
           </p>
         ) : (
@@ -147,49 +161,73 @@ export default function ShopPage() {
                   <div className="grid grid-cols-2 gap-3">
                     {group.items.map((product) => {
                       const owned = purchased.has(product.id);
+                      const isActive = activeThemeId === product.id;
                       return (
                         <div
                           key={product.id}
                           className="rounded-2xl border overflow-hidden transition-all"
                           style={{
-                            borderColor: "rgba(212,181,199,0.3)",
+                            borderColor: isActive
+                              ? "#9B6B8D"
+                              : "rgba(212,181,199,0.3)",
                             background: "rgba(255,255,255,0.5)",
+                            boxShadow: isActive
+                              ? "0 0 0 2px #9B6B8D"
+                              : "none",
                           }}
                         >
                           <div className="h-16 flex">
                             {product.preview_colors.map((c, i) => (
-                              <div key={i} className="flex-1" style={{ background: c }} />
+                              <div
+                                key={i}
+                                className="flex-1"
+                                style={{ background: c }}
+                              />
                             ))}
                           </div>
                           <div className="p-4 space-y-2">
                             <div className="flex items-center gap-2">
-                              <span className="text-lg">{product.preview_emoji}</span>
+                              <span className="text-lg">
+                                {product.preview_emoji}
+                              </span>
                               <h3
                                 className="text-base"
                                 style={{
                                   color: "#2a1a28",
-                                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                                  fontFamily:
+                                    "'Cormorant Garamond', Georgia, serif",
                                   fontWeight: 600,
                                 }}
                               >
                                 {product.name}
                               </h3>
                             </div>
-                            <p className="text-sm leading-relaxed" style={{ color: "#4a3a4a" }}>
+                            <p
+                              className="text-sm leading-relaxed"
+                              style={{ color: "#4a3a4a" }}
+                            >
                               {product.description}
                             </p>
                             {owned ? (
                               <button
-                                onClick={() => handleActivateTheme(product.id)}
+                                onClick={() =>
+                                  handleActivateTheme(product.id, product.name)
+                                }
                                 className="w-full py-2.5 rounded-lg text-sm tracking-wide border transition-colors"
                                 style={{
-                                  borderColor: "rgba(107,82,112,0.3)",
-                                  color: "#6b5270",
-                                  background: "rgba(107,82,112,0.05)",
-                                  fontWeight: 500,
+                                  borderColor: isActive
+                                    ? "#9B6B8D"
+                                    : "rgba(107,82,112,0.3)",
+                                  color: isActive ? "#ffffff" : "#6b5270",
+                                  background: isActive
+                                    ? "#9B6B8D"
+                                    : "rgba(107,82,112,0.05)",
+                                  fontWeight: 600,
                                 }}
                               >
-                                Activate theme
+                                {isActive
+                                  ? "✓ Active — tap to reset"
+                                  : "Activate theme"}
                               </button>
                             ) : (
                               <button
@@ -202,7 +240,9 @@ export default function ShopPage() {
                                   fontWeight: 600,
                                 }}
                               >
-                                {buying === product.id ? "Processing..." : `£${product.price_gbp.toFixed(2)}`}
+                                {buying === product.id
+                                  ? "Processing..."
+                                  : `£${product.price_gbp.toFixed(2)}`}
                               </button>
                             )}
                           </div>
@@ -223,25 +263,34 @@ export default function ShopPage() {
                             borderColor: "rgba(212,181,199,0.3)",
                           }}
                         >
-                          <span className="text-3xl shrink-0">{product.preview_emoji}</span>
+                          <span className="text-3xl shrink-0">
+                            {product.preview_emoji}
+                          </span>
                           <div className="flex-1 min-w-0">
                             <h3
                               className="text-base"
                               style={{
                                 color: "#2a1a28",
-                                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                                fontFamily:
+                                  "'Cormorant Garamond', Georgia, serif",
                                 fontWeight: 600,
                               }}
                             >
                               {product.name}
                             </h3>
-                            <p className="text-sm leading-relaxed mt-0.5" style={{ color: "#4a3a4a" }}>
+                            <p
+                              className="text-sm leading-relaxed mt-0.5"
+                              style={{ color: "#4a3a4a" }}
+                            >
                               {product.description}
                             </p>
                           </div>
                           <div className="shrink-0">
                             {owned ? (
-                              <span className="text-sm tracking-wide" style={{ color: "#6b5270", fontWeight: 500 }}>
+                              <span
+                                className="text-sm tracking-wide"
+                                style={{ color: "#6b5270", fontWeight: 500 }}
+                              >
                                 Owned ✓
                               </span>
                             ) : (
@@ -255,7 +304,9 @@ export default function ShopPage() {
                                   fontWeight: 600,
                                 }}
                               >
-                                {buying === product.id ? "..." : `£${product.price_gbp.toFixed(2)}`}
+                                {buying === product.id
+                                  ? "..."
+                                  : `£${product.price_gbp.toFixed(2)}`}
                               </button>
                             )}
                           </div>

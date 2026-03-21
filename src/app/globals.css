@@ -21,6 +21,12 @@ html, body {
   min-height: 100vh;
 }
 
+/* === THIS IS THE KEY — theme switching changes these === */
+body {
+  background-color: var(--color-cream);
+  color: var(--color-dark);
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: "Antic Didone", Georgia, serif;
   color: #2a1a28;
