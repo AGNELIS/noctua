@@ -42,31 +42,23 @@ const NAV_CARDS = [
     border: "border-[#c4b68e]/40",
     iconColor: "text-[#7c6b3f]",
   },
+  {
+    title: "Grounding",
+    description: "Return to yourself",
+    href: "/grounding",
+    icon: "🌿",
+    bg: "bg-[#e0eddc]",
+    border: "border-[#8eb482]/40",
+    iconColor: "text-[#4a6040]",
+  },
 ];
 
-function MoonVisual({
-  phase,
-  illumination,
-}: {
-  phase: string;
-  illumination: number;
-}) {
+function ElegantMoon({ phase, illumination }: { phase: string; illumination: number }) {
   const isWaxing = phase.includes("Waxing") || phase === "First Quarter";
   const isNewMoon = phase === "New Moon";
   const isFullMoon = phase === "Full Moon";
   const frac = illumination / 100;
-  const curve = (1 - frac * 2) * 50;
-
-  const craters = [
-    { cx: 38, cy: 35, r: 6, opacity: 0.08 },
-    { cx: 55, cy: 25, r: 4, opacity: 0.06 },
-    { cx: 45, cy: 55, r: 8, opacity: 0.07 },
-    { cx: 60, cy: 50, r: 3, opacity: 0.05 },
-    { cx: 30, cy: 50, r: 5, opacity: 0.06 },
-    { cx: 50, cy: 40, r: 7, opacity: 0.04 },
-    { cx: 35, cy: 65, r: 4, opacity: 0.07 },
-    { cx: 62, cy: 38, r: 5, opacity: 0.05 },
-  ];
+  const curve = (1 - frac * 2) * 44;
 
   let shadowPath = "";
   if (isNewMoon) {
@@ -78,55 +70,43 @@ function MoonVisual({
   }
 
   return (
-    <svg
-      viewBox="0 0 100 100"
-      className="w-40 h-40 md:w-52 md:h-52"
-      style={{ filter: "drop-shadow(0 4px 20px rgba(212, 175, 55, 0.15))" }}
-    >
-      <defs>
-        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#f5e6d3" stopOpacity="0.6" />
-          <stop offset="60%" stopColor="#e8d0b8" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="#dcc4a8" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="surface" cx="40%" cy="35%" r="60%">
-          <stop offset="0%" stopColor="#faf0e0" />
-          <stop offset="40%" stopColor="#ede0c8" />
-          <stop offset="100%" stopColor="#d4c4a0" />
-        </radialGradient>
-        <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#3d2e4a" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#2a1f35" stopOpacity="0.95" />
-        </radialGradient>
-        <clipPath id="clip">
-          <circle cx="50" cy="50" r="44" />
-        </clipPath>
-      </defs>
-      <circle cx="50" cy="50" r="49" fill="url(#glow)" />
-      <g clipPath="url(#clip)">
-        <circle cx="50" cy="50" r="44" fill="url(#surface)" />
-        {craters.map((c, i) => (
-          <circle
-            key={i}
-            cx={c.cx}
-            cy={c.cy}
-            r={c.r}
-            fill="#c4a87a"
-            opacity={c.opacity}
-          />
-        ))}
-        {!isFullMoon && <path d={shadowPath} fill="url(#shadow)" />}
-      </g>
-      <circle
-        cx="50"
-        cy="50"
-        r="44"
-        fill="none"
-        stroke="#f5e6d3"
-        strokeWidth="0.5"
-        opacity="0.4"
+    <div className="relative flex items-center justify-center">
+      <div
+        className="absolute w-52 h-52 md:w-68 md:h-68 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(192,188,200,0.12) 0%, transparent 65%)",
+        }}
       />
-    </svg>
+      <svg viewBox="0 0 100 100" className="relative w-32 h-32 md:w-44 md:h-44">
+        <defs>
+          <radialGradient id="litSurface" cx="42%" cy="38%" r="55%">
+            <stop offset="0%" stopColor="#f0eff2" />
+            <stop offset="35%" stopColor="#e0dde5" />
+            <stop offset="70%" stopColor="#c8c4d0" />
+            <stop offset="100%" stopColor="#b0aab8" />
+          </radialGradient>
+          <radialGradient id="darkSide" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#3d2e4a" stopOpacity="0.75" />
+            <stop offset="100%" stopColor="#2a1f35" stopOpacity="0.92" />
+          </radialGradient>
+          <clipPath id="moonClip">
+            <circle cx="50" cy="50" r="44" />
+          </clipPath>
+        </defs>
+        <g clipPath="url(#moonClip)">
+          <circle cx="50" cy="50" r="44" fill="url(#litSurface)" />
+          <circle cx="36" cy="33" r="6" fill="#b8b2c0" opacity="0.2" />
+          <circle cx="56" cy="26" r="3.5" fill="#b8b2c0" opacity="0.15" />
+          <circle cx="43" cy="55" r="7" fill="#b0aab8" opacity="0.15" />
+          <circle cx="60" cy="48" r="4" fill="#b8b2c0" opacity="0.12" />
+          <circle cx="30" cy="52" r="3" fill="#b0aab8" opacity="0.18" />
+          <circle cx="52" cy="68" r="5" fill="#b8b2c0" opacity="0.12" />
+          <ellipse cx="40" cy="36" rx="12" ry="9" fill="#e8e6ec" opacity="0.25" />
+          {!isFullMoon && <path d={shadowPath} fill="url(#darkSide)" />}
+        </g>
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#c8c4d0" strokeWidth="0.4" opacity="0.5" />
+      </svg>
+    </div>
   );
 }
 
@@ -152,76 +132,28 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="min-h-screen relative"
+      className="min-h-screen relative overflow-hidden"
       style={{
-        background:
-          "linear-gradient(to bottom, #f8f0e8, #f5ede4, #efe4dc)",
+        background: `
+          radial-gradient(ellipse at 70% 10%, rgba(155,107,138,0.06) 0%, transparent 50%),
+          radial-gradient(ellipse at 20% 80%, rgba(155,142,196,0.05) 0%, transparent 40%),
+          linear-gradient(to bottom, #faf5f0, #f5ede6, #f0e6de)
+        `,
       }}
     >
-      {/* Floral background elements */}
+      {/* Tiny gold stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <svg
-          className="absolute -top-10 -right-10 w-80 h-80 opacity-[0.07]"
-          viewBox="0 0 300 300"
-          fill="none"
-        >
-          <path
-            d="M150 50 C180 80, 220 70, 250 100 C230 130, 200 120, 180 150 C210 160, 240 200, 220 240 C190 220, 160 230, 150 200 C140 230, 110 220, 80 240 C60 200, 90 160, 120 150 C100 120, 70 130, 50 100 C80 70, 120 80, 150 50Z"
-            fill="#8b5e7c"
-          />
-          <circle cx="150" cy="140" r="20" fill="#c49b8e" />
+        <svg className="absolute top-20 left-16 w-6 h-6" viewBox="0 0 20 20" style={{ opacity: 0.12 }}>
+          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
         </svg>
-        <svg
-          className="absolute -bottom-16 -left-16 w-96 h-96 opacity-[0.05]"
-          viewBox="0 0 400 400"
-        >
-          <path
-            d="M200 380 C200 300, 160 250, 120 200 C100 170, 110 130, 140 110 C170 90, 200 100, 200 130"
-            stroke="#6b5e8b"
-            strokeWidth="2"
-            fill="none"
-          />
-          <path
-            d="M200 380 C200 300, 240 250, 280 200 C300 170, 290 130, 260 110 C230 90, 200 100, 200 130"
-            stroke="#6b5e8b"
-            strokeWidth="2"
-            fill="none"
-          />
-          <ellipse
-            cx="120"
-            cy="180"
-            rx="30"
-            ry="45"
-            fill="#9b8ec4"
-            opacity="0.3"
-            transform="rotate(-20 120 180)"
-          />
-          <ellipse
-            cx="280"
-            cy="180"
-            rx="30"
-            ry="45"
-            fill="#9b8ec4"
-            opacity="0.3"
-            transform="rotate(20 280 180)"
-          />
+        <svg className="absolute bottom-40 right-20 w-5 h-5" viewBox="0 0 20 20" style={{ opacity: 0.09 }}>
+          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
         </svg>
-        <svg
-          className="absolute top-1/3 -right-6 w-48 h-64 opacity-[0.06]"
-          viewBox="0 0 200 300"
-        >
-          <path
-            d="M100 280 C100 220, 80 180, 60 140 C50 110, 60 80, 80 60"
-            stroke="#8b5e7c"
-            strokeWidth="1.5"
-            fill="none"
-          />
-          <circle cx="80" cy="60" r="12" fill="#c49b8e" opacity="0.4" />
-          <circle cx="55" cy="130" r="8" fill="#9b8ec4" opacity="0.3" />
+        <svg className="absolute top-[55%] left-10 w-4 h-4" viewBox="0 0 20 20" style={{ opacity: 0.1 }}>
+          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
         </svg>
       </div>
 
-      {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-6 py-5">
         <h1
           className="text-sm tracking-[0.35em] uppercase font-light"
@@ -240,12 +172,8 @@ export default function DashboardPage() {
       </header>
 
       <main className="relative z-10 max-w-xl mx-auto px-6 pb-12 space-y-10">
-        {/* Greeting */}
         <section className="text-center space-y-1 pt-4">
-          <p
-            className="text-sm tracking-wide font-light"
-            style={{ color: "#6b5270" }}
-          >
+          <p className="text-sm tracking-wide font-light" style={{ color: "#6b5270" }}>
             {greeting}
           </p>
           <p className="text-xs tracking-wide" style={{ color: "#9b8a7a" }}>
@@ -258,9 +186,8 @@ export default function DashboardPage() {
           </p>
         </section>
 
-        {/* Moon Phase */}
         <section className="flex flex-col items-center space-y-5">
-          <MoonVisual phase={moon.phase} illumination={moon.illumination} />
+          <ElegantMoon phase={moon.phase} illumination={moon.illumination} />
           <div className="text-center space-y-2">
             <h2
               className="text-2xl font-light tracking-wide"
@@ -271,10 +198,7 @@ export default function DashboardPage() {
             >
               {moon.phase}
             </h2>
-            <p
-              className="text-xs tracking-widest uppercase"
-              style={{ color: "#9b8a7a" }}
-            >
+            <p className="text-xs tracking-widest uppercase" style={{ color: "#9b8a7a" }}>
               {moon.illumination}% illuminated
             </p>
           </div>
@@ -288,37 +212,18 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Divider */}
         <div className="flex items-center justify-center gap-4">
           <div
             className="h-px w-20"
-            style={{
-              background:
-                "linear-gradient(to right, transparent, rgba(196,176,160,0.4))",
-            }}
+            style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3))" }}
           />
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            style={{ color: "#c4a87a" }}
-          >
-            <path
-              d="M8 0 L9.5 6.5 L16 8 L9.5 9.5 L8 16 L6.5 9.5 L0 8 L6.5 6.5 Z"
-              fill="currentColor"
-              opacity="0.4"
-            />
-          </svg>
+          <span style={{ color: "#d4af37", fontSize: "10px", opacity: 0.6 }}>✧</span>
           <div
             className="h-px w-20"
-            style={{
-              background:
-                "linear-gradient(to left, transparent, rgba(196,176,160,0.4))",
-            }}
+            style={{ background: "linear-gradient(to left, transparent, rgba(212,175,55,0.3))" }}
           />
         </div>
 
-        {/* Navigation Cards */}
         <section className="grid grid-cols-2 gap-4">
           {NAV_CARDS.map((card) => (
             <button
