@@ -72,12 +72,12 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
   return (
     <div className="relative flex items-center justify-center">
       <div
-        className="absolute w-52 h-52 md:w-68 md:h-68 rounded-full"
+        className="absolute w-60 h-60 md:w-80 md:h-80 rounded-full"
         style={{
           background: "radial-gradient(circle, rgba(192,188,200,0.12) 0%, transparent 65%)",
         }}
       />
-      <svg viewBox="0 0 100 100" className="relative w-32 h-32 md:w-44 md:h-44">
+      <svg viewBox="0 0 100 100" className="relative w-40 h-40 md:w-56 md:h-56">
         <defs>
           <radialGradient id="litSurface" cx="42%" cy="38%" r="55%">
             <stop offset="0%" stopColor="#f0eff2" />
@@ -141,7 +141,6 @@ export default function DashboardPage() {
         `,
       }}
     >
-      {/* Tiny gold stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <svg className="absolute top-20 left-16 w-6 h-6" viewBox="0 0 20 20" style={{ opacity: 0.12 }}>
           <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
@@ -156,7 +155,7 @@ export default function DashboardPage() {
 
       <header className="relative z-10 flex items-center justify-between px-6 py-5">
         <h1
-          className="text-sm tracking-[0.35em] uppercase font-light"
+          className="text-base md:text-lg tracking-[0.35em] uppercase font-light"
           style={{ color: "#6b5270" }}
         >
           Noctua
@@ -164,19 +163,19 @@ export default function DashboardPage() {
         <button
           onClick={handleLogout}
           disabled={loading}
-          className="text-xs tracking-wide transition-colors duration-300"
+          className="text-sm tracking-wide transition-colors duration-300"
           style={{ color: "#9b8a7a" }}
         >
           {loading ? "..." : "Sign out"}
         </button>
       </header>
 
-      <main className="relative z-10 max-w-xl mx-auto px-6 pb-12 space-y-10">
-        <section className="text-center space-y-1 pt-4">
-          <p className="text-sm tracking-wide font-light" style={{ color: "#6b5270" }}>
+      <main className="relative z-10 max-w-2xl mx-auto px-6 pb-12 space-y-10">
+        <section className="text-center space-y-2 pt-6">
+          <p className="text-lg md:text-xl tracking-wide font-light" style={{ color: "#6b5270" }}>
             {greeting}
           </p>
-          <p className="text-xs tracking-wide" style={{ color: "#9b8a7a" }}>
+          <p className="text-sm md:text-base tracking-wide" style={{ color: "#9b8a7a" }}>
             {new Date().toLocaleDateString("en-GB", {
               weekday: "long",
               day: "numeric",
@@ -186,25 +185,22 @@ export default function DashboardPage() {
           </p>
         </section>
 
-        <section className="flex flex-col items-center space-y-5">
+        <section className="flex flex-col items-center space-y-6">
           <ElegantMoon phase={moon.phase} illumination={moon.illumination} />
-          <div className="text-center space-y-2">
+          <div className="text-center space-y-3">
             <h2
-              className="text-2xl font-light tracking-wide"
-              style={{
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                color: "#3d2e4a",
-              }}
+              className="text-3xl md:text-4xl font-light tracking-wide"
+              style={{ color: "#3d2e4a" }}
             >
               {moon.phase}
             </h2>
-            <p className="text-xs tracking-widest uppercase" style={{ color: "#9b8a7a" }}>
+            <p className="text-sm md:text-base tracking-widest uppercase" style={{ color: "#9b8a7a" }}>
               {moon.illumination}% illuminated
             </p>
           </div>
-          <div className="max-w-sm mx-auto">
+          <div className="max-w-md mx-auto">
             <p
-              className="text-center text-sm leading-relaxed italic"
+              className="text-center text-base md:text-lg leading-relaxed italic"
               style={{ color: "#7a6580" }}
             >
               &ldquo;{moon.description}&rdquo;
@@ -217,7 +213,7 @@ export default function DashboardPage() {
             className="h-px w-20"
             style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3))" }}
           />
-          <span style={{ color: "#d4af37", fontSize: "10px", opacity: 0.6 }}>✧</span>
+          <span style={{ color: "#d4af37", fontSize: "12px", opacity: 0.6 }}>✧</span>
           <div
             className="h-px w-20"
             style={{ background: "linear-gradient(to left, transparent, rgba(212,175,55,0.3))" }}
@@ -229,24 +225,24 @@ export default function DashboardPage() {
             <button
               key={card.title}
               onClick={() => router.push(card.href)}
-              className={`group text-left p-5 rounded-2xl border ${card.border} ${card.bg}
+              className={`group text-left p-5 md:p-6 rounded-2xl border ${card.border} ${card.bg}
                 hover:scale-[1.03] hover:shadow-lg
                 transition-all duration-300 ease-out
                 focus:outline-none focus:ring-2 focus:ring-[#9b8ec4]/30`}
             >
               <span
-                className={`text-xl ${card.iconColor} group-hover:scale-110 inline-block transition-transform duration-300`}
+                className={`text-2xl md:text-3xl ${card.iconColor} group-hover:scale-110 inline-block transition-transform duration-300`}
               >
                 {card.icon}
               </span>
               <h3
-                className="mt-3 text-sm font-medium tracking-wide"
+                className="mt-3 text-base md:text-lg font-medium tracking-wide"
                 style={{ color: "#3d2e4a" }}
               >
                 {card.title}
               </h3>
               <p
-                className="mt-1 text-xs leading-relaxed"
+                className="mt-1 text-sm leading-relaxed"
                 style={{ color: "#8a7a6a" }}
               >
                 {card.description}
