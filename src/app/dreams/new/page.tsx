@@ -18,13 +18,19 @@ export default function NewDreamEntry() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [tone, setTone] = useState("");
+  const [tones, setTones] = useState<string[]>([]);
   const [lucidity, setLucidity] = useState(0);
   const [isRecurring, setIsRecurring] = useState(false);
   const [symbolInput, setSymbolInput] = useState("");
   const [symbols, setSymbols] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const toggleTone = (value: string) => {
+    setTones((prev) =>
+      prev.includes(value) ? prev.filter((t) => t !== value) : [...prev, value]
+    );
+  };
 
   const addSymbol = () => {
     const s = symbolInput.trim().toLowerCase();
@@ -62,7 +68,7 @@ export default function NewDreamEntry() {
         user_id: user.id,
         title: title.trim() || null,
         content: content.trim(),
-        emotional_tone: tone || null,
+        emotional_tone: tones,
         lucidity: lucidity || null,
         is_recurring: isRecurring,
         symbols: symbols,
@@ -124,23 +130,20 @@ export default function NewDreamEntry() {
           })}
         </p>
 
-        {/* Emotional tone */}
         <div className="flex justify-center gap-2 flex-wrap">
           {TONES.map((t) => (
             <button
               key={t.value}
-              onClick={() => setTone(tone === t.value ? "" : t.value)}
+              onClick={() => toggleTone(t.value)}
               className="px-3 py-1.5 rounded-full text-xs transition-all border"
               style={{
-                background:
-                  tone === t.value
-                    ? "rgba(107,94,139,0.15)"
-                    : "rgba(255,255,255,0.4)",
-                borderColor:
-                  tone === t.value
-                    ? "rgba(107,94,139,0.3)"
-                    : "rgba(155,142,196,0.3)",
-                color: tone === t.value ? "#3d2e4a" : "#8a7a8a",
+                background: tones.includes(t.value)
+                  ? "rgba(107,94,139,0.15)"
+                  : "rgba(255,255,255,0.4)",
+                borderColor: tones.includes(t.value)
+                  ? "rgba(107,94,139,0.3)"
+                  : "rgba(155,142,196,0.3)",
+                color: tones.includes(t.value) ? "#3d2e4a" : "#8a7a8a",
               }}
             >
               {t.label}
@@ -148,11 +151,8 @@ export default function NewDreamEntry() {
           ))}
         </div>
 
-        {/* Lucidity */}
         <div className="text-center space-y-1">
-          <p className="text-xs" style={{ color: "#9b8a9e" }}>
-            Lucidity
-          </p>
+          <p className="text-xs" style={{ color: "#9b8a9e" }}>Lucidity</p>
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button
@@ -167,18 +167,13 @@ export default function NewDreamEntry() {
           </div>
         </div>
 
-        {/* Recurring */}
         <div className="flex justify-center">
           <button
             onClick={() => setIsRecurring(!isRecurring)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border transition-all"
             style={{
-              background: isRecurring
-                ? "rgba(107,94,139,0.15)"
-                : "rgba(255,255,255,0.4)",
-              borderColor: isRecurring
-                ? "rgba(107,94,139,0.3)"
-                : "rgba(155,142,196,0.3)",
+              background: isRecurring ? "rgba(107,94,139,0.15)" : "rgba(255,255,255,0.4)",
+              borderColor: isRecurring ? "rgba(107,94,139,0.3)" : "rgba(155,142,196,0.3)",
               color: isRecurring ? "#3d2e4a" : "#8a7a8a",
             }}
           >
@@ -186,20 +181,15 @@ export default function NewDreamEntry() {
           </button>
         </div>
 
-        {/* Title */}
         <input
           type="text"
           placeholder="Dream title (optional)"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full bg-transparent text-lg font-light text-center outline-none placeholder:text-[#c4b0c8]"
-          style={{
-            color: "#3d2e4a",
-            fontFamily: "Georgia, 'Times New Roman', serif",
-          }}
+          style={{ color: "#3d2e4a", fontFamily: "Georgia, 'Times New Roman', serif" }}
         />
 
-        {/* Content */}
         <textarea
           placeholder="Describe your dream... What did you see, feel, hear?"
           value={content}
@@ -209,23 +199,15 @@ export default function NewDreamEntry() {
           style={{ color: "#4a3a50" }}
         />
 
-        {/* Symbols */}
         <div className="space-y-2">
-          <p className="text-xs text-center" style={{ color: "#9b8a9e" }}>
-            Dream symbols
-          </p>
+          <p className="text-xs text-center" style={{ color: "#9b8a9e" }}>Dream symbols</p>
           <div className="flex justify-center gap-2">
             <input
               type="text"
               placeholder="e.g. water, snake, flying"
               value={symbolInput}
               onChange={(e) => setSymbolInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addSymbol();
-                }
-              }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSymbol(); } }}
               className="bg-transparent text-sm text-center outline-none border-b placeholder:text-[#c4b0c8] w-48"
               style={{ color: "#3d2e4a", borderColor: "rgba(155,142,196,0.3)" }}
             />
@@ -243,15 +225,10 @@ export default function NewDreamEntry() {
                 <span
                   key={s}
                   className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
-                  style={{
-                    background: "rgba(155,142,196,0.12)",
-                    color: "#6b5e8b",
-                  }}
+                  style={{ background: "rgba(155,142,196,0.12)", color: "#6b5e8b" }}
                 >
                   {s}
-                  <button onClick={() => removeSymbol(s)} className="opacity-60">
-                    ×
-                  </button>
+                  <button onClick={() => removeSymbol(s)} className="opacity-60">×</button>
                 </span>
               ))}
             </div>

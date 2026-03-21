@@ -9,7 +9,7 @@ type DreamEntry = {
   title: string | null;
   content: string;
   lucidity: number | null;
-  emotional_tone: string | null;
+  emotional_tone: string[];
   symbols: string[];
   is_recurring: boolean;
   is_favorite: boolean;
@@ -139,11 +139,11 @@ export default function DreamsPage() {
                           year: "numeric",
                         })}
                       </span>
-                      {entry.emotional_tone && (
-                        <span className="text-xs" style={{ color: "#6b5e8b" }}>
-                          {TONE_LABELS[entry.emotional_tone] || entry.emotional_tone}
+                      {entry.emotional_tone && entry.emotional_tone.length > 0 && entry.emotional_tone.map((t) => (
+                        <span key={t} className="text-xs" style={{ color: "#6b5e8b" }}>
+                          {TONE_LABELS[t] || t}
                         </span>
-                      )}
+                      ))}
                       {entry.is_recurring && (
                         <span
                           className="text-xs px-1.5 py-0.5 rounded-full"
@@ -193,7 +193,6 @@ export default function DreamsPage() {
                     <button
                       onClick={() => toggleFavorite(entry.id, entry.is_favorite)}
                       className="text-lg leading-none"
-                      title="Toggle favourite"
                     >
                       {entry.is_favorite ? "♥" : "♡"}
                     </button>
@@ -201,7 +200,6 @@ export default function DreamsPage() {
                       onClick={() => deleteEntry(entry.id)}
                       className="text-xs leading-none"
                       style={{ color: "#c49bb8" }}
-                      title="Delete"
                     >
                       ✕
                     </button>
