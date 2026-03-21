@@ -16,9 +16,15 @@ export default function NewJournalEntry() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [mood, setMood] = useState("");
+  const [moods, setMoods] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const toggleMood = (value: string) => {
+    setMoods((prev) =>
+      prev.includes(value) ? prev.filter((m) => m !== value) : [...prev, value]
+    );
+  };
 
   const handleSave = async () => {
     if (!content.trim()) {
@@ -44,7 +50,7 @@ export default function NewJournalEntry() {
         user_id: user.id,
         title: title.trim() || null,
         content: content.trim(),
-        mood: mood || null,
+        mood: moods,
         entry_date: new Date().toISOString().split("T")[0],
       });
 
@@ -94,7 +100,6 @@ export default function NewJournalEntry() {
           </p>
         )}
 
-        {/* Date */}
         <p className="text-xs text-center tracking-wide" style={{ color: "#9b8a7a" }}>
           {new Date().toLocaleDateString("en-GB", {
             weekday: "long",
@@ -104,23 +109,20 @@ export default function NewJournalEntry() {
           })}
         </p>
 
-        {/* Mood selector */}
         <div className="flex justify-center gap-2 flex-wrap">
           {MOODS.map((m) => (
             <button
               key={m.value}
-              onClick={() => setMood(mood === m.value ? "" : m.value)}
+              onClick={() => toggleMood(m.value)}
               className="px-3 py-1.5 rounded-full text-xs transition-all border"
               style={{
-                background:
-                  mood === m.value
-                    ? "rgba(107,82,112,0.15)"
-                    : "rgba(255,255,255,0.4)",
-                borderColor:
-                  mood === m.value
-                    ? "rgba(107,82,112,0.3)"
-                    : "rgba(212,181,199,0.3)",
-                color: mood === m.value ? "#3d2e4a" : "#8a7a6a",
+                background: moods.includes(m.value)
+                  ? "rgba(107,82,112,0.15)"
+                  : "rgba(255,255,255,0.4)",
+                borderColor: moods.includes(m.value)
+                  ? "rgba(107,82,112,0.3)"
+                  : "rgba(212,181,199,0.3)",
+                color: moods.includes(m.value) ? "#3d2e4a" : "#8a7a6a",
               }}
             >
               {m.label}
@@ -128,7 +130,6 @@ export default function NewJournalEntry() {
           ))}
         </div>
 
-        {/* Title */}
         <input
           type="text"
           placeholder="Title (optional)"
@@ -141,7 +142,6 @@ export default function NewJournalEntry() {
           }}
         />
 
-        {/* Content */}
         <textarea
           placeholder="What's alive in you today?"
           value={content}

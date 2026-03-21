@@ -8,7 +8,7 @@ type JournalEntry = {
   id: string;
   title: string | null;
   content: string;
-  mood: string | null;
+  mood: string[];
   entry_date: string;
   is_favorite: boolean;
   created_at: string;
@@ -127,7 +127,7 @@ export default function JournalPage() {
                     className="flex-1 cursor-pointer"
                     onClick={() => router.push(`/journal/${entry.id}/edit`)}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-xs" style={{ color: "#9b8a7a" }}>
                         {new Date(entry.entry_date).toLocaleDateString("en-GB", {
                           day: "numeric",
@@ -135,11 +135,11 @@ export default function JournalPage() {
                           year: "numeric",
                         })}
                       </span>
-                      {entry.mood && (
-                        <span className="text-xs" style={{ color: "#8b5e7c" }}>
-                          {MOOD_LABELS[entry.mood] || entry.mood}
+                      {entry.mood && entry.mood.length > 0 && entry.mood.map((m) => (
+                        <span key={m} className="text-xs" style={{ color: "#8b5e7c" }}>
+                          {MOOD_LABELS[m] || m}
                         </span>
-                      )}
+                      ))}
                     </div>
                     {entry.title && (
                       <h3
