@@ -94,26 +94,24 @@ export default function ShopPage() {
 
   return (
     <div
-      className="min-h-screen"
-      style={{
-        background: "linear-gradient(to bottom, #faf5f0, #f5ede6, #f0e6de)",
-      }}
+      className="min-h-screen transition-colors duration-500"
+      style={{ backgroundColor: "var(--color-cream)" }}
     >
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
           <button
             onClick={() => router.push("/dashboard")}
-            className="text-sm tracking-wide"
-            style={{ color: "#5a3a5a", fontWeight: 500 }}
+            className="text-sm tracking-wide transition-colors duration-500"
+            style={{ color: "var(--color-mauve)", fontWeight: 500 }}
           >
             ← Back
           </button>
           <div className="w-12" />
         </div>
         <h1
-          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
+          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3 transition-colors duration-500"
           style={{
-            color: "#4A2545",
+            color: "var(--color-plum)",
             fontFamily: "'Antic Didone', Georgia, serif",
             fontWeight: 700,
           }}
@@ -124,9 +122,9 @@ export default function ShopPage() {
 
       <main className="max-w-2xl mx-auto px-6 pb-16">
         <p
-          className="text-center text-base md:text-lg leading-relaxed mb-10 italic"
+          className="text-center text-base md:text-lg leading-relaxed mb-10 italic transition-colors duration-500"
           style={{
-            color: "#5a4560",
+            color: "var(--color-mauve)",
             fontFamily: "'Antic Didone', Georgia, serif",
           }}
         >
@@ -134,10 +132,7 @@ export default function ShopPage() {
         </p>
 
         {loading ? (
-          <p
-            className="text-center text-sm pt-12"
-            style={{ color: "#9b8a7a" }}
-          >
+          <p className="text-center text-sm pt-12" style={{ color: "var(--color-dusty-rose)" }}>
             Loading...
           </p>
         ) : (
@@ -145,9 +140,9 @@ export default function ShopPage() {
             {grouped.map((group) => (
               <section key={group.category}>
                 <h2
-                  className="uppercase mb-4"
+                  className="uppercase mb-4 transition-colors duration-500"
                   style={{
-                    color: "#6a5570",
+                    color: "var(--color-mauve)",
                     fontWeight: 600,
                     fontFamily: "Georgia, 'Times New Roman', serif",
                     fontSize: "0.8rem",
@@ -165,14 +160,14 @@ export default function ShopPage() {
                       return (
                         <div
                           key={product.id}
-                          className="rounded-2xl border overflow-hidden transition-all"
+                          className="rounded-2xl border overflow-hidden transition-all duration-500"
                           style={{
                             borderColor: isActive
-                              ? "#9B6B8D"
-                              : "rgba(212,181,199,0.3)",
-                            background: "rgba(255,255,255,0.5)",
+                              ? "var(--color-mauve)"
+                              : "var(--color-dusty-rose)",
+                            background: "var(--color-blush)",
                             boxShadow: isActive
-                              ? "0 0 0 2px #9B6B8D"
+                              ? "0 0 0 2px var(--color-mauve)"
                               : "none",
                           }}
                         >
@@ -191,9 +186,9 @@ export default function ShopPage() {
                                 {product.preview_emoji}
                               </span>
                               <h3
-                                className="text-base"
+                                className="text-base transition-colors duration-500"
                                 style={{
-                                  color: "#2a1a28",
+                                  color: "var(--color-dark)",
                                   fontFamily:
                                     "'Cormorant Garamond', Georgia, serif",
                                   fontWeight: 600,
@@ -203,8 +198,8 @@ export default function ShopPage() {
                               </h3>
                             </div>
                             <p
-                              className="text-sm leading-relaxed"
-                              style={{ color: "#4a3a4a" }}
+                              className="text-sm leading-relaxed transition-colors duration-500"
+                              style={{ color: "var(--color-mauve)" }}
                             >
                               {product.description}
                             </p>
@@ -213,15 +208,17 @@ export default function ShopPage() {
                                 onClick={() =>
                                   handleActivateTheme(product.id, product.name)
                                 }
-                                className="w-full py-2.5 rounded-lg text-sm tracking-wide border transition-colors"
+                                className="w-full py-2.5 rounded-lg text-sm tracking-wide border transition-all duration-500"
                                 style={{
                                   borderColor: isActive
-                                    ? "#9B6B8D"
-                                    : "rgba(107,82,112,0.3)",
-                                  color: isActive ? "#ffffff" : "#6b5270",
+                                    ? "var(--color-mauve)"
+                                    : "var(--color-dusty-rose)",
+                                  color: isActive
+                                    ? "var(--color-cream)"
+                                    : "var(--color-plum)",
                                   background: isActive
-                                    ? "#9B6B8D"
-                                    : "rgba(107,82,112,0.05)",
+                                    ? "var(--color-mauve)"
+                                    : "transparent",
                                   fontWeight: 600,
                                 }}
                               >
@@ -235,8 +232,8 @@ export default function ShopPage() {
                                 disabled={buying === product.id}
                                 className="w-full py-2.5 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
                                 style={{
-                                  background: "#6b5270",
-                                  color: "#ffffff",
+                                  background: "var(--color-plum)",
+                                  color: "var(--color-cream)",
                                   fontWeight: 600,
                                 }}
                               >
@@ -257,10 +254,10 @@ export default function ShopPage() {
                       return (
                         <div
                           key={product.id}
-                          className="flex items-center gap-4 p-4 rounded-2xl border transition-all"
+                          className="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-500"
                           style={{
-                            background: "rgba(255,255,255,0.5)",
-                            borderColor: "rgba(212,181,199,0.3)",
+                            background: "var(--color-blush)",
+                            borderColor: "var(--color-dusty-rose)",
                           }}
                         >
                           <span className="text-3xl shrink-0">
@@ -268,9 +265,9 @@ export default function ShopPage() {
                           </span>
                           <div className="flex-1 min-w-0">
                             <h3
-                              className="text-base"
+                              className="text-base transition-colors duration-500"
                               style={{
-                                color: "#2a1a28",
+                                color: "var(--color-dark)",
                                 fontFamily:
                                   "'Cormorant Garamond', Georgia, serif",
                                 fontWeight: 600,
@@ -279,8 +276,8 @@ export default function ShopPage() {
                               {product.name}
                             </h3>
                             <p
-                              className="text-sm leading-relaxed mt-0.5"
-                              style={{ color: "#4a3a4a" }}
+                              className="text-sm leading-relaxed mt-0.5 transition-colors duration-500"
+                              style={{ color: "var(--color-mauve)" }}
                             >
                               {product.description}
                             </p>
@@ -288,8 +285,8 @@ export default function ShopPage() {
                           <div className="shrink-0">
                             {owned ? (
                               <span
-                                className="text-sm tracking-wide"
-                                style={{ color: "#6b5270", fontWeight: 500 }}
+                                className="text-sm tracking-wide transition-colors duration-500"
+                                style={{ color: "var(--color-plum)", fontWeight: 500 }}
                               >
                                 Owned ✓
                               </span>
@@ -299,8 +296,8 @@ export default function ShopPage() {
                                 disabled={buying === product.id}
                                 className="px-5 py-2.5 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
                                 style={{
-                                  background: "#6b5270",
-                                  color: "#ffffff",
+                                  background: "var(--color-plum)",
+                                  color: "var(--color-cream)",
                                   fontWeight: 600,
                                 }}
                               >

@@ -21,20 +21,22 @@ html, body {
   min-height: 100vh;
 }
 
-/* === THIS IS THE KEY — theme switching changes these === */
 body {
   background-color: var(--color-cream);
   color: var(--color-dark);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Antic Didone", Georgia, serif;
-  color: #2a1a28;
+  color: var(--color-dark);
   font-weight: 700;
+  transition: color 0.5s ease;
 }
 
 p, span, li, label, td, th {
-  color: #2e1f2e;
+  color: var(--color-dark);
+  transition: color 0.5s ease;
 }
 
 header {
@@ -45,7 +47,7 @@ header h1 {
   font-family: "Antic Didone", Georgia, serif;
   font-size: 1.25rem;
   letter-spacing: 0.25em;
-  color: #4A2545;
+  color: var(--color-plum);
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -58,20 +60,20 @@ main h1 {
   font-family: "Antic Didone", Georgia, serif;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #2a1a28;
+  color: var(--color-dark);
 }
 
 main h2 {
   font-family: "Antic Didone", Georgia, serif;
   font-size: 1.35rem;
   font-weight: 700;
-  color: #3d2040;
+  color: var(--color-plum);
 }
 
 main h3 {
   font-size: 1.15rem;
   font-weight: 600;
-  color: #2a1a28;
+  color: var(--color-dark);
 }
 
 @media (min-width: 768px) {
@@ -87,37 +89,38 @@ em, i, .italic {
 button h3, a h3 {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #2a1a28;
+  color: var(--color-dark);
 }
 
 button p, a p {
   font-size: 0.95rem;
-  color: #4a3a4a;
+  color: var(--color-mauve);
 }
 
 header button, header a {
   font-size: 0.95rem;
-  color: #5a3a5a;
+  color: var(--color-mauve);
   font-weight: 500;
 }
 
 small {
   font-size: 0.875rem;
-  color: #4a3a4a;
+  color: var(--color-mauve);
 }
 
 input, textarea, select {
-  color: #2a1a28;
+  color: var(--color-dark);
   font-size: 1rem;
-  border-color: #c8b0c8;
+  border-color: var(--color-dusty-rose);
+  background-color: var(--color-cream);
 }
 
 input::placeholder, textarea::placeholder {
-  color: #8a7a8a;
+  color: var(--color-mauve);
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: #9B6B8D;
+  border-color: var(--color-mauve);
   outline: none;
   box-shadow: 0 0 0 2px rgba(155, 107, 141, 0.25);
 }
@@ -125,7 +128,7 @@ input:focus, textarea:focus, select:focus {
 [role="tab"], [role="tablist"] button {
   font-size: 1rem;
   font-weight: 600;
-  color: #3d2040;
+  color: var(--color-plum);
 }
 
 ::-webkit-scrollbar { width: 6px; }
