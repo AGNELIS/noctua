@@ -131,7 +131,7 @@ export default function ShopPage() {
             {grouped.map((group) => (
               <section key={group.category}>
                 <h2
-                  className="text-sm tracking-[0.18em] uppercase mb-4"
+                  className="text-sm tracking-[0.16em] uppercase mb-4"
                   style={{
                     color: "#5a4560",
                     fontWeight: 600,
