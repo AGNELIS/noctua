@@ -34,9 +34,7 @@ export default function SymbolsPage() {
   const [category, setCategory] = useState("all");
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadSymbols();
-  }, []);
+  useEffect(() => { loadSymbols(); }, []);
 
   const loadSymbols = async () => {
     const supabase = createClient();
@@ -49,11 +47,8 @@ export default function SymbolsPage() {
   };
 
   const filtered = symbols.filter((s) => {
-    const matchesSearch = s.symbol
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesCategory =
-      category === "all" || s.category === category;
+    const matchesSearch = s.symbol.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = category === "all" || s.category === category;
     return matchesSearch && matchesCategory;
   });
 
@@ -64,25 +59,30 @@ export default function SymbolsPage() {
         background: "linear-gradient(to bottom, #f8f2e8, #f2ebe0, #ede4d8)",
       }}
     >
-      <header className="flex items-center justify-between px-6 py-5">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="text-xs tracking-wide"
-          style={{ color: "#9b8a7a" }}
-        >
-          ← Back
-        </button>
+      <header className="px-6 pt-5 pb-2">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-sm tracking-wide"
+            style={{ color: "#5a3a5a", fontWeight: 500 }}
+          >
+            ← Back
+          </button>
+          <div className="w-12" />
+        </div>
         <h1
-          className="text-sm tracking-[0.35em] uppercase font-light"
-          style={{ color: "#7c6b3f" }}
+          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
+          style={{
+            color: "#4A2545",
+            fontFamily: "'Antic Didone', Georgia, serif",
+            fontWeight: 700,
+          }}
         >
           Dream Symbols
         </h1>
-        <div className="w-12" />
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-5">
-        {/* Search */}
         <div className="relative">
           <input
             type="text"
@@ -98,7 +98,6 @@ export default function SymbolsPage() {
           />
         </div>
 
-        {/* Category filter */}
         <div className="flex gap-2 overflow-x-auto pb-1 -mx-6 px-6">
           {CATEGORIES.map((c) => (
             <button
@@ -106,14 +105,8 @@ export default function SymbolsPage() {
               onClick={() => setCategory(c.value)}
               className="px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-all border shrink-0"
               style={{
-                background:
-                  category === c.value
-                    ? "rgba(124,107,63,0.12)"
-                    : "rgba(255,255,255,0.4)",
-                borderColor:
-                  category === c.value
-                    ? "rgba(124,107,63,0.3)"
-                    : "rgba(196,182,142,0.3)",
+                background: category === c.value ? "rgba(124,107,63,0.12)" : "rgba(255,255,255,0.4)",
+                borderColor: category === c.value ? "rgba(124,107,63,0.3)" : "rgba(196,182,142,0.3)",
                 color: category === c.value ? "#3d2e4a" : "#8a7a6a",
               }}
             >
@@ -122,148 +115,64 @@ export default function SymbolsPage() {
           ))}
         </div>
 
-        {/* Results count */}
         <p className="text-xs text-center" style={{ color: "#9b8a7a" }}>
           {filtered.length} symbol{filtered.length !== 1 ? "s" : ""}
         </p>
 
-        {/* Symbol list */}
         {loading ? (
-          <p className="text-center text-sm pt-10" style={{ color: "#9b8a7a" }}>
-            Loading...
-          </p>
+          <p className="text-center text-sm pt-10" style={{ color: "#9b8a7a" }}>Loading...</p>
         ) : filtered.length === 0 ? (
           <div className="text-center pt-10 space-y-2">
             <p className="text-3xl">⟡</p>
-            <p className="text-sm" style={{ color: "#7c6b3f" }}>
-              No symbols found.
-            </p>
+            <p className="text-sm" style={{ color: "#7c6b3f" }}>No symbols found.</p>
           </div>
         ) : (
           <div className="space-y-2">
             {filtered.map((s) => (
               <button
                 key={s.id}
-                onClick={() =>
-                  setExpanded(expanded === s.id ? null : s.id)
-                }
+                onClick={() => setExpanded(expanded === s.id ? null : s.id)}
                 className="w-full text-left rounded-2xl border transition-all"
                 style={{
                   background: "rgba(255,255,255,0.5)",
-                  borderColor:
-                    expanded === s.id
-                      ? "rgba(124,107,63,0.4)"
-                      : "rgba(196,182,142,0.25)",
+                  borderColor: expanded === s.id ? "rgba(124,107,63,0.4)" : "rgba(196,182,142,0.25)",
                 }}
               >
-                {/* Header */}
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
-                    <span
-                      className="text-sm font-medium capitalize"
-                      style={{ color: "#3d2e4a" }}
-                    >
-                      {s.symbol}
-                    </span>
+                    <span className="text-sm font-medium capitalize" style={{ color: "#3d2e4a" }}>{s.symbol}</span>
                     {s.category && (
-                      <span
-                        className="text-xs px-2 py-0.5 rounded-full"
-                        style={{
-                          background: "rgba(124,107,63,0.08)",
-                          color: "#7c6b3f",
-                        }}
-                      >
-                        {s.category}
-                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(124,107,63,0.08)", color: "#7c6b3f" }}>{s.category}</span>
                     )}
                   </div>
-                  <span
-                    className="text-xs transition-transform"
-                    style={{
-                      color: "#9b8a7a",
-                      transform:
-                        expanded === s.id
-                          ? "rotate(180deg)"
-                          : "rotate(0deg)",
-                    }}
-                  >
-                    ▾
-                  </span>
+                  <span className="text-xs transition-transform" style={{ color: "#9b8a7a", transform: expanded === s.id ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
                 </div>
 
-                {/* Expanded content */}
                 {expanded === s.id && (
                   <div className="px-4 pb-4 space-y-4">
-                    {/* General meaning */}
                     <div className="space-y-1">
-                      <p
-                        className="text-xs font-medium uppercase tracking-wider"
-                        style={{ color: "#7c6b3f" }}
-                      >
-                        General Meaning
-                      </p>
-                      <p
-                        className="text-sm leading-relaxed"
-                        style={{ color: "#4a3a3a" }}
-                      >
-                        {s.meaning_general}
-                      </p>
+                      <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "#7c6b3f" }}>General Meaning</p>
+                      <p className="text-sm leading-relaxed" style={{ color: "#4a3a3a" }}>{s.meaning_general}</p>
                     </div>
-
-                    {/* Shadow meaning */}
                     {s.meaning_shadow && (
                       <div className="space-y-1">
-                        <p
-                          className="text-xs font-medium uppercase tracking-wider"
-                          style={{ color: "#8b5e7c" }}
-                        >
-                          Shadow Meaning
-                        </p>
-                        <p
-                          className="text-sm leading-relaxed italic"
-                          style={{ color: "#5e4e5e" }}
-                        >
-                          {s.meaning_shadow}
-                        </p>
+                        <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "#8b5e7c" }}>Shadow Meaning</p>
+                        <p className="text-sm leading-relaxed italic" style={{ color: "#5e4e5e" }}>{s.meaning_shadow}</p>
                       </div>
                     )}
-
-                    {/* Lunar meaning */}
                     {s.meaning_lunar && (
                       <div className="space-y-1">
-                        <p
-                          className="text-xs font-medium uppercase tracking-wider"
-                          style={{ color: "#6b5e8b" }}
-                        >
-                          Lunar Meaning
-                        </p>
-                        <p
-                          className="text-sm leading-relaxed italic"
-                          style={{ color: "#5e4e6b" }}
-                        >
-                          {s.meaning_lunar}
-                        </p>
+                        <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "#6b5e8b" }}>Lunar Meaning</p>
+                        <p className="text-sm leading-relaxed italic" style={{ color: "#5e4e6b" }}>{s.meaning_lunar}</p>
                       </div>
                     )}
-
-                    {/* Archetypes */}
-                    {s.related_archetypes &&
-                      s.related_archetypes.length > 0 && (
-                        <div className="flex gap-1.5 flex-wrap">
-                          {s.related_archetypes.map((a) => (
-                            <span
-                              key={a}
-                              className="text-xs px-2 py-0.5 rounded-full"
-                              style={{
-                                background: "rgba(107,82,112,0.1)",
-                                color: "#6b5270",
-                              }}
-                            >
-                              {a}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                    {s.related_archetypes && s.related_archetypes.length > 0 && (
+                      <div className="flex gap-1.5 flex-wrap">
+                        {s.related_archetypes.map((a) => (
+                          <span key={a} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(107,82,112,0.1)", color: "#6b5270" }}>{a}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </button>

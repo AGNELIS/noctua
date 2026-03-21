@@ -111,13 +111,34 @@ export default function GroundingPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(to bottom, #f0f5f0, #eaf0ea, #e4ebe4)" }}>
-      <header className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push("/dashboard")} className="text-xs tracking-wide" style={{ color: "#7a8a6a" }}>← Back</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "#4a6040" }}>Grounding</h1>
-        <div className="w-12" />
+      <header className="px-6 pt-5 pb-2">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-sm tracking-wide"
+            style={{ color: "#5a3a5a", fontWeight: 500 }}
+          >
+            ← Back
+          </button>
+          <div className="w-12" />
+        </div>
+        <h1
+          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
+          style={{
+            color: "#4a6040",
+            fontFamily: "'Antic Didone', Georgia, serif",
+            fontWeight: 700,
+          }}
+        >
+          Grounding
+        </h1>
       </header>
+
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
-        <p className="text-center text-sm leading-relaxed italic" style={{ color: "#6a7a5a" }}>&ldquo;You are safe in this moment. These tools are here to help you return to yourself.&rdquo;</p>
+        <p className="text-center text-sm leading-relaxed italic" style={{ color: "#6a7a5a" }}>
+          &ldquo;You are safe in this moment. These tools are here to help you return to yourself.&rdquo;
+        </p>
+
         {exercise ? (
           <section className="rounded-2xl border p-6 space-y-6" style={{ background: "rgba(255,255,255,0.6)", borderColor: "rgba(120,160,100,0.3)" }}>
             <div className="text-center space-y-2">
@@ -130,8 +151,12 @@ export default function GroundingPage() {
             </div>
             <p className="text-center text-base leading-relaxed min-h-[4rem] flex items-center justify-center" style={{ color: "#3a4a30" }}>{exercise.steps[currentStep]}</p>
             <div className="flex justify-center gap-3">
-              {currentStep > 0 && (<button onClick={() => setCurrentStep(currentStep - 1)} className="px-5 py-2.5 rounded-xl text-sm border" style={{ borderColor: "rgba(120,160,100,0.3)", color: "#4a6040" }}>← Previous</button>)}
-              <button onClick={nextStep} className="px-5 py-2.5 rounded-xl text-sm text-white" style={{ background: "#4a6040" }}>{currentStep === exercise.steps.length - 1 ? "✓ Finish" : "Next →"}</button>
+              {currentStep > 0 && (
+                <button onClick={() => setCurrentStep(currentStep - 1)} className="px-5 py-2.5 rounded-xl text-sm border" style={{ borderColor: "rgba(120,160,100,0.3)", color: "#4a6040" }}>← Previous</button>
+              )}
+              <button onClick={nextStep} className="px-5 py-2.5 rounded-xl text-sm text-white" style={{ background: "#4a6040" }}>
+                {currentStep === exercise.steps.length - 1 ? "✓ Finish" : "Next →"}
+              </button>
             </div>
             <button onClick={() => { setActiveExercise(null); setCurrentStep(0); }} className="block mx-auto text-xs" style={{ color: "#7a8a6a" }}>Exit exercise</button>
           </section>
@@ -154,6 +179,7 @@ export default function GroundingPage() {
                 </button>
               ))}
             </section>
+
             <section className="space-y-3">
               <button onClick={() => setShowResources(!showResources)} className="w-full text-center py-4 px-4 rounded-xl transition-all" style={{ background: "rgba(120,160,100,0.18)", border: "1px solid rgba(120,160,100,0.3)" }}>
                 <p className="text-base font-medium" style={{ color: "#3a4a30" }}>Need to talk to someone?</p>
