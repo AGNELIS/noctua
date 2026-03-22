@@ -123,7 +123,7 @@ export default function PremiumPage() {
         >
           <div>
             <span
-              className="text-6xl font-light"
+              className="text-8xl font-light"
               style={{
                 color: "var(--color-dark)",
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
