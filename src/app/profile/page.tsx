@@ -23,6 +23,8 @@ export default function ProfilePage() {
   const [purchases, setPurchases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
   const [memberSince, setMemberSince] = useState("");
 
@@ -59,6 +61,14 @@ export default function ProfilePage() {
       .order("purchased_at", { ascending: false });
     setPurchases((purch as any[]) || []);
     setLoading(false);
+  };
+const saveName = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("profiles").update({ display_name: nameInput.trim() || null }).eq("id", user.id);
+    setDisplayName(nameInput.trim());
+    setEditingName(false);
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,11 +169,40 @@ export default function ProfilePage() {
             </div>
           </button>
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Tap to change photo</p>
-          {displayName && (
-            <p className="text-lg" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{displayName}</p>
+          {editingName ? (
+            <div className="flex items-center justify-center gap-2 mt-1">
+              <input
+                type="text"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                placeholder="Your name"
+                className="text-center text-lg outline-none border-b transition-colors duration-500"
+                style={{
+                  color: "var(--color-dark)",
+                  borderColor: "var(--color-dusty-rose)",
+                  backgroundColor: "transparent",
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontWeight: 600,
+                  width: "180px",
+                }}
+                autoFocus
+              />
+              <button onClick={saveName} className="text-sm px-3 py-1 rounded-lg"
+                style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>Save</button>
+              <button onClick={() => setEditingName(false)} className="text-sm"
+                style={{ color: "var(--color-mauve)" }}>✕</button>
+            </div>
+          ) : (
+            <button onClick={() => { setNameInput(displayName); setEditingName(true); }} className="mt-1 transition-all hover:opacity-70">
+              {displayName ? (
+                <p className="text-xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{displayName}</p>
+              ) : (
+                <p className="text-sm italic" style={{ color: "var(--color-dusty-rose)" }}>+ Add your name</p>
+              )}
+            </button>
           )}
-          <p className="text-base" style={{ color: "var(--color-dark)" }}>{email}</p>
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Member since {memberSince}</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{email}</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Member since {memberSince}</p>
         </section>
 
         {/* Divider */}
