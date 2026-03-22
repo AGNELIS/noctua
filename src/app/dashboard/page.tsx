@@ -170,35 +170,11 @@ export default function DashboardPage() {
           className="transition-all hover:scale-110"
           aria-label="Profile"
         >
-          <svg width="48" height="52" viewBox="0 0 100 110">
-            <defs>
-              <radialGradient id="ob" cx="50%" cy="44%" r="55%">
-                <stop offset="0%" stopColor="#e8c8c8"/>
-                <stop offset="45%" stopColor="#d4a5a5"/>
-                <stop offset="100%" stopColor="#b08080"/>
-              </radialGradient>
-              <radialGradient id="oe" cx="40%" cy="35%" r="55%">
-                <stop offset="0%" stopColor="#f0d890"/>
-                <stop offset="55%" stopColor="#c8a050"/>
-                <stop offset="100%" stopColor="#a08030"/>
-              </radialGradient>
-            </defs>
-            <path d="M20 40 L12 10 L36 32" fill="url(#ob)"/>
-            <path d="M80 40 L88 10 L64 32" fill="url(#ob)"/>
-            <path d="M21 40 L14 12 L36 32" fill="#c8a0a0" opacity="0.4"/>
-            <path d="M79 40 L86 12 L64 32" fill="#c8a0a0" opacity="0.4"/>
-            <ellipse cx="50" cy="58" rx="28" ry="26" fill="url(#ob)"/>
-            <ellipse cx="50" cy="59" rx="26" ry="24" fill="#d4a5a5" opacity="0.3"/>
-            <path d="M30 48 Q38 40 50 48 Q62 40 70 48" fill="#b08080" opacity="0.18"/>
-            <path d="M28 50 Q38 42 50 50 Q62 42 72 50" fill="#a07070" opacity="0.1"/>
-            <ellipse cx="38" cy="54" rx="10" ry="10.5" fill="url(#oe)"/>
-            <ellipse cx="62" cy="54" rx="10" ry="10.5" fill="url(#oe)"/>
-            <ellipse cx="38" cy="55.5" rx="3.5" ry="5" fill="#2a1a18"/>
-            <ellipse cx="62" cy="55.5" rx="3.5" ry="5" fill="#2a1a18"/>
-            <circle cx="40" cy="52.5" r="1.8" fill="#f0e8c0" opacity="0.65"/>
-            <circle cx="64" cy="52.5" r="1.8" fill="#f0e8c0" opacity="0.65"/>
-            <path d="M46 66 Q50 69 54 66" stroke="#906868" strokeWidth="1.3" fill="none" strokeLinecap="round"/>
-          </svg>
+          <img
+            src="/noctua-owl-icon.png"
+            alt="Profile"
+            className="w-12 h-12 object-contain"
+          />
         </button>
       </header>
 
