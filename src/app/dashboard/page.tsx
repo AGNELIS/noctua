@@ -165,14 +165,15 @@ export default function DashboardPage() {
         >
           Noctua
         </h1>
-        <button
-          onClick={handleLogout}
-          disabled={loading}
-          className="text-sm md:text-base tracking-wide transition-colors duration-300 hover:opacity-70"
-          style={{ color: "var(--color-mauve)", fontWeight: 500 }}
-        >
-          {loading ? "..." : "Sign out"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.push("/profile")}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs transition-all hover:scale-110"
+            style={{ backgroundColor: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 600 }}
+          >
+            ☽
+          </button>
+        </div>
       </header>
 
       {/* Main content */}
