@@ -34,14 +34,6 @@ export default async function Home() {
           style={{ width: "clamp(200px, 40vw, 300px)", height: "auto" }}
         />
 
-        <div className="flex items-center justify-center gap-5 mt-2 mb-10">
-          <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, #D4AF37)' }} />
-          <span style={{ color: '#D4AF37', fontSize: '36px', fontWeight: 200, fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>
-            ∞
-          </span>
-          <div className="h-px w-16" style={{ background: 'linear-gradient(to left, transparent, #D4AF37)' }} />
-        </div>
-
         <p className="text-plum text-2xl leading-relaxed mb-4 italic"
           style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300 }}>
           You are here because something brought you.
