@@ -20,7 +20,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
     <button
       onClick={onClick}
       className="group relative w-full flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
-      style={{ background: "none", border: "none", padding: 0, height: "260px" }}
+      style={{ background: "none", border: "none", padding: 0, height: "160px" }}
     >
       <img
         src="/noctua-cloud.png"
@@ -271,19 +271,8 @@ export default function DashboardPage() {
             Unlock Premium
           </span>
         </button>
-        {/* Cloud navigation — 1 column mobile, 2 columns desktop */}
-        <section className="flex flex-col items-center gap-0 md:hidden" style={{ maxWidth: "280px", margin: "0 auto" }}>
-          {NAV_CARDS.map((card) => (
-            <WatercolorCloud
-              key={card.titleKey}
-              title={t(card.titleKey)}
-              desc={t(card.descKey)}
-              onClick={() => router.push(card.href)}
-            />
-          ))}
-        </section>
-
-        <section className="hidden md:grid md:grid-cols-2 md:gap-x-0 md:gap-y-0" style={{ maxWidth: "420px", margin: "0 auto" }}>
+        {/* Cloud navigation */}
+        <section className="grid grid-cols-1 gap-y-0 max-w-[300px] mx-auto md:grid-cols-2 md:max-w-md md:gap-x-0">
           {NAV_CARDS.map((card) => (
             <WatercolorCloud
               key={card.titleKey}
