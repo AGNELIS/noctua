@@ -4,43 +4,38 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getMoonPhase, getGreeting, type MoonPhaseInfo } from "@/lib/moon";
+import { useLanguage } from "@/lib/i18n";
 
 const NAV_CARDS = [
   {
-    title: "Journal",
-    description: "Reflect on your inner world",
+    titleKey: "nav_journal" as const,
+    descKey: "nav_journal_desc" as const,
     href: "/journal",
-    icon: "\u270E",
   },
   {
-    title: "Dream Journal",
-    description: "Capture the messages of the night",
+    titleKey: "nav_dreams" as const,
+    descKey: "nav_dreams_desc" as const,
     href: "/dreams",
-    icon: "\u263D",
   },
   {
-    title: "Cycle Tracker",
-    description: "Honour your body's rhythm",
+    titleKey: "nav_cycle" as const,
+    descKey: "nav_cycle_desc" as const,
     href: "/cycle",
-    icon: "\u25EF",
   },
   {
-    title: "Dream Symbols",
-    description: "Decode the language of dreams",
+    titleKey: "nav_symbols" as const,
+    descKey: "nav_symbols_desc" as const,
     href: "/symbols",
-    icon: "\u27D0",
   },
   {
-    title: "Grounding",
-    description: "Return to yourself",
+    titleKey: "nav_grounding" as const,
+    descKey: "nav_grounding_desc" as const,
     href: "/grounding",
-    icon: "\uD83C\uDF3F",
   },
   {
-    title: "Shop",
-    description: "Themes, symbols & more",
+    titleKey: "nav_shop" as const,
+    descKey: "nav_shop_desc" as const,
     href: "/shop",
-    icon: "\u2661",
   },
 ];
 
@@ -121,6 +116,7 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [moon, setMoon] = useState<MoonPhaseInfo | null>(null);
   const [greeting, setGreeting] = useState("");
   const [loading, setLoading] = useState(false);
@@ -219,7 +215,7 @@ export default function DashboardPage() {
               className="text-base md:text-lg tracking-widest uppercase transition-colors duration-500"
               style={{ color: "var(--color-mauve)", fontWeight: 500 }}
             >
-              {moon.illumination}% illuminated
+              {moon.illumination}% {t("illuminated")}
             </p>
           </div>
           <div className="max-w-md mx-auto">
@@ -239,38 +235,50 @@ export default function DashboardPage() {
           <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
         </div>
 
-        {/* Navigation cards */}
-        <section className="grid grid-cols-2 gap-4">
+        {/* Cloud navigation cards */}
+        <section className="grid grid-cols-2 gap-x-4 gap-y-2">
           {NAV_CARDS.map((card) => (
             <button
-              key={card.title}
+              key={card.titleKey}
               onClick={() => router.push(card.href)}
-              className="group p-5 md:p-6 rounded-2xl border transition-all duration-500 ease-out
-                hover:scale-[1.03] hover:shadow-lg
-                focus:outline-none focus:ring-2 focus:ring-[#9b8ec4]/30"
-              style={{
-                backgroundColor: "var(--color-blush)",
-                borderColor: "var(--color-dusty-rose)",
-              }}
+              className="group relative flex flex-col items-center justify-center
+                transition-all duration-300 ease-out
+                hover:scale-[1.06]
+                focus:outline-none active:scale-[0.97]"
+              style={{ background: "none", border: "none", padding: 0 }}
             >
-              <div className="flex flex-col items-center mb-3">
-                <h3
-                  className="text-lg md:text-xl tracking-wide mt-2 transition-colors duration-500"
+              {/* Cloud image */}
+              <div className="relative w-full aspect-[3/2] flex items-center justify-center">
+                <img
+                  src="/noctua-cloud.png"
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-contain
+                    transition-all duration-300
+                    group-hover:drop-shadow-[0_4px_20px_rgba(180,140,170,0.4)]"
                   style={{
-                    color: "var(--color-dark)",
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontWeight: 600,
+                    filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))",
                   }}
-                >
-                  {card.title}
-                </h3>
+                />
+                {/* Text on the cloud */}
+                <div className="relative z-10 flex flex-col items-center px-4 pt-1">
+                  <h3
+                    className="text-base md:text-lg tracking-wide transition-colors duration-300"
+                    style={{
+                      color: "#5a3050",
+                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {t(card.titleKey)}
+                  </h3>
+                  <p
+                    className="text-[10px] md:text-xs leading-snug text-center mt-0.5"
+                    style={{ color: "#7a5a6a" }}
+                  >
+                    {t(card.descKey)}
+                  </p>
+                </div>
               </div>
-              <p
-                className="text-sm md:text-base leading-relaxed text-center transition-colors duration-500"
-                style={{ color: "var(--color-mauve)" }}
-              >
-                {card.description}
-              </p>
             </button>
           ))}
         </section>

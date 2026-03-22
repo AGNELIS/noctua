@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Antic_Didone, Cormorant_Garamond } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 
 const anticDidone = Antic_Didone({
@@ -29,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${anticDidone.variable} ${cormorant.variable}`}>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <LanguageProvider>{children}</LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
