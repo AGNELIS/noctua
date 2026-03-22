@@ -11,54 +11,36 @@ const NAV_CARDS = [
     description: "Reflect on your inner world",
     href: "/journal",
     icon: "\u270E",
-    bg: "bg-[#f0e4ec]",
-    border: "border-[#d4b5c7]/40",
-    iconColor: "text-[#8b5e7c]",
   },
   {
     title: "Dream Journal",
     description: "Capture the messages of the night",
     href: "/dreams",
     icon: "\u263D",
-    bg: "bg-[#e4e0f0]",
-    border: "border-[#9b8ec4]/40",
-    iconColor: "text-[#6b5e8b]",
   },
   {
     title: "Cycle Tracker",
     description: "Honour your body's rhythm",
     href: "/cycle",
     icon: "\u25EF",
-    bg: "bg-[#f0e0e4]",
-    border: "border-[#c49b8e]/40",
-    iconColor: "text-[#8b5e5e]",
   },
   {
     title: "Dream Symbols",
     description: "Decode the language of dreams",
     href: "/symbols",
     icon: "\u27D0",
-    bg: "bg-[#ede8dc]",
-    border: "border-[#c4b68e]/40",
-    iconColor: "text-[#7c6b3f]",
   },
   {
     title: "Grounding",
     description: "Return to yourself",
     href: "/grounding",
     icon: "\uD83C\uDF3F",
-    bg: "bg-[#e0eddc]",
-    border: "border-[#8eb482]/40",
-    iconColor: "text-[#4a6040]",
   },
   {
     title: "Shop",
     description: "Themes, symbols & more",
     href: "/shop",
     icon: "\u2661",
-    bg: "bg-[#f0ece4]",
-    border: "border-[#c8b896]/40",
-    iconColor: "text-[#8a7a50]",
   },
 ];
 
@@ -96,7 +78,6 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
 
   return (
     <div className="relative flex items-center justify-center">
-      {/* Cool blue glow behind moon */}
       <div
         className="absolute w-52 h-52 md:w-64 md:h-64 rounded-full"
         style={{
@@ -109,7 +90,6 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
         style={{ filter: "drop-shadow(0 2px 20px rgba(100,140,200,0.25))" }}
       >
         <defs>
-          {/* Nocny Błękit — cool blue-steel surface */}
           <radialGradient id="moonSurface" cx="42%" cy="38%" r="58%">
             <stop offset="0%" stopColor="#d8e4f0" />
             <stop offset="30%" stopColor="#c0d0e4" />
@@ -117,7 +97,6 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
             <stop offset="85%" stopColor="#8498b4" />
             <stop offset="100%" stopColor="#708aaa" />
           </radialGradient>
-          {/* Dark navy shadow */}
           <radialGradient id="moonShadow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#0c1a2e" stopOpacity="0.92" />
             <stop offset="60%" stopColor="#081428" stopOpacity="0.95" />
@@ -129,13 +108,11 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
         </defs>
         <g clipPath="url(#moonClip)">
           <circle cx={cx} cy={cy} r={r} fill="url(#moonSurface)" />
-          {/* Blue-grey craters */}
           {craters.map((c, i) => (
             <circle key={i} cx={c.x} cy={c.y} r={c.r} fill="#6882a0" opacity={c.op} />
           ))}
           {shadowPath && <path d={shadowPath} fill="url(#moonShadow)" />}
         </g>
-        {/* Subtle steel-blue rim */}
         <circle cx={cx} cy={cy} r={r} fill="none" stroke="#8ca8c8" strokeWidth="0.5" opacity="0.35" />
       </svg>
     </div>
@@ -164,33 +141,27 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background: `
-          radial-gradient(ellipse at 70% 10%, rgba(155,107,138,0.06) 0%, transparent 50%),
-          radial-gradient(ellipse at 20% 80%, rgba(155,142,196,0.05) 0%, transparent 40%),
-          linear-gradient(to bottom, #faf5f0, #f5ede6, #f0e6de)
-        `,
-      }}
+      className="min-h-screen relative overflow-hidden transition-colors duration-500"
+      style={{ backgroundColor: "var(--color-cream)" }}
     >
       {/* Decorative stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <svg className="absolute top-20 left-16 w-6 h-6" viewBox="0 0 20 20" style={{ opacity: 0.12 }}>
-          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
+          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="var(--color-gold)" />
         </svg>
         <svg className="absolute bottom-40 right-20 w-5 h-5" viewBox="0 0 20 20" style={{ opacity: 0.09 }}>
-          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
+          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="var(--color-gold)" />
         </svg>
         <svg className="absolute top-[55%] left-10 w-4 h-4" viewBox="0 0 20 20" style={{ opacity: 0.1 }}>
-          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="#d4af37" />
+          <path d="M10 2 L11.5 8.5 L18 10 L11.5 11.5 L10 18 L8.5 11.5 L2 10 L8.5 8.5Z" fill="var(--color-gold)" />
         </svg>
       </div>
 
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-6 py-5">
         <h1
-          className="text-lg md:text-xl tracking-[0.3em] uppercase"
-          style={{ color: "#4a2545", fontWeight: 700, fontFamily: "'Cinzel Decorative', serif" }}
+          className="text-lg md:text-xl tracking-[0.3em] uppercase transition-colors duration-500"
+          style={{ color: "var(--color-plum)", fontWeight: 700, fontFamily: "'Cinzel Decorative', serif" }}
         >
           Noctua
         </h1>
@@ -198,7 +169,7 @@ export default function DashboardPage() {
           onClick={handleLogout}
           disabled={loading}
           className="text-sm md:text-base tracking-wide transition-colors duration-300 hover:opacity-70"
-          style={{ color: "#5a3a5a", fontWeight: 500 }}
+          style={{ color: "var(--color-mauve)", fontWeight: 500 }}
         >
           {loading ? "..." : "Sign out"}
         </button>
@@ -208,10 +179,16 @@ export default function DashboardPage() {
       <main className="relative z-10 max-w-2xl mx-auto px-6 pb-12 space-y-10">
         {/* Greeting */}
         <section className="text-center space-y-2 pt-6">
-          <p className="text-xl md:text-2xl tracking-wide" style={{ color: "#3d2040", fontWeight: 500 }}>
+          <p
+            className="text-xl md:text-2xl tracking-wide transition-colors duration-500"
+            style={{ color: "var(--color-plum)", fontWeight: 500 }}
+          >
             {greeting}
           </p>
-          <p className="text-base md:text-lg tracking-wide" style={{ color: "#5a4a5a" }}>
+          <p
+            className="text-base md:text-lg tracking-wide transition-colors duration-500"
+            style={{ color: "var(--color-mauve)" }}
+          >
             {new Date().toLocaleDateString("en-GB", {
               weekday: "long",
               day: "numeric",
@@ -226,9 +203,9 @@ export default function DashboardPage() {
           <ElegantMoon phase={moon.phase} illumination={moon.illumination} />
           <div className="text-center space-y-3">
             <h2
-              className="text-3xl md:text-4xl tracking-wide"
+              className="text-3xl md:text-4xl tracking-wide transition-colors duration-500"
               style={{
-                color: "#2a1a38",
+                color: "var(--color-dark)",
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
                 fontWeight: 400,
               }}
@@ -236,16 +213,16 @@ export default function DashboardPage() {
               {moon.phase}
             </h2>
             <p
-              className="text-base md:text-lg tracking-widest uppercase"
-              style={{ color: "#5a4a5a", fontWeight: 500 }}
+              className="text-base md:text-lg tracking-widest uppercase transition-colors duration-500"
+              style={{ color: "var(--color-mauve)", fontWeight: 500 }}
             >
               {moon.illumination}% illuminated
             </p>
           </div>
           <div className="max-w-md mx-auto">
             <p
-              className="text-center text-lg md:text-xl leading-relaxed italic"
-              style={{ color: "#3d2848" }}
+              className="text-center text-lg md:text-xl leading-relaxed italic transition-colors duration-500"
+              style={{ color: "var(--color-plum)" }}
             >
               &ldquo;{moon.description}&rdquo;
             </p>
@@ -254,9 +231,9 @@ export default function DashboardPage() {
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4">
-          <div className="h-px w-20" style={{ background: "linear-gradient(to right, transparent, rgba(212,175,55,0.3))" }} />
-          <span style={{ color: "#d4af37", fontSize: "12px", opacity: 0.6 }}>&#10023;</span>
-          <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, rgba(212,175,55,0.3))" }} />
+          <div className="h-px w-20" style={{ background: "linear-gradient(to right, transparent, var(--color-gold))" }} />
+          <span style={{ color: "var(--color-gold)", fontSize: "12px", opacity: 0.6 }}>&#10023;</span>
+          <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
         </div>
 
         {/* Navigation cards */}
@@ -265,21 +242,25 @@ export default function DashboardPage() {
             <button
               key={card.title}
               onClick={() => router.push(card.href)}
-              className={`group p-5 md:p-6 rounded-2xl border ${card.border} ${card.bg}
+              className="group p-5 md:p-6 rounded-2xl border transition-all duration-500 ease-out
                 hover:scale-[1.03] hover:shadow-lg
-                transition-all duration-300 ease-out
-                focus:outline-none focus:ring-2 focus:ring-[#9b8ec4]/30`}
+                focus:outline-none focus:ring-2 focus:ring-[#9b8ec4]/30"
+              style={{
+                backgroundColor: "var(--color-blush)",
+                borderColor: "var(--color-dusty-rose)",
+              }}
             >
               <div className="flex flex-col items-center mb-3">
                 <span
-                  className={`text-2xl md:text-3xl ${card.iconColor} group-hover:scale-110 inline-block transition-transform duration-300`}
+                  className="text-2xl md:text-3xl group-hover:scale-110 inline-block transition-all duration-300"
+                  style={{ color: "var(--color-mauve)" }}
                 >
                   {card.icon}
                 </span>
                 <h3
-                  className="text-lg md:text-xl tracking-wide mt-2"
+                  className="text-lg md:text-xl tracking-wide mt-2 transition-colors duration-500"
                   style={{
-                    color: "#2a1a28",
+                    color: "var(--color-dark)",
                     fontFamily: "'Cormorant Garamond', Georgia, serif",
                     fontWeight: 600,
                   }}
@@ -288,8 +269,8 @@ export default function DashboardPage() {
                 </h3>
               </div>
               <p
-                className="text-sm md:text-base leading-relaxed text-center"
-                style={{ color: "#4a3a4a" }}
+                className="text-sm md:text-base leading-relaxed text-center transition-colors duration-500"
+                style={{ color: "var(--color-mauve)" }}
               >
                 {card.description}
               </p>
