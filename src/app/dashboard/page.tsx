@@ -263,14 +263,14 @@ export default function DashboardPage() {
           }}
         >
           <span
-            className="text-base tracking-wide"
+            className="text-lg tracking-wide"
             style={{
               color: "var(--color-plum)",
               fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontWeight: 600,
             }}
           >
-            ✦ Unlock Premium
+            Unlock Premium
           </span>
         </button>
         {/* Cloud navigation — 1 column mobile, 2 columns desktop */}
