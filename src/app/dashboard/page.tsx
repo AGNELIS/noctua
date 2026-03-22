@@ -278,12 +278,6 @@ export default function DashboardPage() {
               }}
             >
               <div className="flex flex-col items-center mb-3">
-                <span
-                  className="text-2xl md:text-3xl group-hover:scale-110 inline-block transition-all duration-300"
-                  style={{ color: "var(--color-mauve)" }}
-                >
-                  {card.icon}
-                </span>
                 <h3
                   className="text-lg md:text-xl tracking-wide mt-2 transition-colors duration-500"
                   style={{
