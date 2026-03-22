@@ -75,10 +75,7 @@ export default function ShopPage() {
     setBuying(null);
   };
 
-  const handleActivateTheme = async (
-    productId: string,
-    productName: string
-  ) => {
+  const handleActivateTheme = async (productId: string, productName: string) => {
     if (activeThemeId === productId) {
       await resetTheme();
     } else {
@@ -174,8 +171,8 @@ export default function ShopPage() {
                         >
                           <div
                             style={{
-                              width: isActive ? "64px" : "60px",
-                              height: isActive ? "104px" : "100px",
+                              width: "60px",
+                              height: "100px",
                               borderRadius: "12px",
                               border: isActive
                                 ? "2.5px solid var(--color-plum)"
@@ -183,7 +180,7 @@ export default function ShopPage() {
                               overflow: "hidden",
                               background: colors[0] || "#f0e0e4",
                               boxShadow: isActive
-                                ? "0 0 12px rgba(155,107,141,0.4)"
+                                ? "0 4px 16px rgba(155,107,141,0.35)"
                                 : "none",
                             }}
                           >
@@ -205,8 +202,8 @@ export default function ShopPage() {
                           </div>
                           <p
                             className="text-xs mt-1.5 flex items-start justify-center text-center transition-colors duration-500"
-                            style={{ height: "32px" }}
                             style={{
+                              height: "32px",
                               color: isActive ? "var(--color-plum)" : "var(--color-dark)",
                               fontWeight: isActive ? 600 : 500,
                               fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -300,7 +297,6 @@ export default function ShopPage() {
           </div>
         )}
 
-        {/* Dream Analysis Packs */}
         {!loading && (
           <section className="space-y-4" style={{ marginTop: "2.5rem" }}>
             <h2
