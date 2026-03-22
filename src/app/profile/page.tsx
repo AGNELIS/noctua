@@ -168,7 +168,7 @@ const saveName = async () => {
               </span>
             </div>
           </button>
-          <p className="text-base" style={{ color: "var(--color-mauve)" }}>Tap to change photo</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Tap to change photo</p>
           {editingName ? (
             <div className="flex items-center justify-center gap-2 mt-1">
               <input
