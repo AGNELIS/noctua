@@ -7,37 +7,55 @@ import { getMoonPhase, getGreeting, type MoonPhaseInfo } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
 
 const NAV_CARDS = [
-  {
-    titleKey: "nav_journal" as const,
-    descKey: "nav_journal_desc" as const,
-    href: "/journal",
-  },
-  {
-    titleKey: "nav_dreams" as const,
-    descKey: "nav_dreams_desc" as const,
-    href: "/dreams",
-  },
-  {
-    titleKey: "nav_cycle" as const,
-    descKey: "nav_cycle_desc" as const,
-    href: "/cycle",
-  },
-  {
-    titleKey: "nav_symbols" as const,
-    descKey: "nav_symbols_desc" as const,
-    href: "/symbols",
-  },
-  {
-    titleKey: "nav_grounding" as const,
-    descKey: "nav_grounding_desc" as const,
-    href: "/grounding",
-  },
-  {
-    titleKey: "nav_shop" as const,
-    descKey: "nav_shop_desc" as const,
-    href: "/shop",
-  },
+  { titleKey: "nav_journal" as const, descKey: "nav_journal_desc" as const, href: "/journal" },
+  { titleKey: "nav_dreams" as const, descKey: "nav_dreams_desc" as const, href: "/dreams" },
+  { titleKey: "nav_cycle" as const, descKey: "nav_cycle_desc" as const, href: "/cycle" },
+  { titleKey: "nav_symbols" as const, descKey: "nav_symbols_desc" as const, href: "/symbols" },
+  { titleKey: "nav_grounding" as const, descKey: "nav_grounding_desc" as const, href: "/grounding" },
+  { titleKey: "nav_shop" as const, descKey: "nav_shop_desc" as const, href: "/shop" },
 ];
+
+function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="group relative w-full transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
+      style={{ background: "none", border: "none", padding: 0 }}
+    >
+      <svg viewBox="0 0 290 170" className="w-full h-auto">
+        <ellipse cx="145" cy="85" rx="145" ry="68" fill="#e8a0b0" opacity="0.4"/>
+        <ellipse cx="75" cy="60" rx="65" ry="55" fill="#e0909e" opacity="0.5"/>
+        <ellipse cx="205" cy="55" rx="62" ry="52" fill="#e0909e" opacity="0.5"/>
+        <ellipse cx="145" cy="50" rx="58" ry="46" fill="#e8a8b5" opacity="0.6"/>
+        <ellipse cx="120" cy="78" rx="100" ry="42" fill="#d88898" opacity="0.35"/>
+        <ellipse cx="170" cy="68" rx="78" ry="34" fill="#e8a0a8" opacity="0.4"/>
+        <ellipse cx="100" cy="55" rx="45" ry="28" fill="#f0c0c8" opacity="0.5"/>
+        <ellipse cx="185" cy="48" rx="40" ry="25" fill="#f0c0c8" opacity="0.4"/>
+        <text
+          x="145" y="72"
+          textAnchor="middle"
+          fontFamily="var(--font-antic), 'Antic Didone', Georgia, serif"
+          fontSize="24"
+          fontWeight="400"
+          fill="#3a0825"
+        >
+          {title}
+        </text>
+        <text
+          x="145" y="100"
+          textAnchor="middle"
+          fontFamily="system-ui, -apple-system, sans-serif"
+          fontSize="14"
+          fontWeight="400"
+          letterSpacing="0.3"
+          fill="#5a1838"
+        >
+          {desc}
+        </text>
+      </svg>
+    </button>
+  );
+}
 
 function ElegantMoon({ phase, illumination }: { phase: string; illumination: number }) {
   const isWaxing = phase.includes("Waxing") || phase === "First Quarter";
@@ -235,53 +253,15 @@ export default function DashboardPage() {
           <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
         </div>
 
-        {/* Cloud navigation cards */}
-        <section className="grid grid-cols-2 gap-x-2 gap-y-0 md:max-w-xl md:mx-auto">
+        {/* Cloud navigation */}
+        <section className="grid grid-cols-2 gap-x-1 gap-y-0 md:max-w-xl md:mx-auto">
           {NAV_CARDS.map((card) => (
-            <button
+            <WatercolorCloud
               key={card.titleKey}
+              title={t(card.titleKey)}
+              desc={t(card.descKey)}
               onClick={() => router.push(card.href)}
-              className="group relative h-48 md:h-64 flex items-center justify-center
-                transition-all duration-300 ease-out
-                hover:scale-[1.06]
-                focus:outline-none active:scale-[0.97]"
-              style={{ background: "none", border: "none", padding: 0 }}
-            >
-              {/* Cloud image as background */}
-              <img
-                src="/noctua-cloud.png"
-                alt=""
-                className="absolute inset-0 w-full h-full object-contain
-                  transition-all duration-300
-                  group-hover:brightness-105"
-                style={{
-                  filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))",
-                }}
-              />
-              {/* Text on the cloud */}
-              <div className="relative z-10 flex flex-col items-center px-6 mt-1">
-                <h3
-                  className="text-xs md:text-lg tracking-wide text-center"
-                  style={{
-                    color: "#ffffff",
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontWeight: 700,
-                    textShadow: "0 1px 4px rgba(120,60,80,0.5)",
-                  }}
-                >
-                  {t(card.titleKey)}
-                </h3>
-                <p
-                  className="text-[8px] md:text-xs leading-tight text-center mt-0.5"
-                  style={{
-                    color: "rgba(255,255,255,0.85)",
-                    textShadow: "0 1px 3px rgba(120,60,80,0.4)",
-                  }}
-                >
-                  {t(card.descKey)}
-                </p>
-              </div>
-            </button>
+            />
           ))}
         </section>
 
