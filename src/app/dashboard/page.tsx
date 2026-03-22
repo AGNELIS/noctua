@@ -241,7 +241,7 @@ export default function DashboardPage() {
             <button
               key={card.titleKey}
               onClick={() => router.push(card.href)}
-              className="group relative h-44 md:h-64 flex items-center justify-center
+              className="group relative h-48 md:h-64 flex items-center justify-center
                 transition-all duration-300 ease-out
                 hover:scale-[1.06]
                 focus:outline-none active:scale-[0.97]"
@@ -259,7 +259,7 @@ export default function DashboardPage() {
                 }}
               />
               {/* Text on the cloud */}
-              <div className="relative z-10 flex flex-col items-center px-8">
+              <div className="relative z-10 flex flex-col items-center px-8 -mt-3">
                 <h3
                   className="text-sm md:text-lg tracking-wide"
                   style={{
