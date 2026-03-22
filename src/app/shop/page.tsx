@@ -318,7 +318,7 @@ export default function ShopPage() {
         )}
         {/* Dream Analysis Packs */}
         {!loading && (
-          <section className="space-y-4" style={{ marginTop: "6rem" }}>
+          <section className="space-y-4" style={{ marginTop: "2.5rem" }}>
             <h2
               className="uppercase mb-4 transition-colors duration-500"
               style={{
@@ -372,21 +372,22 @@ export default function ShopPage() {
               </button>
             </div>
 
-            <button
-              onClick={() => router.push("/premium")}
-              className="w-full text-center py-4 mt-2 rounded-2xl transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                background: "linear-gradient(135deg, rgba(155,107,141,0.08), rgba(155,107,141,0.03))",
-                border: "1px solid var(--color-dusty-rose)",
-              }}
-            >
-              <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
-                Want unlimited dream analyses?
-              </p>
-              <p className="text-base mt-1" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-                Explore Premium ✦
-              </p>
-            </button>
+            <div className="text-center mt-4 space-y-1">
+              <p className="text-sm" style={{ color: "var(--color-mauve)" }}>or</p>
+              <button
+                onClick={() => router.push("/premium")}
+                className="text-base tracking-wide transition-colors hover:opacity-80"
+                style={{
+                  color: "var(--color-plum)",
+                  fontWeight: 600,
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  background: "none",
+                  border: "none",
+                }}
+              >
+                Subscribe to unlock all features
+              </button>
+            </div>
           </section>
         )}
       </main>
