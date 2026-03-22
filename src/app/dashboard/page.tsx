@@ -170,7 +170,7 @@ export default function DashboardPage() {
           className="transition-all hover:scale-110"
           aria-label="Profile"
         >
-          <svg width="36" height="40" viewBox="0 0 100 110">
+          <svg width="48" height="52" viewBox="0 0 100 110">
             <defs>
               <radialGradient id="ob" cx="50%" cy="44%" r="55%">
                 <stop offset="0%" stopColor="#e8c8c8"/>
