@@ -236,12 +236,12 @@ export default function DashboardPage() {
         </div>
 
         {/* Cloud navigation cards */}
-        <section className="grid grid-cols-2 gap-x-2 gap-y-0">
+        <section className="grid grid-cols-2 gap-x-2 gap-y-0 md:max-w-xl md:mx-auto">
           {NAV_CARDS.map((card) => (
             <button
               key={card.titleKey}
               onClick={() => router.push(card.href)}
-              className="group relative h-44 md:h-52 flex items-center justify-center
+              className="group relative h-44 md:h-64 flex items-center justify-center
                 transition-all duration-300 ease-out
                 hover:scale-[1.06]
                 focus:outline-none active:scale-[0.97]"
