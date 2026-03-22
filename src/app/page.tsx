@@ -27,9 +27,8 @@ export default async function Home() {
           by AGNÉLIS
         </p>
 
-        {/* Owl logo */}
         <img
-          src="/Logo_sowy.png"
+          src="/noctua-logo.png"
           alt="Noctua"
           className="mx-auto mb-8"
           style={{ width: "clamp(200px, 40vw, 300px)", height: "auto" }}
