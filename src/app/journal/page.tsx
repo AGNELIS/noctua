@@ -37,33 +37,28 @@ function ConfirmModal({
       style={{ background: "rgba(42, 26, 40, 0.4)", backdropFilter: "blur(4px)" }}
     >
       <div
-        className="w-full max-w-sm p-6 rounded-2xl space-y-5"
+        className="w-full max-w-sm p-6 rounded-2xl space-y-5 transition-colors duration-500"
         style={{
-          background: "linear-gradient(to bottom, #faf7f5, #f5ede6)",
-          border: "1px solid rgba(212,181,199,0.3)",
+          backgroundColor: "var(--color-cream)",
+          border: "1px solid var(--color-dusty-rose)",
           boxShadow: "0 8px 32px rgba(42, 26, 40, 0.15)",
         }}
       >
-        <p className="text-center text-base leading-relaxed" style={{ color: "#2a1a28" }}>
+        <p className="text-center text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
           {message}
         </p>
         <div className="flex justify-center gap-3">
           <button
             onClick={onCancel}
             className="px-6 py-2.5 rounded-xl text-sm transition-all border"
-            style={{
-              borderColor: "rgba(212,181,199,0.4)",
-              color: "#5a3a5a",
-              background: "rgba(255,255,255,0.5)",
-              fontWeight: 500,
-            }}
+            style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)", background: "var(--color-blush)", fontWeight: 500 }}
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             className="px-6 py-2.5 rounded-xl text-sm transition-all"
-            style={{ background: "#6b5270", color: "#ffffff", fontWeight: 600 }}
+            style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
           >
             Delete
           </button>
@@ -93,13 +88,8 @@ export default function JournalPage() {
 
   const toggleFavorite = async (id: string, current: boolean) => {
     const supabase = createClient();
-    await supabase
-      .from("journal_entries")
-      .update({ is_favorite: !current })
-      .eq("id", id);
-    setEntries((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, is_favorite: !current } : e))
-    );
+    await supabase.from("journal_entries").update({ is_favorite: !current }).eq("id", id);
+    setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, is_favorite: !current } : e)));
   };
 
   const confirmDelete = async () => {
@@ -111,136 +101,47 @@ export default function JournalPage() {
   };
 
   return (
-    <div
-      className="min-h-screen relative"
-      style={{
-        background: "linear-gradient(to bottom, #faf5f0, #f5ede6, #f0e6de)",
-      }}
-    >
-      {deleteId && (
-        <ConfirmModal
-          message="Are you sure you want to delete this entry?"
-          onConfirm={confirmDelete}
-          onCancel={() => setDeleteId(null)}
-        />
-      )}
+    <div className="min-h-screen relative transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+      {deleteId && <ConfirmModal message="Are you sure you want to delete this entry?" onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
 
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="text-sm tracking-wide"
-            style={{ color: "#5a3a5a", fontWeight: 500 }}
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => router.push("/journal/new")}
-            className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors"
-            style={{
-              background: "rgba(107,82,112,0.1)",
-              color: "#5a3a5a",
-              fontWeight: 500,
-            }}
-          >
-            + New
-          </button>
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← Back</button>
+          <button onClick={() => router.push("/journal/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ New</button>
         </div>
-        <h1
-          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
-          style={{
-            color: "#4A2545",
-            fontFamily: "'Antic Didone', Georgia, serif",
-            fontWeight: 700,
-          }}
-        >
-          Journal
-        </h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>Journal</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12">
         {loading ? (
-          <p className="text-center text-sm pt-20" style={{ color: "#9b8a7a" }}>
-            Loading...
-          </p>
+          <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>Loading...</p>
         ) : entries.length === 0 ? (
           <div className="text-center pt-20 space-y-4">
             <p className="text-4xl">✦</p>
-            <p className="text-base" style={{ color: "#3d2e4a", fontWeight: 500 }}>
-              Your journal is empty.
-            </p>
-            <p className="text-sm" style={{ color: "#5a4a5a" }}>
-              Begin by writing your first reflection.
-            </p>
-            <button
-              onClick={() => router.push("/journal/new")}
-              className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all"
-              style={{ background: "#6b5270", color: "#ffffff", fontWeight: 600 }}
-            >
-              Write first entry
-            </button>
+            <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>Your journal is empty.</p>
+            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Begin by writing your first reflection.</p>
+            <button onClick={() => router.push("/journal/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>Write first entry</button>
           </div>
         ) : (
           <div className="space-y-3 pt-4">
             {entries.map((entry) => (
-              <div
-                key={entry.id}
-                className="p-4 rounded-2xl border transition-all"
-                style={{
-                  background: "rgba(255,255,255,0.5)",
-                  borderColor: "rgba(212,181,199,0.3)",
-                }}
-              >
+              <div key={entry.id} className="p-4 rounded-2xl border transition-all" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
                 <div className="flex items-start justify-between gap-3">
-                  <div
-                    className="flex-1 cursor-pointer"
-                    onClick={() => router.push(`/journal/${entry.id}/edit`)}
-                  >
+                  <div className="flex-1 cursor-pointer" onClick={() => router.push(`/journal/${entry.id}/edit`)}>
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-xs" style={{ color: "#7a6a7a" }}>
-                        {new Date(entry.entry_date).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                      <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
+                        {new Date(entry.entry_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
-                      {entry.mood?.map((m) => (
-                        <span key={m} className="text-xs" style={{ color: "#5a4a6a" }}>
-                          {MOOD_LABELS[m] || m}
-                        </span>
-                      ))}
+                      {entry.mood?.map((m) => (<span key={m} className="text-xs" style={{ color: "var(--color-plum)" }}>{MOOD_LABELS[m] || m}</span>))}
                     </div>
                     {entry.title && (
-                      <h3
-                        className="text-base mb-1"
-                        style={{
-                          color: "#2a1a28",
-                          fontFamily: "'Cormorant Garamond', Georgia, serif",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {entry.title}
-                      </h3>
+                      <h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>
                     )}
-                    <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "#4a3a4a" }}>
-                      {entry.content}
-                    </p>
+                    <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "var(--color-mauve)" }}>{entry.content}</p>
                   </div>
                   <div className="flex flex-col gap-1 shrink-0">
-                    <button
-                      onClick={() => toggleFavorite(entry.id, entry.is_favorite)}
-                      className="text-lg leading-none"
-                      style={{ color: entry.is_favorite ? "#6b5270" : "#c4b0c4" }}
-                    >
-                      {entry.is_favorite ? "♥" : "♡"}
-                    </button>
-                    <button
-                      onClick={() => setDeleteId(entry.id)}
-                      className="text-sm leading-none"
-                      style={{ color: "#c49bb8" }}
-                    >
-                      ✕
-                    </button>
+                    <button onClick={() => toggleFavorite(entry.id, entry.is_favorite)} className="text-lg leading-none" style={{ color: entry.is_favorite ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>{entry.is_favorite ? "♥" : "♡"}</button>
+                    <button onClick={() => setDeleteId(entry.id)} className="text-sm leading-none" style={{ color: "var(--color-dusty-rose)" }}>✕</button>
                   </div>
                 </div>
               </div>
