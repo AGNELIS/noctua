@@ -22,7 +22,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
       className="group relative w-full md:max-w-[180px] md:mx-auto transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
       style={{ background: "none", border: "none", padding: 0 }}
     >
-      <svg viewBox="0 0 290 170" className="w-full h-auto">
+      <svg viewBox="0 0 290 170" className="w-full h-auto md:w-[180px]">
         <ellipse cx="145" cy="85" rx="145" ry="68" fill="#e8a0b0" opacity="0.4"/>
         <ellipse cx="75" cy="60" rx="65" ry="55" fill="#e0909e" opacity="0.5"/>
         <ellipse cx="205" cy="55" rx="62" ry="52" fill="#e0909e" opacity="0.5"/>
