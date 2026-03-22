@@ -87,7 +87,8 @@ Symbols noted: ${(dream.symbols || []).join(", ") || "none"}
 Lucidity: ${dream.lucidity || "not rated"}/5
 Recurring: ${dream.is_recurring ? "Yes" : "No"}
 
-Keep the response under 500 words. Write in English. Be insightful but accessible.`;
+Keep the response under 500 words. Write in English. Be insightful but accessible.
+IMPORTANT: Do NOT use any markdown formatting. No asterisks, no bold, no bullet points. Use plain text only. Write section headings in UPPERCASE on their own line. Use simple dashes instead of em-dashes.`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -111,8 +112,8 @@ Keep the response under 500 words. Write in English. Be insightful but accessibl
     }
 
     const data = await response.json();
-    const analysisText = data.content?.[0]?.text || "No analysis generated.";
-
+    const rawText = data.content?.[0]?.text || "No analysis generated.";
+    const analysisText = rawText.replace(/\*\*/g, "").replace(/\*/g, "").replace(/—/g, " - ").replace(/#{1,3}\s/g, "");
     await supabase.from("dream_analyses").insert({
       user_id: user.id,
       dream_entry_id: dreamId,

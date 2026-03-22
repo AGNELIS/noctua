@@ -276,6 +276,18 @@ export default function DashboardPage() {
         </section>
 
         <div className="h-4" />
+        <p className="text-center pb-8 tracking-[0.35em]"
+          style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "0.85rem",
+            fontWeight: 500,
+            background: "linear-gradient(135deg, #B8860B, #D4AF37, #E8C860, #D4AF37, #B8860B)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>
+          by AGNÉLIS
+        </p>
       </main>
     </div>
   );
