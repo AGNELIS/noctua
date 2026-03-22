@@ -248,7 +248,7 @@ export default function DashboardPage() {
               style={{ background: "none", border: "none", padding: 0 }}
             >
               {/* Cloud image */}
-              <div className="relative w-full aspect-[3/2] flex items-center justify-center">
+              <div className="relative w-full aspect-[5/4] flex items-center justify-center">
                 <img
                   src="/noctua-cloud.png"
                   alt=""
