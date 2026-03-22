@@ -254,7 +254,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Cloud navigation */}
-        <section className="grid grid-cols-1 gap-y-0 max-w-[280px] mx-auto md:max-w-xl md:grid-cols-2 md:gap-x-1">
+        <section className="grid grid-cols-1 gap-y-0 max-w-[280px] mx-auto md:max-w-md md:grid-cols-2 md:gap-x-1">
           {NAV_CARDS.map((card) => (
             <WatercolorCloud
               key={card.titleKey}
