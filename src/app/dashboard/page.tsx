@@ -253,6 +253,26 @@ export default function DashboardPage() {
           <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
         </div>
 
+{/* Premium banner */}
+        <button
+          onClick={() => router.push("/premium")}
+          className="w-full max-w-md mx-auto block py-3 px-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+          style={{
+            background: "linear-gradient(135deg, rgba(212,175,55,0.12), rgba(155,107,141,0.08))",
+            border: "1px solid rgba(212,175,55,0.25)",
+          }}
+        >
+          <span
+            className="text-base tracking-wide"
+            style={{
+              color: "var(--color-plum)",
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontWeight: 600,
+            }}
+          >
+            ✦ Unlock Premium
+          </span>
+        </button>
         {/* Cloud navigation — 1 column mobile, 2 columns desktop */}
         <section className="flex flex-col items-center gap-0 md:hidden" style={{ maxWidth: "280px", margin: "0 auto" }}>
           {NAV_CARDS.map((card) => (

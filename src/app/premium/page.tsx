@@ -122,13 +122,7 @@ export default function PremiumPage() {
           }}
         >
           <div>
-            <span
-              className="text-6xl font-light"
-              style={{
-                color: "var(--color-dark)",
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-              }}
-            >
+            <span style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "3.5rem", fontWeight: 300 }}>
               {billingCycle === "monthly" ? "£9.99" : "£79.99"}
             </span>
             <span
