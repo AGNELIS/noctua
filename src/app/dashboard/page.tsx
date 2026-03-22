@@ -19,40 +19,38 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
   return (
     <button
       onClick={onClick}
-      className="group relative w-full transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
-      style={{ background: "none", border: "none", padding: 0 }}
+      className="group relative w-full flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
+      style={{ background: "none", border: "none", padding: 0, height: "260px" }}
     >
-      <svg viewBox="0 0 290 170" className="w-full h-auto">
-        <ellipse cx="145" cy="85" rx="145" ry="68" fill="#e8a0b0" opacity="0.4"/>
-        <ellipse cx="75" cy="60" rx="65" ry="55" fill="#e0909e" opacity="0.5"/>
-        <ellipse cx="205" cy="55" rx="62" ry="52" fill="#e0909e" opacity="0.5"/>
-        <ellipse cx="145" cy="50" rx="58" ry="46" fill="#e8a8b5" opacity="0.6"/>
-        <ellipse cx="120" cy="78" rx="100" ry="42" fill="#d88898" opacity="0.35"/>
-        <ellipse cx="170" cy="68" rx="78" ry="34" fill="#e8a0a8" opacity="0.4"/>
-        <ellipse cx="100" cy="55" rx="45" ry="28" fill="#f0c0c8" opacity="0.5"/>
-        <ellipse cx="185" cy="48" rx="40" ry="25" fill="#f0c0c8" opacity="0.4"/>
-        <text
-          x="145" y="72"
-          textAnchor="middle"
-          fontFamily="var(--font-antic), 'Antic Didone', Georgia, serif"
-          fontSize="24"
-          fontWeight="400"
-          fill="#3a0825"
+      <img
+        src="/noctua-cloud.png"
+        alt=""
+        className="absolute inset-0 w-full h-full object-contain"
+        style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))" }}
+      />
+      <div className="relative z-10 flex flex-col items-center px-8 -mt-1">
+        <span
+          style={{
+            color: "#3a0825",
+            fontFamily: "var(--font-antic), 'Antic Didone', Georgia, serif",
+            fontSize: "1.25rem",
+            fontWeight: 400,
+          }}
         >
           {title}
-        </text>
-        <text
-          x="145" y="100"
-          textAnchor="middle"
-          fontFamily="system-ui, -apple-system, sans-serif"
-          fontSize="14"
-          fontWeight="400"
-          letterSpacing="0.3"
-          fill="#5a1838"
+        </span>
+        <span
+          className="mt-0.5"
+          style={{
+            color: "#5a1838",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+            fontSize: "0.8rem",
+            fontWeight: 400,
+          }}
         >
           {desc}
-        </text>
-      </svg>
+        </span>
+      </div>
     </button>
   );
 }
