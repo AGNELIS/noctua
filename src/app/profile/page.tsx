@@ -183,7 +183,6 @@ export default function ProfilePage() {
           ].map((s) => (
             <div key={s.label} className="p-4 rounded-2xl border text-center transition-colors duration-500"
               style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <span className="text-xl" style={{ color: "var(--color-mauve)" }}>{s.icon}</span>
               <p className="text-3xl mt-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{s.value}</p>
               <p className="text-sm mt-1" style={{ color: "var(--color-dark)" }}>{s.label}</p>
             </div>
@@ -192,7 +191,7 @@ export default function ProfilePage() {
 
         {/* Active theme */}
         <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-          <h2 className="text-xs uppercase tracking-wider mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500, fontSize: "0.7rem" }}>Active theme</h2>
+          <h2 className="text-sm uppercase tracking-wider mb-3" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Active theme</h2>
           {activeThemeName ? (
             <div className="flex items-center justify-between">
               <p className="text-base" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName}</p>
@@ -201,7 +200,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <p className="text-sm italic" style={{ color: "var(--color-mauve)" }}>Default Noctua palette</p>
+              <p className="text-sm italic" style={{ color: "var(--color-dark)" }}>Default Noctua palette</p>
               <button onClick={() => router.push("/shop")} className="text-xs px-3 py-1.5 rounded-lg border transition-all"
                 style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}>Browse themes →</button>
             </div>
@@ -211,7 +210,7 @@ export default function ProfilePage() {
         {/* Purchases */}
         {purchases.length > 0 && (
           <section className="space-y-3">
-           <h2 className="text-xs uppercase tracking-wider" style={{ color: "var(--color-mauve)", fontWeight: 500, fontSize: "0.7rem" }}>Your purchases</h2>
+           <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Your purchases</h2>
             {purchases.map((p) => {
               const shop = Array.isArray(p.shop_products) ? p.shop_products[0] : p.shop_products;
               return (
