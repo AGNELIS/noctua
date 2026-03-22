@@ -40,7 +40,7 @@ export default function PremiumPage() {
       style={{ backgroundColor: "var(--color-cream)" }}
     >
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-5">
+      <header className="px-6 py-5 space-y-4">
         <button
           onClick={() => router.back()}
           className="text-sm tracking-wide transition-colors"
@@ -49,7 +49,7 @@ export default function PremiumPage() {
           ← {t("back")}
         </button>
         <h1
-          className="text-lg tracking-[0.3em] uppercase"
+          className="text-center text-lg tracking-[0.3em] uppercase"
           style={{
             color: "var(--color-plum)",
             fontWeight: 700,
@@ -58,13 +58,11 @@ export default function PremiumPage() {
         >
           {t("premium_title")}
         </h1>
-        <div className="w-12" />
       </header>
 
       <main className="max-w-lg mx-auto px-6 pb-12 space-y-8">
         {/* Hero */}
         <section className="text-center space-y-3 pt-4">
-          <div className="text-4xl">☽</div>
           <h2
             className="text-2xl md:text-3xl"
             style={{
