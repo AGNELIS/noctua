@@ -158,12 +158,12 @@ export default function ProfilePage() {
               </span>
             </div>
           </button>
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Tap to change photo</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Tap to change photo</p>
           {displayName && (
             <p className="text-lg" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{displayName}</p>
           )}
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Member since {memberSince}</p>
+          <p className="text-base" style={{ color: "var(--color-dark)" }}>{email}</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Member since {memberSince}</p>
         </section>
 
         {/* Divider */}
@@ -183,16 +183,16 @@ export default function ProfilePage() {
           ].map((s) => (
             <div key={s.label} className="p-4 rounded-2xl border text-center transition-colors duration-500"
               style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <span className="text-lg" style={{ color: "var(--color-mauve)" }}>{s.icon}</span>
-              <p className="text-2xl mt-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{s.value}</p>
-              <p className="text-xs mt-1" style={{ color: "var(--color-mauve)" }}>{s.label}</p>
+              <span className="text-xl" style={{ color: "var(--color-mauve)" }}>{s.icon}</span>
+              <p className="text-3xl mt-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{s.value}</p>
+              <p className="text-sm mt-1" style={{ color: "var(--color-dark)" }}>{s.label}</p>
             </div>
           ))}
         </section>
 
         {/* Active theme */}
         <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-          <h2 className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>Active Theme</h2>
+          <h2 className="text-xs uppercase tracking-wider mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500, fontSize: "0.7rem" }}>Active theme</h2>
           {activeThemeName ? (
             <div className="flex items-center justify-between">
               <p className="text-base" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName}</p>
@@ -211,13 +211,12 @@ export default function ProfilePage() {
         {/* Purchases */}
         {purchases.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-xs uppercase tracking-widest" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>Your Purchases</h2>
+           <h2 className="text-xs uppercase tracking-wider" style={{ color: "var(--color-mauve)", fontWeight: 500, fontSize: "0.7rem" }}>Your purchases</h2>
             {purchases.map((p) => {
               const shop = Array.isArray(p.shop_products) ? p.shop_products[0] : p.shop_products;
               return (
                 <div key={p.product_id} className="flex items-center gap-3 p-3 rounded-xl border transition-colors duration-500"
                   style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                  <span className="text-xl">{shop?.preview_emoji || "✦"}</span>
                   <div className="flex-1">
                     <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{shop?.name || "Product"}</p>
                     <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>
