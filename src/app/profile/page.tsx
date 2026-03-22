@@ -15,7 +15,7 @@ type Stats = {
 type Purchase = {
   product_id: string;
   purchased_at: string;
-  shop_products: { name: string; category: string; preview_emoji: string } | null;
+  shop_products: { name: string; category: string; preview_emoji: string }[] | { name: string; category: string; preview_emoji: string } | null;
 };
 
 export default function ProfilePage() {
@@ -75,7 +75,7 @@ export default function ProfilePage() {
       .select("product_id, purchased_at, shop_products(name, category, preview_emoji)")
       .order("purchased_at", { ascending: false });
 
-    setPurchases((purch as Purchase[]) || []);
+    setPurchases((purch as any[]) || []);
     setLoading(false);
   };
 
@@ -177,9 +177,9 @@ export default function ProfilePage() {
             {purchases.map((p) => (
               <div key={p.product_id} className="flex items-center gap-3 p-3 rounded-xl border transition-colors duration-500"
                 style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                <span className="text-xl">{p.shop_products?.preview_emoji || "✦"}</span>
+                <span className="text-xl">{Array.isArray(p.shop_products) ? p.shop_products[0]?.preview_emoji : p.shop_products?.preview_emoji || "✦"}</span>
                 <div className="flex-1">
-                  <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{p.shop_products?.name || "Product"}</p>
+                  <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{Array.isArray(p.shop_products) ? p.shop_products[0]?.name : p.shop_products?.name || "Product"}</p>
                   <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>
                     {new Date(p.purchased_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                   </p>
