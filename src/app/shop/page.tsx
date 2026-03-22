@@ -212,7 +212,7 @@ export default function ShopPage() {
                             {product.name}
                           </p>
                           <p
-                            className="text-[10px] mt-1"
+                            className="text-[10px] mt-1 text-center w-full"
                             style={{
                               color: isActive ? "var(--color-plum)" : "var(--color-mauve)",
                               fontWeight: isActive ? 600 : 400,
