@@ -203,7 +203,7 @@ export default function ShopPage() {
                           <p
                             className="text-xs mt-1.5 flex items-start justify-center text-center transition-colors duration-500"
                             style={{
-                              height: "32px",
+                              height: "36px",
                               color: isActive ? "var(--color-plum)" : "var(--color-dark)",
                               fontWeight: isActive ? 600 : 500,
                               fontFamily: "'Cormorant Garamond', Georgia, serif",
