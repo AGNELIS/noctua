@@ -260,9 +260,9 @@ export default function DashboardPage() {
                   }}
                 />
                 {/* Text on the cloud */}
-                <div className="relative z-10 flex flex-col items-center px-4 pt-1">
+                <div className="relative z-10 flex flex-col items-center px-6 -mt-1">
                   <h3
-                    className="text-base md:text-lg tracking-wide transition-colors duration-300"
+                    className="text-sm md:text-lg tracking-wide transition-colors duration-300"
                     style={{
                       color: "#5a3050",
                       fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -272,7 +272,7 @@ export default function DashboardPage() {
                     {t(card.titleKey)}
                   </h3>
                   <p
-                    className="text-[10px] md:text-xs leading-snug text-center mt-0.5"
+                    className="text-[9px] md:text-xs leading-tight text-center mt-0"
                     style={{ color: "#7a5a6a" }}
                   >
                     {t(card.descKey)}
