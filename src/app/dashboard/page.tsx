@@ -19,10 +19,10 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
   return (
     <button
       onClick={onClick}
-      className="group relative w-full md:max-w-[180px] md:mx-auto transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
+      className="group relative w-full transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
       style={{ background: "none", border: "none", padding: 0 }}
     >
-      <svg viewBox="0 0 290 170" className="w-full h-auto md:w-[180px]">
+      <svg viewBox="0 0 290 170" className="w-full h-auto">
         <ellipse cx="145" cy="85" rx="145" ry="68" fill="#e8a0b0" opacity="0.4"/>
         <ellipse cx="75" cy="60" rx="65" ry="55" fill="#e0909e" opacity="0.5"/>
         <ellipse cx="205" cy="55" rx="62" ry="52" fill="#e0909e" opacity="0.5"/>
@@ -253,8 +253,19 @@ export default function DashboardPage() {
           <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
         </div>
 
-        {/* Cloud navigation */}
-        <section className="grid grid-cols-1 gap-y-0 max-w-[280px] mx-auto md:grid-cols-2 md:max-w-2xl md:gap-x-0">
+        {/* Cloud navigation — 1 column mobile, 2 columns desktop */}
+        <section className="flex flex-col items-center gap-0 md:hidden" style={{ maxWidth: "280px", margin: "0 auto" }}>
+          {NAV_CARDS.map((card) => (
+            <WatercolorCloud
+              key={card.titleKey}
+              title={t(card.titleKey)}
+              desc={t(card.descKey)}
+              onClick={() => router.push(card.href)}
+            />
+          ))}
+        </section>
+
+        <section className="hidden md:grid md:grid-cols-2 md:gap-x-0 md:gap-y-0" style={{ maxWidth: "420px", margin: "0 auto" }}>
           {NAV_CARDS.map((card) => (
             <WatercolorCloud
               key={card.titleKey}
