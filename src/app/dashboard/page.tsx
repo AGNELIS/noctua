@@ -241,7 +241,7 @@ export default function DashboardPage() {
             <button
               key={card.titleKey}
               onClick={() => router.push(card.href)}
-              className="group relative h-32 md:h-52 flex items-center justify-center
+              className="group relative h-44 md:h-52 flex items-center justify-center
                 transition-all duration-300 ease-out
                 hover:scale-[1.06]
                 focus:outline-none active:scale-[0.97]"
