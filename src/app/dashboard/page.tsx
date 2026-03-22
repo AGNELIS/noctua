@@ -19,7 +19,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
   return (
     <button
       onClick={onClick}
-      className="group relative w-full transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
+      className="group relative w-full md:max-w-[180px] md:mx-auto transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
       style={{ background: "none", border: "none", padding: 0 }}
     >
       <svg viewBox="0 0 290 170" className="w-full h-auto">
@@ -254,7 +254,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Cloud navigation */}
-        <section className="grid grid-cols-1 gap-y-0 max-w-[280px] mx-auto md:max-w-[400px] md:grid-cols-2 md:gap-x-0">
+        <section className="grid grid-cols-1 gap-y-0 max-w-[280px] mx-auto md:grid-cols-2 md:max-w-2xl md:gap-x-0">
           {NAV_CARDS.map((card) => (
             <WatercolorCloud
               key={card.titleKey}
