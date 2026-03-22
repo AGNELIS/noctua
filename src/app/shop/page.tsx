@@ -100,7 +100,7 @@ export default function ShopPage() {
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.back()}
             className="text-sm tracking-wide transition-colors duration-500"
             style={{ color: "var(--color-mauve)", fontWeight: 500 }}
           >
