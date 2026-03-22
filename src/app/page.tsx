@@ -22,11 +22,19 @@ export default async function Home() {
 
       <div className="relative z-10 max-w-lg text-center">
 
-        <p className="text-sm tracking-[0.35em] mb-8"
-          style={{ fontFamily: "'Cormorant Garamond', serif", color: '#D4AF37' }}>
+        <p className="tracking-[0.35em] mb-8"
+          style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "1rem",
+            fontWeight: 500,
+            background: "linear-gradient(135deg, #B8860B, #D4AF37, #E8C860, #D4AF37, #B8860B)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>
           by AGNÉLIS
         </p>
-
+        
         <img
           src="/noctua-logo.png"
           alt="Noctua"
