@@ -22,22 +22,20 @@ export default async function Home() {
 
       <div className="relative z-10 max-w-lg text-center">
 
-        <p className="text-sm tracking-[0.35em] mb-10"
+        <p className="text-sm tracking-[0.35em] mb-8"
           style={{ fontFamily: "'Cormorant Garamond', serif", color: '#D4AF37' }}>
           by AGNÉLIS
         </p>
 
-        <h1 className="text-plum mb-1"
-          style={{
-            fontFamily: "'Cinzel Decorative', serif",
-            fontSize: 'clamp(3.5rem, 8vw, 5.5rem)',
-            fontWeight: 400,
-            letterSpacing: '0.12em',
-          }}>
-          NOCTUA
-        </h1>
+        {/* Owl logo */}
+        <img
+          src="/Logo_sowy.png"
+          alt="Noctua"
+          className="mx-auto mb-8"
+          style={{ width: "clamp(200px, 40vw, 300px)", height: "auto" }}
+        />
 
-        <div className="flex items-center justify-center gap-5 mt-5 mb-10">
+        <div className="flex items-center justify-center gap-5 mt-2 mb-10">
           <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, #D4AF37)' }} />
           <span style={{ color: '#D4AF37', fontSize: '36px', fontWeight: 200, fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>
             ∞
