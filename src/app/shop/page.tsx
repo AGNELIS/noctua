@@ -169,20 +169,22 @@ export default function ShopPage() {
                             }
                           }}
                           disabled={buying === product.id}
-                          className="flex-shrink-0 text-center transition-all duration-300 hover:scale-[1.05] focus:outline-none disabled:opacity-50"
+                          className="flex-shrink-0 flex flex-col items-center transition-all duration-300 hover:scale-[1.05] focus:outline-none disabled:opacity-50"
                           style={{ width: "90px" }}
                         >
                           <div
                             style={{
-                              width: "60px",
-                              height: "100px",
-                              margin: "0 auto",
+                              width: isActive ? "64px" : "60px",
+                              height: isActive ? "104px" : "100px",
                               borderRadius: "12px",
                               border: isActive
                                 ? "2.5px solid var(--color-plum)"
                                 : "1.5px solid var(--color-dusty-rose)",
                               overflow: "hidden",
                               background: colors[0] || "#f0e0e4",
+                              boxShadow: isActive
+                                ? "0 0 12px rgba(155,107,141,0.4)"
+                                : "none",
                             }}
                           >
                             <div style={{ height: "14px", background: colors[1] || "#ddd", opacity: 0.6 }} />
@@ -196,35 +198,13 @@ export default function ShopPage() {
                                   background: "radial-gradient(circle, #c0d0e4, #708aaa)",
                                 }}
                               />
-                              <div
-                                style={{
-                                  height: "3px",
-                                  background: colors[1] || "#aaa",
-                                  borderRadius: "2px",
-                                  margin: "5px 3px 2px",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  height: "3px",
-                                  background: colors[2] || "#888",
-                                  borderRadius: "2px",
-                                  margin: "2px 3px",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  height: "3px",
-                                  background: colors[3] || colors[1] || "#aaa",
-                                  borderRadius: "2px",
-                                  margin: "2px 3px",
-                                  opacity: 0.5,
-                                }}
-                              />
+                              <div style={{ height: "3px", background: colors[1] || "#aaa", borderRadius: "2px", margin: "5px 3px 2px" }} />
+                              <div style={{ height: "3px", background: colors[2] || "#888", borderRadius: "2px", margin: "2px 3px" }} />
+                              <div style={{ height: "3px", background: colors[3] || colors[1] || "#aaa", borderRadius: "2px", margin: "2px 3px", opacity: 0.5 }} />
                             </div>
                           </div>
                           <p
-                            className="text-xs mt-1.5 transition-colors duration-500"
+                            className="text-xs mt-1.5 h-8 flex items-start justify-center transition-colors duration-500"
                             style={{
                               color: isActive ? "var(--color-plum)" : "var(--color-dark)",
                               fontWeight: isActive ? 600 : 500,
@@ -234,11 +214,14 @@ export default function ShopPage() {
                             {product.name}
                           </p>
                           <p
-                            className="text-[10px] mt-0.5"
-                            style={{ color: "var(--color-mauve)" }}
+                            className="text-[10px]"
+                            style={{
+                              color: isActive ? "var(--color-plum)" : "var(--color-mauve)",
+                              fontWeight: isActive ? 600 : 400,
+                            }}
                           >
                             {isActive
-                              ? "Active ✓"
+                              ? "● Active"
                               : owned
                               ? "Tap to activate"
                               : `£${product.price_gbp.toFixed(2)}`}
@@ -268,8 +251,7 @@ export default function ShopPage() {
                               className="text-base transition-colors duration-500"
                               style={{
                                 color: "var(--color-dark)",
-                                fontFamily:
-                                  "'Cormorant Garamond', Georgia, serif",
+                                fontFamily: "'Cormorant Garamond', Georgia, serif",
                                 fontWeight: 600,
                               }}
                             >
@@ -316,6 +298,7 @@ export default function ShopPage() {
             ))}
           </div>
         )}
+
         {/* Dream Analysis Packs */}
         {!loading && (
           <section className="space-y-4" style={{ marginTop: "2.5rem" }}>
