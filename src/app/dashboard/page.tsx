@@ -236,48 +236,46 @@ export default function DashboardPage() {
         </div>
 
         {/* Cloud navigation cards */}
-        <section className="grid grid-cols-2 gap-x-4 gap-y-2">
+        <section className="grid grid-cols-2 gap-x-2 gap-y-0">
           {NAV_CARDS.map((card) => (
             <button
               key={card.titleKey}
               onClick={() => router.push(card.href)}
-              className="group relative flex flex-col items-center justify-center
+              className="group relative h-32 md:h-40 flex items-center justify-center
                 transition-all duration-300 ease-out
                 hover:scale-[1.06]
                 focus:outline-none active:scale-[0.97]"
               style={{ background: "none", border: "none", padding: 0 }}
             >
-              {/* Cloud image */}
-              <div className="relative w-full aspect-[5/4] flex items-center justify-center">
-                <img
-                  src="/noctua-cloud.png"
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-contain
-                    transition-all duration-300
-                    group-hover:drop-shadow-[0_4px_20px_rgba(180,140,170,0.4)]"
+              {/* Cloud image as background */}
+              <img
+                src="/noctua-cloud.png"
+                alt=""
+                className="absolute inset-0 w-full h-full object-fill
+                  transition-all duration-300
+                  group-hover:brightness-105"
+                style={{
+                  filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))",
+                }}
+              />
+              {/* Text on the cloud */}
+              <div className="relative z-10 flex flex-col items-center px-8">
+                <h3
+                  className="text-sm md:text-lg tracking-wide"
                   style={{
-                    filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))",
+                    color: "#5a3050",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontWeight: 700,
                   }}
-                />
-                {/* Text on the cloud */}
-                <div className="relative z-10 flex flex-col items-center px-6 -mt-1">
-                  <h3
-                    className="text-sm md:text-lg tracking-wide transition-colors duration-300"
-                    style={{
-                      color: "#5a3050",
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {t(card.titleKey)}
-                  </h3>
-                  <p
-                    className="text-[9px] md:text-xs leading-tight text-center mt-0"
-                    style={{ color: "#7a5a6a" }}
-                  >
-                    {t(card.descKey)}
-                  </p>
-                </div>
+                >
+                  {t(card.titleKey)}
+                </h3>
+                <p
+                  className="text-[9px] md:text-xs leading-tight text-center mt-0.5"
+                  style={{ color: "#7a5a6a" }}
+                >
+                  {t(card.descKey)}
+                </p>
               </div>
             </button>
           ))}
