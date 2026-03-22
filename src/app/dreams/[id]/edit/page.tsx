@@ -30,6 +30,9 @@ export default function EditDreamEntry() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [analysing, setAnalysing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadEntry = async () => {
@@ -46,6 +49,24 @@ export default function EditDreamEntry() {
     loadEntry();
   }, [id]);
 
+  // Load existing analysis
+  useEffect(() => {
+    const loadAnalysis = async () => {
+      try {
+        const res = await fetch("/api/analyse-dream", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dreamId: id }),
+        });
+        const data = await res.json();
+        if (res.ok && data.cached) {
+          setAnalysis(data.analysis);
+        }
+      } catch {}
+    };
+    if (id) loadAnalysis();
+  }, [id]);
+
   const toggleTone = (value: string) => {
     setTones((prev) => prev.includes(value) ? prev.filter((t) => t !== value) : [...prev, value]);
   };
@@ -57,6 +78,29 @@ export default function EditDreamEntry() {
   };
 
   const removeSymbol = (s: string) => setSymbols(symbols.filter((x) => x !== s));
+
+  const handleAnalyse = async () => {
+    setAnalysing(true);
+    setAnalysisError(null);
+    try {
+      const res = await fetch("/api/analyse-dream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dreamId: id }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAnalysis(data.analysis);
+      } else if (data.error === "limit_reached") {
+        setAnalysisError("You've used your free analysis this month. Subscribe for unlimited dream insights.");
+      } else {
+        setAnalysisError("Analysis failed. Please try again.");
+      }
+    } catch {
+      setAnalysisError("Something went wrong.");
+    }
+    setAnalysing(false);
+  };
 
   const handleSave = async () => {
     if (!content.trim()) { setError("Please describe your dream before saving."); return; }
@@ -155,6 +199,46 @@ export default function EditDreamEntry() {
                   {s}<button onClick={() => removeSymbol(s)} className="opacity-60">×</button>
                 </span>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* Dream Analysis */}
+        <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--color-dusty-rose)" }}>
+          {analysis ? (
+            <div className="space-y-4">
+              <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Dream Analysis</h2>
+              <div
+                className="text-sm leading-relaxed whitespace-pre-wrap"
+                style={{ color: "var(--color-dark)" }}
+              >
+                {analysis}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center space-y-3">
+              {analysisError ? (
+                <>
+                  <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{analysisError}</p>
+                  <button
+                    onClick={() => router.push("/shop")}
+                    className="text-sm px-4 py-2 rounded-lg border transition-all"
+                    style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}
+                  >
+                    Unlock unlimited analyses →
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleAnalyse}
+                  disabled={analysing || !content.trim()}
+                  className="px-6 py-3 rounded-xl text-sm tracking-wide transition-all disabled:opacity-50"
+                  style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
+                >
+                  {analysing ? "Analysing your dream..." : "Analyse this dream"}
+                </button>
+              )}
+              <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>1 free analysis per month</p>
             </div>
           )}
         </div>
