@@ -173,7 +173,7 @@ export default function DashboardPage() {
           <img
             src="/noctua-owl-icon.png"
             alt="Profile"
-            className="w-12 h-12 object-contain"
+            className="w-16 h-16 object-contain"
           />
         </button>
       </header>
