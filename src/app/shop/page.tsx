@@ -318,7 +318,7 @@ export default function ShopPage() {
         )}
         {/* Dream Analysis Packs */}
         {!loading && (
-          <section className="mt-12 space-y-4">
+          <section className="mt-16 space-y-4">
             <h2
               className="uppercase mb-4 transition-colors duration-500"
               style={{
@@ -374,10 +374,18 @@ export default function ShopPage() {
 
             <button
               onClick={() => router.push("/premium")}
-              className="w-full text-center py-3 text-sm tracking-wide transition-colors"
-              style={{ color: "var(--color-mauve)" }}
+              className="w-full text-center py-4 mt-2 rounded-2xl transition-all duration-300 hover:scale-[1.02]"
+              style={{
+                background: "linear-gradient(135deg, rgba(155,107,141,0.08), rgba(155,107,141,0.03))",
+                border: "1px solid var(--color-dusty-rose)",
+              }}
             >
-              or <span style={{ color: "var(--color-plum)", fontWeight: 600 }}>subscribe to Premium</span> for unlimited analyses ✦
+              <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
+                Want unlimited dream analyses?
+              </p>
+              <p className="text-base mt-1" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                Explore Premium ✦
+              </p>
             </button>
           </section>
         )}
