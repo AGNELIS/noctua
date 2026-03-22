@@ -318,7 +318,7 @@ export default function ShopPage() {
         )}
         {/* Dream Analysis Packs */}
         {!loading && (
-          <section className="mt-16 space-y-4">
+          <section className="mt-24 space-y-4">
             <h2
               className="uppercase mb-4 transition-colors duration-500"
               style={{
