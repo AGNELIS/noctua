@@ -201,9 +201,9 @@ export default function ShopPage() {
                             </div>
                           </div>
                           <p
-                            className="text-xs mt-1.5 flex items-start justify-center text-center transition-colors duration-500"
+                            className="text-xs mt-3 flex items-start justify-center text-center transition-colors duration-500"
                             style={{
-                              height: "36px",
+                              height: "40px",
                               color: isActive ? "var(--color-plum)" : "var(--color-dark)",
                               fontWeight: isActive ? 600 : 500,
                               fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -212,7 +212,7 @@ export default function ShopPage() {
                             {product.name}
                           </p>
                           <p
-                            className="text-[10px]"
+                            className="text-[10px] mt-1"
                             style={{
                               color: isActive ? "var(--color-plum)" : "var(--color-mauve)",
                               fontWeight: isActive ? 600 : 400,
