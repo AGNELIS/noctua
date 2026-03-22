@@ -241,7 +241,7 @@ export default function DashboardPage() {
             <button
               key={card.titleKey}
               onClick={() => router.push(card.href)}
-              className="group relative h-32 md:h-40 flex items-center justify-center
+              className="group relative h-32 md:h-52 flex items-center justify-center
                 transition-all duration-300 ease-out
                 hover:scale-[1.06]
                 focus:outline-none active:scale-[0.97]"
@@ -251,7 +251,7 @@ export default function DashboardPage() {
               <img
                 src="/noctua-cloud.png"
                 alt=""
-                className="absolute inset-0 w-full h-full object-fill
+                className="absolute inset-0 w-full h-full object-contain
                   transition-all duration-300
                   group-hover:brightness-105"
                 style={{
