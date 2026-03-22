@@ -36,29 +36,20 @@ export default function SymbolsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [hasExtended, setHasExtended] = useState(false);
 
-  useEffect(() => {
-    loadSymbols();
-  }, []);
+  useEffect(() => { loadSymbols(); }, []);
 
   const loadSymbols = async () => {
     const supabase = createClient();
-
-    // Check if user purchased Extended Dream Symbols
     const { data: purchases } = await supabase
       .from("user_purchases")
       .select("product_id, shop_products(name)")
       .eq("shop_products.category", "symbol_pack");
 
-    const ownsExtended = (purchases || []).some(
-      (p: any) => p.shop_products?.name === "Extended Dream Symbols"
-    );
+    const ownsExtended = (purchases || []).some((p: any) => p.shop_products?.name === "Extended Dream Symbols");
     setHasExtended(ownsExtended);
 
-    // Load symbols — all if purchased, only free if not
     let query = supabase.from("dream_symbols").select("*").order("symbol", { ascending: true });
-    if (!ownsExtended) {
-      query = query.eq("is_premium", false);
-    }
+    if (!ownsExtended) query = query.eq("is_premium", false);
 
     const { data } = await query;
     setSymbols(data || []);
@@ -72,7 +63,6 @@ export default function SymbolsPage() {
   });
 
   const freeCount = symbols.filter((s) => !s.is_premium).length;
-  const totalCount = symbols.length;
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
@@ -85,26 +75,17 @@ export default function SymbolsPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-5">
-        {/* Extended badge */}
-        {hasExtended && (
-          <div className="text-center">
-            <span className="inline-block text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 600 }}>
-              ✦ Extended Pack Active — {totalCount} symbols
-            </span>
-          </div>
-        )}
-
-        {!hasExtended && (
+        {hasExtended ? (
+          <p className="text-center text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>
+            Extended Pack — {symbols.length} symbols
+          </p>
+        ) : (
           <div className="text-center space-y-2">
-            <p className="text-xs" style={{ color: "var(--color-mauve)" }}>
-              Showing {freeCount} free symbols
-            </p>
-            <button
-              onClick={() => router.push("/shop")}
+            <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{freeCount} symbols</p>
+            <button onClick={() => router.push("/shop")}
               className="text-xs px-4 py-1.5 rounded-full border transition-all hover:scale-105"
-              style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}
-            >
-              🔮 Unlock 50+ symbols →
+              style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}>
+              Unlock more symbols →
             </button>
           </div>
         )}
@@ -145,9 +126,6 @@ export default function SymbolsPage() {
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-medium capitalize" style={{ color: "var(--color-dark)" }}>{s.symbol}</span>
-                    {s.is_premium && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-cream)", fontSize: "10px" }}>✦</span>
-                    )}
                     {s.category && (
                       <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--color-cream)", color: "var(--color-mauve)" }}>{s.category}</span>
                     )}
