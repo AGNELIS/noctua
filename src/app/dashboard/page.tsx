@@ -20,15 +20,15 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
     <button
       onClick={onClick}
       className="group relative w-full flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
-      style={{ background: "none", border: "none", padding: 0, height: "160px" }}
+      style={{ background: "none", border: "none", padding: "8px 0" }}
     >
       <img
         src="/noctua-cloud.png"
         alt=""
-        className="absolute inset-0 w-full h-full object-contain"
+        className="w-48 md:w-40 h-auto"
         style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))" }}
       />
-      <div className="relative z-10 flex flex-col items-center px-8 -mt-1">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
         <span
           style={{
             color: "#3a0825",
