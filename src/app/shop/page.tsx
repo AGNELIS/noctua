@@ -316,6 +316,71 @@ export default function ShopPage() {
             ))}
           </div>
         )}
+        {/* Dream Analysis Packs */}
+        {!loading && (
+          <section className="mt-12 space-y-4">
+            <h2
+              className="uppercase mb-4 transition-colors duration-500"
+              style={{
+                color: "var(--color-mauve)",
+                fontWeight: 600,
+                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontSize: "0.8rem",
+                letterSpacing: "0.15em",
+              }}
+            >
+              Dream Analysis
+            </h2>
+
+            <div
+              className="rounded-2xl p-5 flex items-center justify-between transition-all duration-500"
+              style={{
+                background: "var(--color-blush)",
+                border: "1px solid var(--color-dusty-rose)",
+              }}
+            >
+              <div>
+                <h3
+                  className="text-base transition-colors duration-500"
+                  style={{
+                    color: "var(--color-dark)",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontWeight: 600,
+                  }}
+                >
+                  5 dream analyses
+                </h3>
+                <p
+                  className="text-2xl mt-1"
+                  style={{
+                    color: "var(--color-dark)",
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  }}
+                >
+                  £2.99
+                </p>
+              </div>
+              <button
+                className="px-5 py-2.5 rounded-lg text-sm tracking-wide font-medium transition-all duration-300 hover:shadow-md"
+                style={{
+                  background: "linear-gradient(135deg, #D4AF37, #B8960B)",
+                  color: "#fff",
+                }}
+                onClick={() => alert("Stripe integration coming soon!")}
+              >
+                Buy now
+              </button>
+            </div>
+
+            <button
+              onClick={() => router.push("/premium")}
+              className="w-full text-center py-3 text-sm tracking-wide transition-colors"
+              style={{ color: "var(--color-mauve)" }}
+            >
+              or <span style={{ color: "var(--color-plum)", fontWeight: 600 }}>subscribe to Premium</span> for unlimited analyses ✦
+            </button>
+          </section>
+        )}
       </main>
     </div>
   );

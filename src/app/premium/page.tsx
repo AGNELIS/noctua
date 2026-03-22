@@ -172,65 +172,6 @@ export default function PremiumPage() {
           </button>
         </div>
 
-        {/* Divider */}
-        <div className="flex items-center justify-center gap-4">
-          <div className="h-px w-16" style={{ background: "linear-gradient(to right, transparent, var(--color-gold))" }} />
-          <span className="text-xs tracking-widest uppercase" style={{ color: "var(--color-mauve)" }}>or</span>
-          <div className="h-px w-16" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
-        </div>
-
-        {/* Dream Analysis Packs */}
-        <section className="space-y-4">
-          <div className="text-center space-y-2">
-            <h3
-              className="text-xl"
-              style={{
-                color: "var(--color-dark)",
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontWeight: 600,
-              }}
-            >
-              {t("pack_title")}
-            </h3>
-            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
-              {t("pack_subtitle")}
-            </p>
-          </div>
-
-          <div
-            className="rounded-2xl p-5 flex items-center justify-between"
-            style={{
-              background: "linear-gradient(135deg, rgba(212,175,55,0.06), rgba(212,175,55,0.02))",
-              border: "1px solid rgba(212,175,55,0.2)",
-            }}
-          >
-            <div>
-              <p className="font-medium text-base" style={{ color: "var(--color-dark)" }}>
-                {t("pack_5")}
-              </p>
-              <p
-                className="text-2xl mt-1"
-                style={{
-                  color: "var(--color-dark)",
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
-                }}
-              >
-                £2.99
-              </p>
-            </div>
-            <button
-              onClick={handleBuyPack}
-              disabled={loadingPack}
-              className="px-5 py-2.5 rounded-xl text-sm tracking-wide font-medium transition-all duration-300 hover:shadow-md disabled:opacity-50"
-              style={{
-                background: "linear-gradient(135deg, #D4AF37, #B8960B)",
-                color: "#fff",
-              }}
-            >
-              {loadingPack ? "..." : t("pack_buy")}
-            </button>
-          </div>
-        </section>
 
         <div className="h-8" />
       </main>
