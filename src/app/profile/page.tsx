@@ -168,7 +168,7 @@ const saveName = async () => {
               </span>
             </div>
           </button>
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Tap to change photo</p>
+          <p className="text-base" style={{ color: "var(--color-mauve)" }}>Tap to change photo</p>
           {editingName ? (
             <div className="flex items-center justify-center gap-2 mt-1">
               <input
@@ -201,8 +201,8 @@ const saveName = async () => {
               )}
             </button>
           )}
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{email}</p>
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Member since {memberSince}</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Member since {memberSince}</p>
         </section>
 
         {/* Divider */}
