@@ -195,7 +195,7 @@ const saveName = async () => {
           ) : (
             <button onClick={() => { setNameInput(displayName); setEditingName(true); }} className="mt-1 transition-all hover:opacity-70">
               {displayName ? (
-                <p className="text-xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{displayName}</p>
+                <p className="text-2xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{displayName}</p>
               ) : (
                 <p className="text-sm italic" style={{ color: "var(--color-dusty-rose)" }}>+ Add your name</p>
               )}
