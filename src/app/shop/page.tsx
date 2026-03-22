@@ -153,97 +153,97 @@ export default function ShopPage() {
                 </h2>
 
                 {group.category === "theme" ? (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: "none" }}>
                     {group.items.map((product) => {
                       const owned = purchased.has(product.id);
                       const isActive = activeThemeId === product.id;
+                      const colors = product.preview_colors || ["#ccc", "#aaa", "#888"];
                       return (
-                        <div
+                        <button
                           key={product.id}
-                          className="rounded-2xl border overflow-hidden transition-all duration-500"
-                          style={{
-                            borderColor: isActive
-                              ? "var(--color-mauve)"
-                              : "var(--color-dusty-rose)",
-                            background: "var(--color-blush)",
-                            boxShadow: isActive
-                              ? "0 0 0 2px var(--color-mauve)"
-                              : "none",
+                          onClick={() => {
+                            if (owned) {
+                              handleActivateTheme(product.id, product.name);
+                            } else {
+                              handlePurchase(product.id);
+                            }
                           }}
+                          disabled={buying === product.id}
+                          className="flex-shrink-0 text-center transition-all duration-300 hover:scale-[1.05] focus:outline-none disabled:opacity-50"
+                          style={{ width: "90px" }}
                         >
-                          <div className="h-16 flex">
-                            {product.preview_colors.map((c, i) => (
+                          <div
+                            style={{
+                              width: "60px",
+                              height: "100px",
+                              margin: "0 auto",
+                              borderRadius: "12px",
+                              border: isActive
+                                ? "2.5px solid var(--color-plum)"
+                                : "1.5px solid var(--color-dusty-rose)",
+                              overflow: "hidden",
+                              background: colors[0] || "#f0e0e4",
+                            }}
+                          >
+                            <div style={{ height: "14px", background: colors[1] || "#ddd", opacity: 0.6 }} />
+                            <div style={{ padding: "5px" }}>
                               <div
-                                key={i}
-                                className="flex-1"
-                                style={{ background: c }}
+                                style={{
+                                  width: "22px",
+                                  height: "22px",
+                                  margin: "2px auto",
+                                  borderRadius: "50%",
+                                  background: "radial-gradient(circle, #c0d0e4, #708aaa)",
+                                }}
                               />
-                            ))}
-                          </div>
-                          <div className="p-4 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg">
-                                {product.preview_emoji}
-                              </span>
-                              <h3
-                                className="text-base transition-colors duration-500"
+                              <div
                                 style={{
-                                  color: "var(--color-dark)",
-                                  fontFamily:
-                                    "'Cormorant Garamond', Georgia, serif",
-                                  fontWeight: 600,
+                                  height: "3px",
+                                  background: colors[1] || "#aaa",
+                                  borderRadius: "2px",
+                                  margin: "5px 3px 2px",
                                 }}
-                              >
-                                {product.name}
-                              </h3>
+                              />
+                              <div
+                                style={{
+                                  height: "3px",
+                                  background: colors[2] || "#888",
+                                  borderRadius: "2px",
+                                  margin: "2px 3px",
+                                }}
+                              />
+                              <div
+                                style={{
+                                  height: "3px",
+                                  background: colors[3] || colors[1] || "#aaa",
+                                  borderRadius: "2px",
+                                  margin: "2px 3px",
+                                  opacity: 0.5,
+                                }}
+                              />
                             </div>
-                            <p
-                              className="text-sm leading-relaxed transition-colors duration-500"
-                              style={{ color: "var(--color-mauve)" }}
-                            >
-                              {product.description}
-                            </p>
-                            {owned ? (
-                              <button
-                                onClick={() =>
-                                  handleActivateTheme(product.id, product.name)
-                                }
-                                className="w-full py-2.5 rounded-lg text-sm tracking-wide border transition-all duration-500"
-                                style={{
-                                  borderColor: isActive
-                                    ? "var(--color-mauve)"
-                                    : "var(--color-dusty-rose)",
-                                  color: isActive
-                                    ? "var(--color-cream)"
-                                    : "var(--color-plum)",
-                                  background: isActive
-                                    ? "var(--color-mauve)"
-                                    : "transparent",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                {isActive
-                                  ? "✓ Active — tap to reset"
-                                  : "Activate theme"}
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => handlePurchase(product.id)}
-                                disabled={buying === product.id}
-                                className="w-full py-2.5 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
-                                style={{
-                                  background: "var(--color-plum)",
-                                  color: "var(--color-cream)",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                {buying === product.id
-                                  ? "Processing..."
-                                  : `£${product.price_gbp.toFixed(2)}`}
-                              </button>
-                            )}
                           </div>
-                        </div>
+                          <p
+                            className="text-xs mt-1.5 transition-colors duration-500"
+                            style={{
+                              color: isActive ? "var(--color-plum)" : "var(--color-dark)",
+                              fontWeight: isActive ? 600 : 500,
+                              fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            }}
+                          >
+                            {product.name}
+                          </p>
+                          <p
+                            className="text-[10px] mt-0.5"
+                            style={{ color: "var(--color-mauve)" }}
+                          >
+                            {isActive
+                              ? "Active ✓"
+                              : owned
+                              ? "Tap to activate"
+                              : `£${product.price_gbp.toFixed(2)}`}
+                          </p>
+                        </button>
                       );
                     })}
                   </div>
