@@ -50,6 +50,21 @@ const translations = {
   profile_theme: { en: "Theme", pl: "Motyw" },
   profile_premium: { en: "Go Premium", pl: "Przejdź na Premium" },
   profile_premium_active: { en: "Premium active", pl: "Premium aktywne" },
+  profile_member_since: { en: "Member since", pl: "W Noctui od" },
+  profile_journal_entries: { en: "Journal entries", pl: "Wpisy dziennika" },
+  profile_dreams_recorded: { en: "Dreams recorded", pl: "Zapisane sny" },
+  profile_symbols_available: { en: "Symbols available", pl: "Dostępne symbole" },
+  profile_cycle_entries: { en: "Cycle entries", pl: "Wpisy cyklu" },
+  profile_default_theme: { en: "Default Noctua palette", pl: "Domyślna paleta Noctua" },
+  profile_reset_theme: { en: "Reset to default", pl: "Przywróć domyślny" },
+  profile_browse_themes: { en: "Browse themes →", pl: "Przeglądaj motywy →" },
+  profile_active_theme: { en: "Active theme", pl: "Aktywny motyw" },
+  profile_purchases: { en: "Your purchases", pl: "Twoje zakupy" },
+  profile_add_name: { en: "+ Add your name", pl: "+ Dodaj swoje imię" },
+  profile_tap_photo: { en: "Tap to change photo", pl: "Kliknij, aby zmienić zdjęcie" },
+  profile_uploading: { en: "Uploading...", pl: "Przesyłanie..." },
+  profile_signing_out: { en: "Signing out...", pl: "Wylogowywanie..." },
+  profile_name_placeholder: { en: "Your name", pl: "Twoje imię" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

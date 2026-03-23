@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/lib/i18n";
+import type { Language } from "@/lib/i18n";
 
 type Stats = {
   journalCount: number;
@@ -15,6 +17,7 @@ type Stats = {
 export default function ProfilePage() {
   const router = useRouter();
   const { activeThemeName, resetTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -131,10 +134,36 @@ const saveName = async () => {
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← Back</button>
-          <div className="w-12" />
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
+          <div
+            className="flex items-center rounded-full overflow-hidden border"
+            style={{ borderColor: "var(--color-dusty-rose)" }}
+          >
+            <button
+              onClick={() => setLanguage("en")}
+              className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300"
+              style={{
+                backgroundColor: language === "en" ? "var(--color-plum)" : "transparent",
+                color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)",
+                fontWeight: language === "en" ? 600 : 400,
+              }}
+            >
+              EN
+            </button>
+            <button
+              onClick={() => setLanguage("pl")}
+              className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300"
+              style={{
+                backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent",
+                color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)",
+                fontWeight: language === "pl" ? 600 : 400,
+              }}
+            >
+              PL
+            </button>
+          </div>
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>Profile</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("profile_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-8">
@@ -168,7 +197,7 @@ const saveName = async () => {
               </span>
             </div>
           </button>
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Tap to change photo</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{uploading ? t("profile_uploading") : t("profile_tap_photo")}</p>
           {editingName ? (
             <div className="flex items-center justify-center gap-2 mt-1">
               <input
@@ -188,7 +217,7 @@ const saveName = async () => {
                 autoFocus
               />
               <button onClick={saveName} className="text-sm px-3 py-1 rounded-lg"
-                style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>Save</button>
+                style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>{t("save")}</button>
               <button onClick={() => setEditingName(false)} className="text-sm"
                 style={{ color: "var(--color-mauve)" }}>✕</button>
             </div>
@@ -197,12 +226,12 @@ const saveName = async () => {
               {displayName ? (
                 <p style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, fontSize: "1.75rem" }}>{displayName}</p>
               ) : (
-                <p className="text-sm italic" style={{ color: "var(--color-dusty-rose)" }}>+ Add your name</p>
+                <p className="text-sm italic" style={{ color: "var(--color-dusty-rose)" }}>{t("profile_add_name")}</p>
               )}
             </button>
           )}
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Member since {memberSince}</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{t("profile_member_since")} {memberSince}</p>
         </section>
 
         {/* Divider */}
@@ -215,10 +244,10 @@ const saveName = async () => {
         {/* Stats */}
         <section className="grid grid-cols-2 gap-3">
           {[
-            { label: "Journal entries", value: stats.journalCount, icon: "✎" },
-            { label: "Dreams recorded", value: stats.dreamCount, icon: "☽" },
-            { label: "Symbols available", value: stats.symbolCount, icon: "◈" },
-            { label: "Cycle entries", value: stats.cycleCount, icon: "◯" },
+            { label: t("profile_journal_entries"), value: stats.journalCount, icon: "✎" },
+            { label: t("profile_dreams_recorded"), value: stats.dreamCount, icon: "☽" },
+            { label: t("profile_symbols_available"), value: stats.symbolCount, icon: "◈" },
+            { label: t("profile_cycle_entries"), value: stats.cycleCount, icon: "◯" },
           ].map((s) => (
             <div key={s.label} className="p-4 rounded-2xl border text-center transition-colors duration-500"
               style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
@@ -230,18 +259,18 @@ const saveName = async () => {
 
         {/* Active theme */}
         <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-          <h2 className="text-sm uppercase tracking-wider mb-3" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Active theme</h2>
+          <h2 className="text-sm uppercase tracking-wider mb-3" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("profile_active_theme")}</h2>
           {activeThemeName ? (
             <div className="flex items-center justify-between">
               <p className="text-base" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName}</p>
               <button onClick={handleResetTheme} className="text-xs px-3 py-1.5 rounded-lg border transition-all"
-                style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)" }}>Reset to default</button>
+                style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)" }}>{t("profile_reset_theme")}</button>
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <p className="text-sm italic" style={{ color: "var(--color-dark)" }}>Default Noctua palette</p>
+              <p className="text-sm italic" style={{ color: "var(--color-dark)" }}>{t("profile_default_theme")}</p>
               <button onClick={() => router.push("/shop")} className="text-xs px-3 py-1.5 rounded-lg border transition-all"
-                style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}>Browse themes →</button>
+                style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}>{t("profile_browse_themes")}</button>
             </div>
           )}
         </section>
@@ -249,7 +278,7 @@ const saveName = async () => {
         {/* Purchases */}
         {purchases.length > 0 && (
           <section className="space-y-3">
-           <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Your purchases</h2>
+           <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("profile_purchases")}</h2>
             {purchases.map((p) => {
               const shop = Array.isArray(p.shop_products) ? p.shop_products[0] : p.shop_products;
               return (
@@ -272,7 +301,7 @@ const saveName = async () => {
           <button onClick={handleLogout} disabled={loggingOut}
             className="w-full py-3 rounded-xl text-sm tracking-wide transition-all border"
             style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)", fontWeight: 500 }}>
-            {loggingOut ? "Signing out..." : "Sign out"}
+            {loggingOut ? t("profile_signing_out") : t("sign_out")}
           </button>
         </section>
 
