@@ -25,7 +25,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
       <img
         src="/noctua-cloud.png"
         alt=""
-        className="w-52 md:w-48 h-auto"
+        className="w-60 md:w-48 h-auto"
         style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))" }}
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
