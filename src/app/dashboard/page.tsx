@@ -234,28 +234,15 @@ export default function DashboardPage() {
               {moon.illumination}% {t("illuminated")}
             </p>
           </div>
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md mx-auto text-center">
             <p
-              className="text-center text-lg md:text-xl leading-relaxed italic transition-colors duration-500"
-              style={{ color: "var(--color-plum)" }}
-            >
-              &ldquo;{moon.description}&rdquo;
-            </p>
-          </div>
-
-          {/* Daily Insight */}
-          <div
-            className="max-w-sm mx-auto mt-6 px-6 py-4 rounded-2xl border text-center"
-            style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}
-          >
-            <p
-              className="text-xs uppercase tracking-widest mb-2"
+              className="text-xs uppercase tracking-widest mb-3"
               style={{ color: "var(--color-gold)", fontWeight: 600 }}
             >
-              {language === "pl" ? "Dzienny wgląd" : "Daily insight"}
+              Shadow Work
             </p>
             <p
-              className="text-base md:text-lg leading-relaxed"
+              className="text-lg md:text-xl leading-relaxed transition-colors duration-500"
               style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
             >
               {getDailyInsight(moon.phase)}
