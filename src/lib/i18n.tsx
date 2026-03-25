@@ -16,6 +16,8 @@ const translations = {
   nav_grounding: { en: "Grounding", pl: "Uziemienie" },
   nav_grounding_desc: { en: "Return to yourself", pl: "Wróć do siebie" },
   nav_shop: { en: "Shop", pl: "Sklep" },
+  nav_shadow: { en: "Shadow Work", pl: "Praca z cieniem" },
+  nav_shadow_desc: { en: "Face what keeps returning", pl: "Zmierz sie z tym co wraca" },
   nav_shop_desc: { en: "Themes, symbols & more", pl: "Motywy, symbole i więcej" },
   illuminated: { en: "illuminated", pl: "oświetlenia" },
   premium_title: { en: "Premium", pl: "Premium" },

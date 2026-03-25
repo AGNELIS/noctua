@@ -11,6 +11,7 @@ const NAV_CARDS = [
   { titleKey: "nav_dreams" as const, descKey: "nav_dreams_desc" as const, href: "/dreams" },
   { titleKey: "nav_cycle" as const, descKey: "nav_cycle_desc" as const, href: "/cycle" },
   { titleKey: "nav_symbols" as const, descKey: "nav_symbols_desc" as const, href: "/symbols" },
+  { titleKey: "nav_shadow" as const, descKey: "nav_shadow_desc" as const, href: "/shadow-work" },
   { titleKey: "nav_grounding" as const, descKey: "nav_grounding_desc" as const, href: "/grounding" },
   { titleKey: "nav_shop" as const, descKey: "nav_shop_desc" as const, href: "/shop" },
 ];
