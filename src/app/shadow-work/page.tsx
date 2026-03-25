@@ -127,7 +127,7 @@ export default function ShadowWorkPage() {
 
         {/* Today's prompt */}
         <section className="text-center space-y-4 pt-4">
-          <p className="text-xs uppercase tracking-widest" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+          <p className="text-sm uppercase tracking-widest" style={{ color: "var(--color-dark)", fontWeight: 600 }}>
             {moon.phase}
           </p>
           <p
