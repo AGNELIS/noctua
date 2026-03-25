@@ -34,7 +34,7 @@ export default function ShadowWorkPage() {
   const router = useRouter();
   const { language, t } = useLanguage();
   const moon = getMoonPhase();
-  const todayPrompt = getDailyInsight(moon.phase);
+  const todayPrompt = getDailyInsight(moon.phase, language);
 
   const [response, setResponse] = useState("");
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);

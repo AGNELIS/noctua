@@ -235,7 +235,7 @@ export default function DashboardPage() {
               className="text-lg md:text-xl leading-relaxed transition-colors duration-500"
               style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
             >
-              {getDailyInsight(moon.phase)}
+              {getDailyInsight(moon.phase, language)}
             </p>
           </div>
         </section>
