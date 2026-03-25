@@ -119,7 +119,7 @@ export default function ShadowWorkPage() {
           className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
           style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}
         >
-          Shadow Work
+          {language === "pl" ? "Praca z cieniem" : "Shadow Work"}
         </h1>
       </header>
 

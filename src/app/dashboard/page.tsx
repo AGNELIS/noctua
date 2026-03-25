@@ -29,7 +29,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
         className="w-60 md:w-48 h-auto"
         style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))" }}
       />
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-8">
+      <div className="absolute inset-0 flex items-center justify-center px-8">
         <span
           style={{
             color: "#3a0825",
@@ -39,17 +39,6 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
           }}
         >
           {title}
-        </span>
-        <span
-          className="mt-0.5"
-          style={{
-            color: "#5a1838",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            fontSize: "0.8rem",
-            fontWeight: 400,
-          }}
-        >
-          {desc}
         </span>
       </div>
     </button>
@@ -237,10 +226,10 @@ export default function DashboardPage() {
           </div>
           <div className="max-w-md mx-auto text-center">
             <p
-              className="text-xs uppercase tracking-widest mb-3"
-              style={{ color: "var(--color-gold)", fontWeight: 600 }}
+              className="text-sm uppercase tracking-widest mb-3"
+              style={{ color: "var(--color-dark)", fontWeight: 600 }}
             >
-              Shadow Work
+              {language === "pl" ? "Praca z cieniem" : "Shadow Work"}
             </p>
             <p
               className="text-lg md:text-xl leading-relaxed transition-colors duration-500"
