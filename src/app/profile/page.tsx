@@ -29,7 +29,7 @@ export default function ProfilePage() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
-  const [memberSince, setMemberSince] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
 
   useEffect(() => { loadProfile(); }, []);
 
@@ -39,7 +39,7 @@ export default function ProfilePage() {
     if (!user) { router.push("/login"); return; }
 
     setEmail(user.email || "");
-    setMemberSince(new Date(user.created_at).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" }));
+    setCreatedAt(user.created_at);
 
     const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url").eq("id", user.id).single();
     setDisplayName(profile?.display_name || "");
@@ -231,7 +231,7 @@ const saveName = async () => {
             </button>
           )}
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{t("profile_member_since")} {memberSince}</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{t("profile_member_since")} {createdAt ? new Date(createdAt).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" }) : ""}</p>
         </section>
 
         {/* Divider */}
