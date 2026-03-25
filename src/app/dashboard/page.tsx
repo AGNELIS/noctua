@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getMoonPhase, getGreeting, type MoonPhaseInfo } from "@/lib/moon";
+import { getMoonPhase, getGreeting, getDailyInsight, type MoonPhaseInfo } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
 
 const NAV_CARDS = [
@@ -240,6 +240,25 @@ export default function DashboardPage() {
               style={{ color: "var(--color-plum)" }}
             >
               &ldquo;{moon.description}&rdquo;
+            </p>
+          </div>
+
+          {/* Daily Insight */}
+          <div
+            className="max-w-sm mx-auto mt-6 px-6 py-4 rounded-2xl border text-center"
+            style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}
+          >
+            <p
+              className="text-xs uppercase tracking-widest mb-2"
+              style={{ color: "var(--color-gold)", fontWeight: 600 }}
+            >
+              {language === "pl" ? "Dzienny wgląd" : "Daily insight"}
+            </p>
+            <p
+              className="text-base md:text-lg leading-relaxed"
+              style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
+            >
+              {getDailyInsight(moon.phase)}
             </p>
           </div>
         </section>
