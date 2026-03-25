@@ -39,7 +39,7 @@ export default function ProfilePage() {
     if (!user) { router.push("/login"); return; }
 
     setEmail(user.email || "");
-    setMemberSince(new Date(user.created_at).toLocaleDateString("en-GB", { month: "long", year: "numeric" }));
+    setMemberSince(new Date(user.created_at).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" }));
 
     const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url").eq("id", user.id).single();
     setDisplayName(profile?.display_name || "");
@@ -287,7 +287,7 @@ const saveName = async () => {
                   <div className="flex-1">
                     <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{shop?.name || "Product"}</p>
                     <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>
-                      {new Date(p.purchased_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                      {new Date(p.purchased_at).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                     </p>
                   </div>
                 </div>

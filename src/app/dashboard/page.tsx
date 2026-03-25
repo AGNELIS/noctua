@@ -132,7 +132,7 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [moon, setMoon] = useState<MoonPhaseInfo | null>(null);
   const [greeting, setGreeting] = useState("");
   const [loading, setLoading] = useState(false);
@@ -204,7 +204,7 @@ export default function DashboardPage() {
             className="text-base md:text-lg tracking-wide transition-colors duration-500"
             style={{ color: "var(--color-mauve)" }}
           >
-            {new Date().toLocaleDateString("en-GB", {
+            {new Date().toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", {
               weekday: "long",
               day: "numeric",
               month: "long",
@@ -251,28 +251,6 @@ export default function DashboardPage() {
           <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
         </div>
 
-{/* Premium banner */}
-        <button
-          onClick={() => router.push("/premium")}
-          className="w-full max-w-md mx-auto block py-4 px-6 rounded-2xl text-center transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
-          style={{
-            background: "linear-gradient(135deg, #9B6B8D, #6b5270)",
-            border: "none",
-            boxShadow: "0 4px 16px rgba(155,107,141,0.3)",
-          }}
-        >
-          <span
-            className="text-lg tracking-widest uppercase"
-            style={{
-              color: "#fff",
-              fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontWeight: 600,
-              letterSpacing: "0.15em",
-            }}
-          >
-            Unlock Premium
-          </span>
-        </button>
         {/* Cloud navigation */}
         <section className="grid grid-cols-1 gap-y-0 max-w-[300px] mx-auto md:grid-cols-2 md:max-w-md md:gap-x-0">
           {NAV_CARDS.map((card) => (
