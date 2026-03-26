@@ -123,6 +123,17 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
 export default function DashboardPage() {
   const router = useRouter();
   const { t, language } = useLanguage();
+
+  const moonPhaseKey: Record<string, string> = {
+    "New Moon": "moon_new",
+    "Waxing Crescent": "moon_waxing_crescent",
+    "First Quarter": "moon_first_quarter",
+    "Waxing Gibbous": "moon_waxing_gibbous",
+    "Full Moon": "moon_full",
+    "Waning Gibbous": "moon_waning_gibbous",
+    "Last Quarter": "moon_last_quarter",
+    "Waning Crescent": "moon_waning_crescent",
+  };
   const [moon, setMoon] = useState<MoonPhaseInfo | null>(null);
   const [greeting, setGreeting] = useState("");
   const [loading, setLoading] = useState(false);
@@ -215,7 +226,7 @@ export default function DashboardPage() {
                 fontWeight: 400,
               }}
             >
-              {moon.phase}
+              {t((moonPhaseKey[moon.phase] || "moon_new") as any)}
             </h2>
             <p
               className="text-base md:text-lg tracking-widest uppercase transition-colors duration-500"

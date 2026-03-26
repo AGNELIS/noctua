@@ -67,6 +67,93 @@ const translations = {
   profile_uploading: { en: "Uploading...", pl: "Przesyłanie..." },
   profile_signing_out: { en: "Signing out...", pl: "Wylogowywanie..." },
   profile_name_placeholder: { en: "Your name", pl: "Twoje imię" },
+
+  // Moon phases
+  moon_new: { en: "New Moon", pl: "Now" },
+  moon_waxing_crescent: { en: "Waxing Crescent", pl: "Przybywajacy sierp" },
+  moon_first_quarter: { en: "First Quarter", pl: "Pierwsza kwadra" },
+  moon_waxing_gibbous: { en: "Waxing Gibbous", pl: "Przybywajacy garb" },
+  moon_full: { en: "Full Moon", pl: "Pelnia" },
+  moon_waning_gibbous: { en: "Waning Gibbous", pl: "Ubywajacy garb" },
+  moon_last_quarter: { en: "Last Quarter", pl: "Ostatnia kwadra" },
+  moon_waning_crescent: { en: "Waning Crescent", pl: "Ubywajacy sierp" },
+  
+  // Journal
+  journal_title: { en: "Journal", pl: "Dziennik" },
+  journal_new: { en: "New entry", pl: "Nowy wpis" },
+  journal_empty: { en: "No entries yet. Begin your reflection.", pl: "Brak wpisow. Rozpocznij swoja refleksje." },
+  journal_edit: { en: "Edit entry", pl: "Edytuj wpis" },
+  journal_save: { en: "Save entry", pl: "Zapisz wpis" },
+  journal_title_field: { en: "Title (optional)", pl: "Tytul (opcjonalnie)" },
+  journal_content: { en: "Write here...", pl: "Pisz tutaj..." },
+  journal_mood: { en: "Mood", pl: "Nastroj" },
+
+  // Dreams
+  dreams_title: { en: "Dream Journal", pl: "Dziennik snow" },
+  dreams_new: { en: "New dream", pl: "Nowy sen" },
+  dreams_empty: { en: "No dreams recorded yet.", pl: "Brak zapisanych snow." },
+  dreams_edit: { en: "Edit dream", pl: "Edytuj sen" },
+  dreams_save: { en: "Save dream", pl: "Zapisz sen" },
+  dreams_title_field: { en: "Dream title", pl: "Tytul snu" },
+  dreams_content: { en: "Describe your dream...", pl: "Opisz swoj sen..." },
+  dreams_symbols: { en: "Symbols", pl: "Symbole" },
+  dreams_lucidity: { en: "Lucidity", pl: "Swiadomosc" },
+  dreams_emotion: { en: "Emotion", pl: "Emocja" },
+  dreams_analyse: { en: "Analyse", pl: "Analizuj" },
+  dreams_analysis: { en: "AI Analysis", pl: "Analiza AI" },
+
+  // Cycle
+  cycle_title: { en: "Cycle Tracker", pl: "Sledzenie cyklu" },
+  cycle_log: { en: "Log today", pl: "Zapisz dzis" },
+  cycle_flow: { en: "Flow", pl: "Przeplyw" },
+  cycle_light: { en: "Light", pl: "Lekki" },
+  cycle_medium: { en: "Medium", pl: "Sredni" },
+  cycle_heavy: { en: "Heavy", pl: "Obfity" },
+  cycle_spotting: { en: "Spotting", pl: "Plamienie" },
+  cycle_symptoms: { en: "Symptoms", pl: "Objawy" },
+  cycle_notes: { en: "Notes", pl: "Notatki" },
+
+  // Symbols
+  symbols_title: { en: "Dream Symbols", pl: "Symbole snow" },
+  symbols_search: { en: "Search symbols...", pl: "Szukaj symboli..." },
+  symbols_meaning: { en: "Meaning", pl: "Znaczenie" },
+  symbols_shadow: { en: "Shadow aspect", pl: "Aspekt cienia" },
+
+  // Grounding
+  grounding_title: { en: "Grounding", pl: "Uziemienie" },
+  grounding_breathe_in: { en: "Breathe in", pl: "Wdech" },
+  grounding_hold: { en: "Hold", pl: "Wstrzymaj" },
+  grounding_breathe_out: { en: "Breathe out", pl: "Wydech" },
+  grounding_start: { en: "Start", pl: "Rozpocznij" },
+  grounding_stop: { en: "Stop", pl: "Zatrzymaj" },
+  grounding_need_help: { en: "Need to talk to someone?", pl: "Potrzebujesz z kims porozmawiac?" },
+
+  // Shop
+  shop_title: { en: "Shop", pl: "Sklep" },
+  shop_owned: { en: "Owned", pl: "Posiadane" },
+  shop_buy: { en: "Buy", pl: "Kup" },
+  shop_activate: { en: "Activate", pl: "Aktywuj" },
+  shop_activated: { en: "Active", pl: "Aktywny" },
+
+  // Auth
+  auth_login_title: { en: "Welcome back", pl: "Witaj ponownie" },
+  auth_login_subtitle: { en: "The owl remembers you", pl: "Sowa Cie pamieta" },
+  auth_email: { en: "Email", pl: "Email" },
+  auth_password: { en: "Password", pl: "Haslo" },
+  auth_login: { en: "Sign in", pl: "Zaloguj sie" },
+  auth_forgot: { en: "Forgot password?", pl: "Nie pamietasz hasla?" },
+  auth_no_account: { en: "Don't have an account?", pl: "Nie masz konta?" },
+  auth_register_title: { en: "Begin your journey", pl: "Rozpocznij swoja podro" },
+  auth_register_subtitle: { en: "The owl sees what the daylight hides", pl: "Sowa widzi to co dzien ukrywa" },
+  auth_name: { en: "Display name", pl: "Imie" },
+  auth_confirm_password: { en: "Confirm password", pl: "Potwierdz haslo" },
+  auth_register: { en: "Create account", pl: "Utworz konto" },
+  auth_have_account: { en: "Already have an account?", pl: "Masz juz konto?" },
+  auth_reset_title: { en: "Reset password", pl: "Zresetuj haslo" },
+  auth_reset_subtitle: { en: "Enter your email and we will send you a link", pl: "Wpisz swoj email, a wyslememy Ci link" },
+  auth_reset_send: { en: "Send reset link", pl: "Wyslij link resetujacy" },
+  auth_new_password: { en: "New password", pl: "Nowe haslo" },
+  auth_set_password: { en: "Set new password", pl: "Ustaw nowe haslo" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;
