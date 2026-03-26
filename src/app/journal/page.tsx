@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 type JournalEntry = {
   id: string;
@@ -70,6 +71,7 @@ function ConfirmModal({
 
 export default function JournalPage() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -102,25 +104,25 @@ export default function JournalPage() {
 
   return (
     <div className="min-h-screen relative transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
-      {deleteId && <ConfirmModal message="Are you sure you want to delete this entry?" onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
+      {deleteId && <ConfirmModal message={language === "pl" ? "Na pewno chcesz usunac ten wpis?" : "Are you sure you want to delete this entry?"} onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
 
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← Back</button>
-          <button onClick={() => router.push("/journal/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ New</button>
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
+          <button onClick={() => router.push("/journal/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("journal_new")}</button>
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>Journal</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("journal_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12">
         {loading ? (
-          <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>Loading...</p>
+          <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
         ) : entries.length === 0 ? (
           <div className="text-center pt-20 space-y-4">
             <p className="text-4xl">✦</p>
-            <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>Your journal is empty.</p>
-            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Begin by writing your first reflection.</p>
-            <button onClick={() => router.push("/journal/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>Write first entry</button>
+            <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{t("journal_empty")}</p>
+            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Napisz swoja pierwsza refleksje." : "Begin by writing your first reflection."}</p>
+            <button onClick={() => router.push("/journal/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>{t("journal_new")}</button>
           </div>
         ) : (
           <div className="space-y-3 pt-4">
@@ -130,7 +132,7 @@ export default function JournalPage() {
                   <div className="flex-1 cursor-pointer" onClick={() => router.push(`/journal/${entry.id}/edit`)}>
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
-                        {new Date(entry.entry_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        {new Date(entry.entry_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                       {entry.mood?.map((m) => (<span key={m} className="text-xs" style={{ color: "var(--color-plum)" }}>{MOOD_LABELS[m] || m}</span>))}
                     </div>
