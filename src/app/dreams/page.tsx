@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 type DreamEntry = {
   id: string;
@@ -37,6 +38,7 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
 
 export default function DreamsPage() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [entries, setEntries] = useState<DreamEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -66,25 +68,25 @@ export default function DreamsPage() {
 
   return (
     <div className="min-h-screen relative transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
-      {deleteId && <ConfirmModal message="Are you sure you want to delete this dream?" onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
+      {deleteId && <ConfirmModal message={language === "pl" ? "Na pewno chcesz usunac ten sen?" : "Are you sure you want to delete this dream?"} onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
 
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← Back</button>
-          <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ New</button>
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
+          <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("dreams_new")}</button>
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>Dream Journal</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("dreams_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12">
         {loading ? (
-          <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>Loading...</p>
+          <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
         ) : entries.length === 0 ? (
           <div className="text-center pt-20 space-y-4">
             <p className="text-4xl">☽</p>
-            <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>No dreams recorded yet.</p>
-            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>Capture the messages of the night.</p>
-            <button onClick={() => router.push("/dreams/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>Record first dream</button>
+            <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{t("dreams_empty")}</p>
+            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Zapisz przeslania nocy." : "Capture the messages of the night."}</p>
+            <button onClick={() => router.push("/dreams/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>{t("dreams_new")}</button>
           </div>
         ) : (
           <div className="space-y-3 pt-4">
@@ -94,10 +96,10 @@ export default function DreamsPage() {
                   <div className="flex-1 cursor-pointer" onClick={() => router.push(`/dreams/${entry.id}/edit`)}>
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
-                        {new Date(entry.dream_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        {new Date(entry.dream_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                       {entry.emotional_tone?.map((t) => (<span key={t} className="text-xs" style={{ color: "var(--color-plum)" }}>{TONE_LABELS[t] || t}</span>))}
-                      {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>recurring</span>)}
+                      {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "powtarzajacy" : "recurring"}</span>)}
                       {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-mauve)" }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
                     </div>
                     {entry.title && (<h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>)}
