@@ -44,6 +44,9 @@ export default function ShadowWorkPage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+  const [editEmotions, setEditEmotions] = useState<string[]>([]);
 
   useEffect(() => {
     loadEntries();
@@ -88,6 +91,23 @@ export default function ShadowWorkPage() {
     loadEntries();
   };
 
+  const handleEditSave = async (id: string) => {
+    if (!editText.trim()) return;
+    const supabase = createClient();
+    await supabase.from("shadow_work_entries").update({
+      response: editText.trim(),
+      emotions: editEmotions,
+    }).eq("id", id);
+    setEditingId(null);
+    loadEntries();
+  };
+
+  const toggleEditEmotion = (emotion: string) => {
+    setEditEmotions((prev) =>
+      prev.includes(emotion) ? prev.filter((e) => e !== emotion) : [...prev, emotion]
+    );
+  };
+
   const handleDelete = async (id: string) => {
     setDeletingId(id);
     const supabase = createClient();
@@ -117,7 +137,7 @@ export default function ShadowWorkPage() {
         </div>
         <h1
           className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
-          style={{ color: "#e0a8b8", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}
+          style={{ color: "#c4788e", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}
         >
           {language === "pl" ? "Praca z cieniem" : "Shadow Work"}
         </h1>
@@ -156,7 +176,7 @@ export default function ShadowWorkPage() {
 
             {/* Emotions */}
             <div>
-              <p className="text-sm uppercase tracking-widest mb-3" style={{ color: "#e0a8b8", fontWeight: 600 }}>
+              <p className="text-sm uppercase tracking-widest mb-3" style={{ color: "#c4788e", fontWeight: 600 }}>
                 {language === "pl" ? "Co czujesz?" : "What do you feel?"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -167,7 +187,7 @@ export default function ShadowWorkPage() {
                     className="px-3 py-1.5 rounded-full text-sm tracking-wide transition-all duration-300"
                     style={{
                       backgroundColor: selectedEmotions.includes(emotion) ? "#e0a8b8" : "transparent",
-                      color: selectedEmotions.includes(emotion) ? "#ffffff" : "#4a4a4c",
+                      color: selectedEmotions.includes(emotion) ? "#ffffff" : "#2a2a2c",
                       border: `1px solid ${selectedEmotions.includes(emotion) ? "#e0a8b8" : "#b0b0b2"}`,
                       fontWeight: selectedEmotions.includes(emotion) ? 600 : 400,
                     }}
@@ -213,7 +233,7 @@ export default function ShadowWorkPage() {
         {/* Past entries */}
         {entries.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-base uppercase tracking-wider" style={{ color: "#d0889a", fontWeight: 600 }}>
+            <h2 className="text-base uppercase tracking-wider" style={{ color: "#c4788e", fontWeight: 600 }}>
               {language === "pl" ? "Twoje wpisy" : "Your entries"}
             </h2>
             {entries.map((entry) => (
@@ -239,26 +259,72 @@ export default function ShadowWorkPage() {
 
                 {expandedId === entry.id && (
                   <div className="mt-3 pt-3" style={{ borderTop: "1px solid #c0c0c2" }}>
-                    <p className="text-base leading-relaxed" style={{ color: "#3a3a3c" }}>
-                      {entry.response}
-                    </p>
-                    {entry.emotions && entry.emotions.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {entry.emotions.map((em) => (
-                          <span key={em} className="px-2 py-0.5 rounded-full text-xs"
-                            style={{ backgroundColor: "#e0a8b8", color: "#ffffff" }}>
-                            {language === "pl" ? EMOTIONS_PL[em] || em : em}
-                          </span>
-                        ))}
+                    {editingId === entry.id ? (
+                      <div className="space-y-3">
+                        <textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          rows={4}
+                          className="w-full rounded-xl border p-3 text-base resize-none"
+                          style={{ backgroundColor: "#ececee", borderColor: "#c0c0c2", color: "#1c1c1e", fontFamily: "Georgia, serif" }}
+                        />
+                        <div className="flex flex-wrap gap-1.5">
+                          {EMOTIONS.map((em) => (
+                            <button key={em} onClick={() => toggleEditEmotion(em)}
+                              className="px-2 py-0.5 rounded-full text-xs transition-all"
+                              style={{
+                                backgroundColor: editEmotions.includes(em) ? "#c4788e" : "transparent",
+                                color: editEmotions.includes(em) ? "#ffffff" : "#4a4a4c",
+                                border: `1px solid ${editEmotions.includes(em) ? "#c4788e" : "#b0b0b2"}`,
+                              }}>
+                              {language === "pl" ? EMOTIONS_PL[em] || em : em}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={() => handleEditSave(entry.id)}
+                            className="px-4 py-1.5 rounded-lg text-xs"
+                            style={{ backgroundColor: "#c4788e", color: "#ffffff" }}>
+                            {language === "pl" ? "Zapisz" : "Save"}
+                          </button>
+                          <button onClick={() => setEditingId(null)}
+                            className="px-4 py-1.5 rounded-lg text-xs"
+                            style={{ color: "#6a6a6c" }}>
+                            {language === "pl" ? "Anuluj" : "Cancel"}
+                          </button>
+                        </div>
                       </div>
+                    ) : (
+                      <>
+                        <p className="text-base leading-relaxed" style={{ color: "#3a3a3c" }}>
+                          {entry.response}
+                        </p>
+                        {entry.emotions && entry.emotions.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-3">
+                            {entry.emotions.map((em) => (
+                              <span key={em} className="px-2 py-0.5 rounded-full text-xs"
+                                style={{ backgroundColor: "#c4788e", color: "#ffffff" }}>
+                                {language === "pl" ? EMOTIONS_PL[em] || em : em}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex gap-3 mt-3">
+                          <button
+                            onClick={() => { setEditingId(entry.id); setEditText(entry.response); setEditEmotions(entry.emotions || []); }}
+                            className="text-xs transition-opacity hover:opacity-70"
+                            style={{ color: "#6a6a6c" }}>
+                            {language === "pl" ? "Edytuj" : "Edit"}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(entry.id)}
+                            className="text-xs transition-opacity hover:opacity-70"
+                            style={{ color: "#a0a0a2" }}>
+                            {deletingId === entry.id ? "..." : (language === "pl" ? "Usun" : "Delete")}
+                          </button>
+                        </div>
+                      </>
                     )}
-                    <button
-                      onClick={() => handleDelete(entry.id)}
-                      className="mt-3 text-xs transition-opacity hover:opacity-70"
-                      style={{ color: "#a0a0a2" }}
-                    >
-                      {deletingId === entry.id ? "..." : (language === "pl" ? "Usun" : "Delete")}
-                    </button>
                   </div>
                 )}
               </div>
