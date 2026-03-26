@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getMoonPhase } from "@/lib/moon";
 import { getDailyInsight } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 
 const EMOTIONS = [
   "anger", "fear", "sadness", "shame", "guilt",
@@ -33,6 +34,17 @@ type Entry = {
 export default function ShadowWorkPage() {
   const router = useRouter();
   const { language, t } = useLanguage();
+
+  const moonPhaseKey: Record<string, string> = {
+    "New Moon": "moon_new",
+    "Waxing Crescent": "moon_waxing_crescent",
+    "First Quarter": "moon_first_quarter",
+    "Waxing Gibbous": "moon_waxing_gibbous",
+    "Full Moon": "moon_full",
+    "Waning Gibbous": "moon_waning_gibbous",
+    "Last Quarter": "moon_last_quarter",
+    "Waning Crescent": "moon_waning_crescent",
+  };
   const moon = getMoonPhase();
   const todayPrompt = getDailyInsight(moon.phase, language);
 
@@ -148,6 +160,7 @@ export default function ShadowWorkPage() {
         {/* Today's prompt */}
         <section className="text-center space-y-4 pt-4">
           <p className="text-base uppercase tracking-widest" style={{ color: "#6a6a6c", fontWeight: 600 }}>
+            {t((moonPhaseKey[moon.phase] || "moon_new") as TranslationKey)}
           </p>
           <p
             className="text-2xl md:text-3xl leading-relaxed"
