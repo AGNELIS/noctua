@@ -107,10 +107,10 @@ export default function ShadowWorkPage() {
   );
 
   return (
-    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "#1c1c1e" }}>
+    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "#d8d8da" }}>
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "#b0a0a8", fontWeight: 500 }}>
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "#4a4a4c", fontWeight: 500 }}>
             ← {t("back")}
           </button>
           <div className="w-12" />
@@ -127,11 +127,11 @@ export default function ShadowWorkPage() {
 
         {/* Today's prompt */}
         <section className="text-center space-y-4 pt-4">
-          <p className="text-base uppercase tracking-widest" style={{ color: "#c8a0b0", fontWeight: 600 }}>
+          <p className="text-base uppercase tracking-widest" style={{ color: "#6a6a6c", fontWeight: 600 }}>
           </p>
           <p
             className="text-2xl md:text-3xl leading-relaxed"
-            style={{ color: "#f0e8ec", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
+            style={{ color: "#1c1c1e", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
           >
             {todayPrompt}
           </p>
@@ -147,16 +147,16 @@ export default function ShadowWorkPage() {
               placeholder=""
               className="w-full rounded-2xl border p-4 text-lg resize-none transition-colors duration-500"
               style={{
-                backgroundColor: "#2a2a2c",
-                borderColor: "#3e3e40",
-                color: "#e8e4e6",
+                backgroundColor: "#ececee",
+                borderColor: "#c0c0c2",
+                color: "#1c1c1e",
                 fontFamily: "Georgia, serif",
               }}
             />
 
             {/* Emotions */}
             <div>
-              <p className="text-sm uppercase tracking-widest mb-3" style={{ color: "#c8a0b0", fontWeight: 600 }}>
+              <p className="text-sm uppercase tracking-widest mb-3" style={{ color: "#e0a8b8", fontWeight: 600 }}>
                 {language === "pl" ? "Co czujesz?" : "What do you feel?"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -166,9 +166,9 @@ export default function ShadowWorkPage() {
                     onClick={() => toggleEmotion(emotion)}
                     className="px-3 py-1.5 rounded-full text-sm tracking-wide transition-all duration-300"
                     style={{
-                      backgroundColor: selectedEmotions.includes(emotion) ? "#c8a0b0" : "transparent",
-                      color: selectedEmotions.includes(emotion) ? "#1c1c1e" : "#a0a0a2",
-                      border: `1px solid ${selectedEmotions.includes(emotion) ? "#c8a0b0" : "#3e3e40"}`,
+                      backgroundColor: selectedEmotions.includes(emotion) ? "#e0a8b8" : "transparent",
+                      color: selectedEmotions.includes(emotion) ? "#ffffff" : "#4a4a4c",
+                      border: `1px solid ${selectedEmotions.includes(emotion) ? "#e0a8b8" : "#b0b0b2"}`,
                       fontWeight: selectedEmotions.includes(emotion) ? 600 : 400,
                     }}
                   >
@@ -184,8 +184,8 @@ export default function ShadowWorkPage() {
               disabled={saving || !response.trim()}
               className="w-full py-3 rounded-xl text-sm tracking-widest uppercase transition-all"
               style={{
-                backgroundColor: response.trim() ? "#c8a0b0" : "#3e3e40",
-                color: response.trim() ? "#1c1c1e" : "#808082",
+                backgroundColor: response.trim() ? "#e0a8b8" : "#c0c0c2",
+                color: response.trim() ? "#ffffff" : "#8a8a8c",
                 fontWeight: 600,
                 opacity: response.trim() ? 1 : 0.5,
               }}
@@ -195,7 +195,7 @@ export default function ShadowWorkPage() {
           </section>
         ) : (
           <div className="text-center py-4">
-            <p className="text-base" style={{ color: "#a0a0a2" }}>
+            <p className="text-base" style={{ color: "#6a6a6c" }}>
               {language === "pl" ? "Dzisiaj juz odpowiedzialas. Wracaj jutro." : "You already answered today. Come back tomorrow."}
             </p>
           </div>
@@ -204,49 +204,49 @@ export default function ShadowWorkPage() {
         {/* Divider */}
         {entries.length > 0 && (
           <div className="flex items-center justify-center gap-4">
-            <div className="h-px w-16" style={{ background: "#3e3e40" }} />
-            <span className="text-xs" style={{ color: "#808082", opacity: 0.6 }}>&#9671;</span>
-            <div className="h-px w-16" style={{ background: "#3e3e40" }} />
+            <div className="h-px w-16" style={{ background: "#b0b0b2" }} />
+            <span className="text-xs" style={{ color: "#b0b0b2", opacity: 0.6 }}>&#9671;</span>
+            <div className="h-px w-16" style={{ background: "#b0b0b2" }} />
           </div>
         )}
 
         {/* Past entries */}
         {entries.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-base uppercase tracking-wider" style={{ color: "#e0a8b8", fontWeight: 600 }}>
+            <h2 className="text-base uppercase tracking-wider" style={{ color: "#d0889a", fontWeight: 600 }}>
               {language === "pl" ? "Twoje wpisy" : "Your entries"}
             </h2>
             {entries.map((entry) => (
               <div
                 key={entry.id}
                 className="rounded-2xl border p-4 transition-colors duration-500"
-                style={{ backgroundColor: "#2a2a2c", borderColor: "#3e3e40" }}
+                style={{ backgroundColor: "#ececee", borderColor: "#c0c0c2" }}
               >
                 <button
                   onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
                   className="w-full text-left"
                 >
-                  <p className="text-sm mb-1" style={{ color: "#808082" }}>
+                  <p className="text-sm mb-1" style={{ color: "#6a6a6c" }}>
                     {new Date(entry.created_at).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", {
                       day: "numeric", month: "long", year: "numeric",
                     })}
                     {entry.moon_phase && ` \u00B7 ${entry.moon_phase}`}
                   </p>
-                  <p className="text-base" style={{ color: "#f0e8ec", fontWeight: 500 }}>
+                  <p className="text-base" style={{ color: "#1c1c1e", fontWeight: 500 }}>
                     {entry.prompt}
                   </p>
                 </button>
 
                 {expandedId === entry.id && (
-                  <div className="mt-3 pt-3" style={{ borderTop: "1px solid #3e3e40" }}>
-                    <p className="text-base leading-relaxed" style={{ color: "#d0d0d2" }}>
+                  <div className="mt-3 pt-3" style={{ borderTop: "1px solid #c0c0c2" }}>
+                    <p className="text-base leading-relaxed" style={{ color: "#3a3a3c" }}>
                       {entry.response}
                     </p>
                     {entry.emotions && entry.emotions.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {entry.emotions.map((em) => (
                           <span key={em} className="px-2 py-0.5 rounded-full text-xs"
-                            style={{ backgroundColor: "#3e3e40", color: "#d0d0d2" }}>
+                            style={{ backgroundColor: "#e0a8b8", color: "#ffffff" }}>
                             {language === "pl" ? EMOTIONS_PL[em] || em : em}
                           </span>
                         ))}
@@ -255,7 +255,7 @@ export default function ShadowWorkPage() {
                     <button
                       onClick={() => handleDelete(entry.id)}
                       className="mt-3 text-xs transition-opacity hover:opacity-70"
-                      style={{ color: "#808082" }}
+                      style={{ color: "#a0a0a2" }}
                     >
                       {deletingId === entry.id ? "..." : (language === "pl" ? "Usun" : "Delete")}
                     </button>
