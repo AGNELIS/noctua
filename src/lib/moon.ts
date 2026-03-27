@@ -94,8 +94,15 @@ export function getMoonPhase(date: Date = new Date()): MoonPhaseInfo {
   }
 }
 
-export function getGreeting(): string {
+export function getGreeting(lang: "en" | "pl" = "en"): string {
   const hour = new Date().getHours();
+  if (lang === "pl") {
+    if (hour < 6) return "Dobranoc";
+    if (hour < 12) return "Dzien dobry";
+    if (hour < 17) return "Dzien dobry";
+    if (hour < 21) return "Dobry wieczor";
+    return "Dobranoc";
+  }
   if (hour < 6) return "Deep night";
   if (hour < 12) return "Good morning";
   if (hour < 17) return "Good afternoon";

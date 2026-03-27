@@ -140,8 +140,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMoon(getMoonPhase());
-    setGreeting(getGreeting());
-  }, []);
+    setGreeting(getGreeting(language));
+  }, [language]);
 
   const handleLogout = async () => {
     setLoading(true);
