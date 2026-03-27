@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 const MOODS = [
   { value: "radiant", label: "☀️ Radiant" },
@@ -14,6 +15,7 @@ const MOODS = [
 
 export default function EditJournalEntry() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const params = useParams();
   const id = params.id as string;
 
@@ -55,7 +57,7 @@ export default function EditJournalEntry() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
-        <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>Loading...</p>
+        <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
       </div>
     );
   }
@@ -63,12 +65,12 @@ export default function EditJournalEntry() {
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
       <header className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← Back</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>Edit Entry</h1>
+        <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>
+        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("journal_edit")}</h1>
         <button onClick={handleSave} disabled={saving}
           className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
           style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
-          {saving ? "Saving..." : "Save"}
+          {saving ? "..." : t("save")}
         </button>
       </header>
 
@@ -76,7 +78,7 @@ export default function EditJournalEntry() {
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
         <p className="text-xs text-center tracking-wide" style={{ color: "var(--color-dusty-rose)" }}>
-          {entryDate && new Date(entryDate).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {entryDate && new Date(entryDate).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         <div className="flex justify-center gap-2 flex-wrap">
@@ -91,11 +93,11 @@ export default function EditJournalEntry() {
           ))}
         </div>
 
-        <input type="text" placeholder="Title (optional)" value={title} onChange={(e) => setTitle(e.target.value)}
+        <input type="text" placeholder={language === "pl" ? "Tytul (opcjonalnie)" : "Title (optional)"} value={title} onChange={(e) => setTitle(e.target.value)}
           className="w-full text-lg font-light text-center outline-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "12px", fontFamily: "Georgia, 'Times New Roman', serif" }} />
 
-        <textarea placeholder="What's alive in you today?" value={content} onChange={(e) => setContent(e.target.value)} rows={12}
+        <textarea placeholder={language === "pl" ? "Pisz tutaj..." : "What's alive in you today?"} value={content} onChange={(e) => setContent(e.target.value)} rows={12}
           className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
       </main>
