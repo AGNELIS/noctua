@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 type CycleEntry = {
   id: string;
@@ -15,17 +16,17 @@ type CycleEntry = {
 };
 
 const PHASES = [
-  { value: "menstruation", label: "🌑 Menstruation" },
-  { value: "follicular", label: "🌒 Follicular" },
-  { value: "ovulation", label: "🌕 Ovulation" },
-  { value: "luteal", label: "🌘 Luteal" },
+  { value: "menstruation", label: "🌑 Menstruation", pl: "🌑 Menstruacja" },
+  { value: "follicular", label: "🌒 Follicular", pl: "🌒 Folikularna" },
+  { value: "ovulation", label: "🌕 Ovulation", pl: "🌕 Owulacja" },
+  { value: "luteal", label: "🌘 Luteal", pl: "🌘 Lutealna" },
 ];
 
 const FLOW = [
-  { value: "spotting", label: "Spotting" },
-  { value: "light", label: "Light" },
-  { value: "medium", label: "Medium" },
-  { value: "heavy", label: "Heavy" },
+  { value: "spotting", label: "Spotting", pl: "Plamienie" },
+  { value: "light", label: "Light", pl: "Lekki" },
+  { value: "medium", label: "Medium", pl: "Sredni" },
+  { value: "heavy", label: "Heavy", pl: "Obfity" },
 ];
 
 const COMMON_SYMPTOMS = [
@@ -33,6 +34,12 @@ const COMMON_SYMPTOMS = [
   "mood swings", "tender breasts", "backache", "nausea",
   "cravings", "insomnia", "acne", "anxiety",
 ];
+
+const SYMPTOMS_PL: Record<string, string> = {
+  cramps: "skurcze", bloating: "wzdecia", headache: "bol glowy", fatigue: "zmeczenie",
+  "mood swings": "wahania nastroju", "tender breasts": "bolesnosc piersi", backache: "bol plecow", nausea: "nudnosci",
+  cravings: "zachcianki", insomnia: "bezsennosc", acne: "tradzik", anxiety: "niepokój",
+};
 
 function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
   return (
@@ -50,6 +57,7 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
 
 export default function CycleTrackerPage() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [entries, setEntries] = useState<CycleEntry[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -129,14 +137,14 @@ export default function CycleTrackerPage() {
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
-      {deleteConfirm && <ConfirmModal message="Delete this entry?" onConfirm={confirmDelete} onCancel={() => setDeleteConfirm(false)} />}
+      {deleteConfirm && <ConfirmModal message={language === "pl" ? "Usunac ten wpis?" : "Delete this entry?"} onConfirm={confirmDelete} onCancel={() => setDeleteConfirm(false)} />}
 
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← Back</button>
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
           <div className="w-12" />
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>Cycle Tracker</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("cycle_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
@@ -144,12 +152,12 @@ export default function CycleTrackerPage() {
           <div className="flex items-center justify-between mb-4">
             <button onClick={prevMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>‹</button>
             <h2 className="text-base font-medium tracking-wide" style={{ color: "var(--color-dark)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 600 }}>
-              {currentMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
+              {currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" })}
             </h2>
             <button onClick={nextMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>›</button>
           </div>
           <div className="grid grid-cols-7 gap-1 mb-1">
-            {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map((d) => (
+            {(language === "pl" ? ["Pn", "Wt", "Sr", "Cz", "Pt", "So", "Nd"] : ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]).map((d) => (
               <div key={d} className="text-center text-xs py-1" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>{d}</div>
             ))}
           </div>
@@ -175,7 +183,7 @@ export default function CycleTrackerPage() {
             {PHASES.map((p) => (
               <div key={p.value} className="flex items-center gap-1.5">
                 <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: phaseColor(p.value) }} />
-                <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{p.value}</span>
+                <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? p.pl?.replace(/^.\s/, "") : p.value}</span>
               </div>
             ))}
           </div>
@@ -183,15 +191,15 @@ export default function CycleTrackerPage() {
 
         <section className="space-y-5">
           <p className="text-sm text-center tracking-wide" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
-            {new Date(selectedDate + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-            {existingId && (<span style={{ color: "var(--color-mauve)", fontWeight: 400 }}> — editing</span>)}
+            {new Date(selectedDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            {existingId && (<span style={{ color: "var(--color-mauve)", fontWeight: 400 }}> - {language === "pl" ? "edycja" : "editing"}</span>)}
           </p>
           <div className="flex justify-center gap-2 flex-wrap">
             {PHASES.map((p) => (
               <button key={p.value} onClick={() => setPhase(phase === p.value ? "" : p.value)}
                 className="px-3 py-2 rounded-full text-sm transition-all border"
                 style={{ background: phase === p.value ? "var(--color-blush)" : "transparent", borderColor: phase === p.value ? "var(--color-mauve)" : "var(--color-dusty-rose)", color: phase === p.value ? "var(--color-dark)" : "var(--color-mauve)", fontWeight: phase === p.value ? 600 : 400 }}
-              >{p.label}</button>
+              >{language === "pl" ? p.pl : p.label}</button>
             ))}
           </div>
           {phase === "menstruation" && (
@@ -200,12 +208,12 @@ export default function CycleTrackerPage() {
                 <button key={f.value} onClick={() => setFlow(flow === f.value ? "" : f.value)}
                   className="px-3 py-2 rounded-full text-sm transition-all border"
                   style={{ background: flow === f.value ? "rgba(196,80,80,0.12)" : "transparent", borderColor: flow === f.value ? "rgba(196,80,80,0.3)" : "var(--color-dusty-rose)", color: flow === f.value ? "#c45050" : "var(--color-mauve)", fontWeight: flow === f.value ? 600 : 400 }}
-                >{f.label}</button>
+                >{language === "pl" ? f.pl : f.label}</button>
               ))}
             </div>
           )}
           <div className="text-center space-y-2">
-            <p className="text-sm" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Energy level</p>
+            <p className="text-sm" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{language === "pl" ? "Poziom energii" : "Energy level"}</p>
             <div className="flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((n) => (
                 <button key={n} onClick={() => setEnergy(energy === n ? 0 : n)} className="text-xl transition-all" style={{ color: n <= energy ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>●</button>
@@ -213,29 +221,29 @@ export default function CycleTrackerPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <p className="text-sm text-center" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Symptoms</p>
+            <p className="text-sm text-center" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("cycle_symptoms")}</p>
             <div className="flex justify-center gap-2 flex-wrap">
               {COMMON_SYMPTOMS.map((s) => (
                 <button key={s} onClick={() => toggleSymptom(s)}
                   className="px-3 py-1.5 rounded-full text-sm transition-all border"
                   style={{ background: symptoms.includes(s) ? "var(--color-blush)" : "transparent", borderColor: symptoms.includes(s) ? "var(--color-mauve)" : "var(--color-dusty-rose)", color: symptoms.includes(s) ? "var(--color-dark)" : "var(--color-mauve)", fontWeight: symptoms.includes(s) ? 600 : 400 }}
-                >{s}</button>
+                >{language === "pl" ? SYMPTOMS_PL[s] || s : s}</button>
               ))}
             </div>
           </div>
-          <textarea placeholder="Any notes for today..." value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
+          <textarea placeholder={language === "pl" ? "Notatki na dzis..." : "Any notes for today..."} value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
             className="w-full bg-transparent text-sm leading-relaxed outline-none resize-none"
             style={{ color: "var(--color-dark)" }} />
           <div className="flex justify-center gap-3">
             <button onClick={handleSave} disabled={saving}
               className="px-8 py-3 rounded-xl text-base transition-all disabled:opacity-50"
               style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
-              {saving ? "Saving..." : saved ? "✓ Saved!" : existingId ? "Update" : "Save"}
+              {saving ? "..." : saved ? "✓" : existingId ? (language === "pl" ? "Zaktualizuj" : "Update") : t("save")}
             </button>
             {existingId && (
               <button onClick={() => setDeleteConfirm(true)}
                 className="px-5 py-3 rounded-xl text-base transition-all border"
-                style={{ borderColor: "rgba(196,80,80,0.4)", color: "#c45050", fontWeight: 500 }}>Delete</button>
+                style={{ borderColor: "rgba(196,80,80,0.4)", color: "#c45050", fontWeight: 500 }}>{t("delete")}</button>
             )}
           </div>
         </section>
