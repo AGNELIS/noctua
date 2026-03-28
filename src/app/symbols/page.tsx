@@ -7,9 +7,13 @@ import { useLanguage } from "@/lib/i18n";
 type DreamSymbol = {
   id: string;
   symbol: string;
+  symbol_pl: string | null;
   meaning_general: string;
+  meaning_general_pl: string | null;
   meaning_shadow: string | null;
+  meaning_shadow_pl: string | null;
   meaning_lunar: string | null;
+  meaning_lunar_pl: string | null;
   related_archetypes: string[];
   category: string | null;
   is_premium: boolean;
@@ -126,7 +130,7 @@ export default function SymbolsPage() {
                 style={{ background: "var(--color-blush)", borderColor: expanded === s.id ? "var(--color-mauve)" : "var(--color-dusty-rose)" }}>
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium capitalize" style={{ color: "var(--color-dark)" }}>{s.symbol}</span>
+                    <span className="text-sm font-medium capitalize" style={{ color: "var(--color-dark)" }}>{language === "pl" && s.symbol_pl ? s.symbol_pl : s.symbol}</span>
                     {s.category && (
                       <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--color-cream)", color: "var(--color-mauve)" }}>{language === "pl" ? (CATEGORIES.find(c => c.value === s.category)?.pl?.replace(/^.\s/, "") || s.category) : s.category}</span>
                     )}
@@ -137,18 +141,18 @@ export default function SymbolsPage() {
                   <div className="px-4 pb-4 space-y-4">
                     <div className="space-y-1">
                       <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-gold)" }}>{t("symbols_meaning")}</p>
-                      <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>{s.meaning_general}</p>
+                      <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>{language === "pl" && s.meaning_general_pl ? s.meaning_general_pl : s.meaning_general}</p>
                     </div>
                     {s.meaning_shadow && (
                       <div className="space-y-1">
                         <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-mauve)" }}>{t("symbols_shadow")}</p>
-                        <p className="text-sm leading-relaxed italic" style={{ color: "var(--color-mauve)" }}>{s.meaning_shadow}</p>
+                        <p className="text-sm leading-relaxed italic" style={{ color: "var(--color-mauve)" }}>{language === "pl" && s.meaning_shadow_pl ? s.meaning_shadow_pl : s.meaning_shadow}</p>
                       </div>
                     )}
                     {s.meaning_lunar && (
                       <div className="space-y-1">
                         <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-plum)" }}>{language === "pl" ? "Znaczenie ksiezycowe" : "Lunar Meaning"}</p>
-                        <p className="text-sm leading-relaxed italic" style={{ color: "var(--color-plum)" }}>{s.meaning_lunar}</p>
+                        <p className="text-sm leading-relaxed italic" style={{ color: "var(--color-plum)" }}>{language === "pl" && s.meaning_lunar_pl ? s.meaning_lunar_pl : s.meaning_lunar}</p>
                       </div>
                     )}
                     {s.related_archetypes?.length > 0 && (
