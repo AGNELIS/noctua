@@ -155,7 +155,7 @@ export default function EditDreamEntry() {
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Lucidity</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Swiadomosc" : "Lucidity"}</p>
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setLucidity(lucidity === n ? 0 : n)} className="text-lg transition-all"
@@ -205,45 +205,6 @@ export default function EditDreamEntry() {
           )}
         </div>
 
-        {/* Dream Analysis */}
-        <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--color-dusty-rose)" }}>
-          {analysis ? (
-            <div className="space-y-4">
-              <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("dreams_analysis")}</h2>
-              <div
-                className="text-sm leading-relaxed whitespace-pre-wrap"
-                style={{ color: "var(--color-dark)" }}
-              >
-                {analysis}
-              </div>
-            </div>
-          ) : (
-            <div className="text-center space-y-3">
-              {analysisError ? (
-                <>
-                  <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{analysisError}</p>
-                  <button
-                    onClick={() => router.push("/shop")}
-                    className="text-sm px-4 py-2 rounded-lg border transition-all"
-                    style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}
-                  >
-                    {language === "pl" ? "Odblokuj nielimitowane analizy" : "Unlock unlimited analyses"} →
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={handleAnalyse}
-                  disabled={analysing || !content.trim()}
-                  className="px-6 py-3 rounded-xl text-sm tracking-wide transition-all disabled:opacity-50"
-                  style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
-                >
-                  {analysing ? (language === "pl" ? "Analizowanie snu..." : "Analysing your dream...") : (language === "pl" ? "Analizuj ten sen" : "Analyse this dream")}
-                </button>
-              )}
-              <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "1 darmowa analiza miesiecznie" : "1 free analysis per month"}</p>
-            </div>
-          )}
-        </div>
       </main>
     </div>
   );
