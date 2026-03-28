@@ -6,11 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 
 const MOODS = [
-  { value: "radiant", label: "☀️ Radiant" },
-  { value: "calm", label: "🌿 Calm" },
-  { value: "neutral", label: "○ Neutral" },
-  { value: "heavy", label: "🌧 Heavy" },
-  { value: "stormy", label: "⛈ Stormy" },
+  { value: "radiant", label: "☀️ Radiant", pl: "☀️ Promiennie" },
+  { value: "calm", label: "🌿 Calm", pl: "🌿 Spokojnie" },
+  { value: "neutral", label: "○ Neutral", pl: "○ Neutralnie" },
+  { value: "heavy", label: "🌧 Heavy", pl: "🌧 Ciezko" },
+  { value: "stormy", label: "⛈ Stormy", pl: "⛈ Burzliwie" },
 ];
 
 export default function EditJournalEntry() {
@@ -89,7 +89,7 @@ export default function EditJournalEntry() {
                 background: moods.includes(m.value) ? "var(--color-blush)" : "transparent",
                 borderColor: moods.includes(m.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: moods.includes(m.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{m.label}</button>
+              }}>{language === "pl" ? m.pl : m.label}</button>
           ))}
         </div>
 
