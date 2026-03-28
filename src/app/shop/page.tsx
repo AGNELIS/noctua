@@ -255,13 +255,13 @@ export default function ShopPage() {
                                 fontWeight: 600,
                               }}
                             >
-                              {language === "pl" ? "Rozszerzone symbole snow" : product.name}
+                              {language === "pl" ? "Rozszerzone symbole snów" : product.name}
                             </h3>
                             <p
                               className="text-sm leading-relaxed mt-0.5 transition-colors duration-500"
                               style={{ color: "var(--color-mauve)" }}
                             >
-                              {language === "pl" && product.category === "symbol_pack" ? "25+ dodatkowych symboli snow z glebokimi interpretacjami jungowskimi i polaczeniami z praca z cieniem." : product.description}
+                              {language === "pl" && product.category === "symbol_pack" ? "25+ dodatkowych symboli snów z głębokimi interpretacjami jungowskimi i polaczeniami z praca z cieniem." : product.description}
                             </p>
                           </div>
                           <div className="shrink-0">

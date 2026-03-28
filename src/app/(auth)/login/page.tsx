@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useLanguage } from "@/lib/i18n";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +58,7 @@ export default function LoginPage() {
             fontWeight: 700,
           }}
         >
-          Welcome back
+          {t("auth_login_title")}
         </h1>
 
         {error && (
@@ -65,7 +67,7 @@ export default function LoginPage() {
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder={t("auth_email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -79,7 +81,7 @@ export default function LoginPage() {
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t("auth_password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -101,19 +103,19 @@ export default function LoginPage() {
             fontWeight: 600,
           }}
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? t("auth_signing_in") : t("auth_sign_in")}
         </button>
 
         <p className="text-sm text-center" style={{ color: "#9b8a7a" }}>
           <a href="/forgot-password" className="hover:underline" style={{ color: "#6b5270", fontWeight: 500 }}>
-            Forgot your password?
+            {t("auth_forgot")}
           </a>
         </p>
 
         <p className="text-sm text-center" style={{ color: "#5a4a5a" }}>
-          Don&apos;t have an account?{" "}
+          {t("auth_no_account")}{" "}
           <a href="/register" className="hover:underline" style={{ color: "#6b5270", fontWeight: 500 }}>
-            Sign up
+            {t("auth_sign_up")}
           </a>
         </p>
       </form>

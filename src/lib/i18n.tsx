@@ -89,9 +89,9 @@ const translations = {
   journal_mood: { en: "Mood", pl: "Nastroj" },
 
   // Dreams
-  dreams_title: { en: "Dream Journal", pl: "Dziennik snow" },
+  dreams_title: { en: "Dream Journal", pl: "Dziennik snów" },
   dreams_new: { en: "New dream", pl: "Nowy sen" },
-  dreams_empty: { en: "No dreams recorded yet.", pl: "Brak zapisanych snow." },
+  dreams_empty: { en: "No dreams recorded yet.", pl: "Brak zapisanych snów." },
   dreams_edit: { en: "Edit dream", pl: "Edytuj sen" },
   dreams_save: { en: "Save dream", pl: "Zapisz sen" },
   dreams_title_field: { en: "Dream title", pl: "Tytul snu" },
@@ -114,7 +114,7 @@ const translations = {
   cycle_notes: { en: "Notes", pl: "Notatki" },
 
   // Symbols
-  symbols_title: { en: "Dream Symbols", pl: "Symbole snow" },
+  symbols_title: { en: "Dream Symbols", pl: "Symbole snów" },
   symbols_search: { en: "Search symbols...", pl: "Szukaj symboli..." },
   symbols_meaning: { en: "Meaning", pl: "Znaczenie" },
   symbols_shadow: { en: "Shadow aspect", pl: "Aspekt cienia" },
@@ -137,23 +137,32 @@ const translations = {
 
   // Auth
   auth_login_title: { en: "Welcome back", pl: "Witaj ponownie" },
-  auth_login_subtitle: { en: "The owl remembers you", pl: "Sowa Cie pamieta" },
+  auth_login_subtitle: { en: "The owl remembers you", pl: "Sowa Cię pamięta" },
   auth_email: { en: "Email", pl: "Email" },
-  auth_password: { en: "Password", pl: "Haslo" },
-  auth_login: { en: "Sign in", pl: "Zaloguj sie" },
-  auth_forgot: { en: "Forgot password?", pl: "Nie pamietasz hasla?" },
+  auth_password: { en: "Password", pl: "Hasło" },
+  auth_login: { en: "Sign in", pl: "Zaloguj się" },
+  auth_sign_in: { en: "Sign in", pl: "Zaloguj się" },
+  auth_signing_in: { en: "Signing in...", pl: "Logowanie..." },
+  auth_sign_up: { en: "Sign up", pl: "Zarejestruj się" },
+  auth_forgot: { en: "Forgot your password?", pl: "Nie pamiętasz hasła?" },
   auth_no_account: { en: "Don't have an account?", pl: "Nie masz konta?" },
-  auth_register_title: { en: "Begin your journey", pl: "Rozpocznij swoja podro" },
-  auth_register_subtitle: { en: "The owl sees what the daylight hides", pl: "Sowa widzi to co dzien ukrywa" },
-  auth_name: { en: "Display name", pl: "Imie" },
-  auth_confirm_password: { en: "Confirm password", pl: "Potwierdz haslo" },
-  auth_register: { en: "Create account", pl: "Utworz konto" },
-  auth_have_account: { en: "Already have an account?", pl: "Masz juz konto?" },
-  auth_reset_title: { en: "Reset password", pl: "Zresetuj haslo" },
-  auth_reset_subtitle: { en: "Enter your email and we will send you a link", pl: "Wpisz swoj email, a wyslememy Ci link" },
-  auth_reset_send: { en: "Send reset link", pl: "Wyslij link resetujacy" },
-  auth_new_password: { en: "New password", pl: "Nowe haslo" },
-  auth_set_password: { en: "Set new password", pl: "Ustaw nowe haslo" },
+  auth_register_title: { en: "Begin your journey", pl: "Rozpocznij swoją podróż" },
+  auth_register_subtitle: { en: "The owl sees what the daylight hides", pl: "Sowa widzi to, co dzień ukrywa" },
+  auth_name: { en: "Display name", pl: "Imię" },
+  auth_confirm_password: { en: "Confirm password", pl: "Potwierdź hasło" },
+  auth_register: { en: "Create account", pl: "Utwórz konto" },
+  auth_registering: { en: "Creating account...", pl: "Tworzenie konta..." },
+  auth_have_account: { en: "Already have an account?", pl: "Masz już konto?" },
+  auth_reset_title: { en: "Reset password", pl: "Zresetuj hasło" },
+  auth_reset_subtitle: { en: "Enter your email and we will send you a link", pl: "Wpisz swój email, a wyślemy Ci link" },
+  auth_reset_send: { en: "Send reset link", pl: "Wyślij link" },
+  auth_reset_sending: { en: "Sending...", pl: "Wysyłanie..." },
+  auth_reset_sent: { en: "Check your email for the reset link", pl: "Sprawdź skrzynkę — link został wysłany" },
+  auth_reset_back: { en: "Back to sign in", pl: "Wróć do logowania" },
+  auth_new_password: { en: "New password", pl: "Nowe hasło" },
+  auth_set_password: { en: "Set new password", pl: "Ustaw nowe hasło" },
+  auth_setting_password: { en: "Saving...", pl: "Zapisywanie..." },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
