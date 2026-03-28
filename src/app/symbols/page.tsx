@@ -78,7 +78,7 @@ export default function SymbolsPage() {
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-5">
         {hasExtended ? (
           <p className="text-center text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>
-            {language === "pl" ? "Rozszerzony pakiet" : "Extended Pack"} — {symbols.length} {language === "pl" ? "symboli" : "symbols"}
+            {language === "pl" ? "Rozszerzony pakiet" : "Extended Pack"} - {symbols.length} {language === "pl" ? "symboli" : "symbols"}
           </p>
         ) : (
           <div className="text-center space-y-2">
