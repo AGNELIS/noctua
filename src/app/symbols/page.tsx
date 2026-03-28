@@ -16,15 +16,15 @@ type DreamSymbol = {
 };
 
 const CATEGORIES = [
-  { value: "all", label: "All" },
-  { value: "animals", label: "🦉 Animals" },
-  { value: "nature", label: "🌿 Nature" },
-  { value: "elements", label: "🔥 Elements" },
-  { value: "objects", label: "🔑 Objects" },
-  { value: "actions", label: "⚡ Actions" },
-  { value: "people", label: "👤 People" },
-  { value: "body", label: "🩸 Body" },
-  { value: "places", label: "🏠 Places" },
+  { value: "all", label: "All", pl: "Wszystkie" },
+  { value: "animals", label: "🦉 Animals", pl: "🦉 Zwierzeta" },
+  { value: "nature", label: "🌿 Nature", pl: "🌿 Natura" },
+  { value: "elements", label: "🔥 Elements", pl: "🔥 Zywioly" },
+  { value: "objects", label: "🔑 Objects", pl: "🔑 Przedmioty" },
+  { value: "actions", label: "⚡ Actions", pl: "⚡ Dzialania" },
+  { value: "people", label: "👤 People", pl: "👤 Ludzie" },
+  { value: "body", label: "🩸 Body", pl: "🩸 Cialo" },
+  { value: "places", label: "🏠 Places", pl: "🏠 Miejsca" },
 ];
 
 export default function SymbolsPage() {
@@ -105,7 +105,7 @@ export default function SymbolsPage() {
                 background: category === c.value ? "var(--color-blush)" : "transparent",
                 borderColor: category === c.value ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: category === c.value ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{c.label}</button>
+              }}>{language === "pl" ? c.pl : c.label}</button>
           ))}
         </div>
 
