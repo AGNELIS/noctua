@@ -3,19 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 const TONES = [
-  { value: "joyful", label: "✨ Joyful" },
-  { value: "peaceful", label: "🕊 Peaceful" },
-  { value: "neutral", label: "○ Neutral" },
-  { value: "anxious", label: "😰 Anxious" },
-  { value: "fearful", label: "🌑 Fearful" },
-  { value: "sad", label: "🌧 Sad" },
-  { value: "angry", label: "🔥 Angry" },
+  { value: "joyful", label: "✨ Joyful", pl: "✨ Radosnie" },
+  { value: "peaceful", label: "🕊 Peaceful", pl: "🕊 Spokojnie" },
+  { value: "neutral", label: "○ Neutral", pl: "○ Neutralnie" },
+  { value: "anxious", label: "😰 Anxious", pl: "😰 Niespokojnie" },
+  { value: "fearful", label: "🌑 Fearful", pl: "🌑 Strasznie" },
+  { value: "sad", label: "🌧 Sad", pl: "🌧 Smutno" },
+  { value: "angry", label: "🔥 Angry", pl: "🔥 Ze zloscia" },
 ];
 
 export default function NewDreamEntry() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tones, setTones] = useState<string[]>([]);
@@ -56,12 +58,12 @@ export default function NewDreamEntry() {
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
       <header className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← Cancel</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>New Dream</h1>
+        <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
+        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("dreams_new")}</h1>
         <button onClick={handleSave} disabled={saving}
           className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
           style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
-          {saving ? "Saving..." : "Save"}
+          {saving ? "..." : t("save")}
         </button>
       </header>
 
@@ -69,7 +71,7 @@ export default function NewDreamEntry() {
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
         <p className="text-xs text-center tracking-wide" style={{ color: "var(--color-dusty-rose)" }}>
-          {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {new Date().toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         <div className="flex justify-center gap-2 flex-wrap">
@@ -80,12 +82,12 @@ export default function NewDreamEntry() {
                 background: tones.includes(t.value) ? "var(--color-blush)" : "transparent",
                 borderColor: tones.includes(t.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: tones.includes(t.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{t.label}</button>
+              }}>{language === "pl" ? t.pl : t.label}</button>
           ))}
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>Lucidity</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Swiadomosc" : "Lucidity"}</p>
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setLucidity(lucidity === n ? 0 : n)} className="text-lg transition-all"
@@ -101,27 +103,28 @@ export default function NewDreamEntry() {
               background: isRecurring ? "var(--color-blush)" : "transparent",
               borderColor: isRecurring ? "var(--color-mauve)" : "var(--color-dusty-rose)",
               color: isRecurring ? "var(--color-plum)" : "var(--color-mauve)",
-            }}>{isRecurring ? "↻ Recurring dream" : "↻ Mark as recurring"}</button>
+            }}>{isRecurring ? (language === "pl" ? "↻ Sen powtarzajacy" : "↻ Recurring dream") : (language === "pl" ? "↻ Oznacz jako powtarzajacy" : "↻ Mark as recurring")}</button>
+
         </div>
 
-        <input type="text" placeholder="Dream title (optional)" value={title} onChange={(e) => setTitle(e.target.value)}
+        <input type="text" placeholder={language === "pl" ? "Tytul snu (opcjonalnie)" : "Dream title (optional)"} value={title} onChange={(e) => setTitle(e.target.value)}
           className="w-full text-lg font-light text-center outline-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "12px", fontFamily: "Georgia, 'Times New Roman', serif" }} />
 
-        <textarea placeholder="Describe your dream... What did you see, feel, hear?" value={content} onChange={(e) => setContent(e.target.value)} rows={10}
+        <textarea placeholder={language === "pl" ? "Opisz swoj sen..." : "Describe your dream... What did you see, feel, hear?"} value={content}
           className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
 
         <div className="space-y-2">
-          <p className="text-xs text-center" style={{ color: "var(--color-dusty-rose)" }}>Dream symbols</p>
+          <p className="text-xs text-center" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Symbole snu" : "Dream symbols"}</p>
           <div className="flex justify-center gap-2">
-            <input type="text" placeholder="e.g. water, snake, flying" value={symbolInput}
+            <input type="text" placeholder={language === "pl" ? "np. woda, waz, latanie" : "e.g. water, snake, flying"} value={symbolInput}
               onChange={(e) => setSymbolInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSymbol(); } }}
               className="text-sm text-center outline-none border-b w-48 transition-colors duration-500"
               style={{ color: "var(--color-dark)", backgroundColor: "transparent", borderColor: "var(--color-dusty-rose)" }} />
             <button onClick={addSymbol} className="text-xs px-2 py-1 rounded-lg"
-              style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>Add</button>
+              style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "Dodaj" : "Add"}</button>
           </div>
           {symbols.length > 0 && (
             <div className="flex justify-center gap-1.5 flex-wrap">
