@@ -3,19 +3,21 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 const TONES = [
-  { value: "joyful", label: "✨ Joyful" },
-  { value: "peaceful", label: "🕊 Peaceful" },
-  { value: "neutral", label: "○ Neutral" },
-  { value: "anxious", label: "😰 Anxious" },
-  { value: "fearful", label: "🌑 Fearful" },
-  { value: "sad", label: "🌧 Sad" },
-  { value: "angry", label: "🔥 Angry" },
+  { value: "joyful", label: "✨ Joyful", pl: "✨ Radosnie" },
+  { value: "peaceful", label: "🕊 Peaceful", pl: "🕊 Spokojnie" },
+  { value: "neutral", label: "○ Neutral", pl: "○ Neutralnie" },
+  { value: "anxious", label: "😰 Anxious", pl: "😰 Niespokojnie" },
+  { value: "fearful", label: "🌑 Fearful", pl: "🌑 Strasznie" },
+  { value: "sad", label: "🌧 Sad", pl: "🌧 Smutno" },
+  { value: "angry", label: "🔥 Angry", pl: "🔥 Ze zloscia" },
 ];
 
 export default function EditDreamEntry() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const params = useParams();
   const id = params.id as string;
 
@@ -116,7 +118,7 @@ export default function EditDreamEntry() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
-        <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>Loading...</p>
+        <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
       </div>
     );
   }
@@ -124,12 +126,12 @@ export default function EditDreamEntry() {
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
       <header className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← Back</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>Edit Dream</h1>
+        <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>
+        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("dreams_edit")}</h1>
         <button onClick={handleSave} disabled={saving}
           className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
           style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
-          {saving ? "Saving..." : "Save"}
+          {saving ? "..." : t("save")}
         </button>
       </header>
 
@@ -137,7 +139,7 @@ export default function EditDreamEntry() {
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
         <p className="text-xs text-center tracking-wide" style={{ color: "var(--color-dusty-rose)" }}>
-          {dreamDate && new Date(dreamDate).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {dreamDate && new Date(dreamDate).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         <div className="flex justify-center gap-2 flex-wrap">
@@ -148,7 +150,7 @@ export default function EditDreamEntry() {
                 background: tones.includes(t.value) ? "var(--color-blush)" : "transparent",
                 borderColor: tones.includes(t.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: tones.includes(t.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{t.label}</button>
+              }}>{language === "pl" ? t.pl : t.label}</button>
           ))}
         </div>
 
@@ -169,27 +171,27 @@ export default function EditDreamEntry() {
               background: isRecurring ? "var(--color-blush)" : "transparent",
               borderColor: isRecurring ? "var(--color-mauve)" : "var(--color-dusty-rose)",
               color: isRecurring ? "var(--color-plum)" : "var(--color-mauve)",
-            }}>{isRecurring ? "↻ Recurring dream" : "↻ Mark as recurring"}</button>
+            }}>{isRecurring ? (language === "pl" ? "↻ Sen powtarzajacy" : "↻ Recurring dream") : (language === "pl" ? "↻ Oznacz jako powtarzajacy" : "↻ Mark as recurring")}</button>
         </div>
 
-        <input type="text" placeholder="Dream title (optional)" value={title} onChange={(e) => setTitle(e.target.value)}
+        <input type="text" placeholder={language === "pl" ? "Tytul snu (opcjonalnie)" : "Dream title (optional)"} value={title} onChange={(e) => setTitle(e.target.value)}
           className="w-full text-lg font-light text-center outline-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "12px", fontFamily: "Georgia, 'Times New Roman', serif" }} />
 
-        <textarea placeholder="Describe your dream..." value={content} onChange={(e) => setContent(e.target.value)} rows={10}
+        <textarea placeholder={language === "pl" ? "Opisz swoj sen..." : "Describe your dream..."} value={content} onChange={(e) => setContent(e.target.value)} rows={10}
           className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
 
         <div className="space-y-2">
-          <p className="text-xs text-center" style={{ color: "var(--color-dusty-rose)" }}>Dream symbols</p>
+          <p className="text-xs text-center" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Symbole snu" : "Dream symbols"}</p>
           <div className="flex justify-center gap-2">
-            <input type="text" placeholder="e.g. water, snake, flying" value={symbolInput}
+            <input type="text" placeholder={language === "pl" ? "np. woda, waz, latanie" : "e.g. water, snake, flying"} value={symbolInput}
               onChange={(e) => setSymbolInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSymbol(); } }}
               className="text-sm text-center outline-none border-b w-48 transition-colors duration-500"
               style={{ color: "var(--color-dark)", backgroundColor: "transparent", borderColor: "var(--color-dusty-rose)" }} />
             <button onClick={addSymbol} className="text-xs px-2 py-1 rounded-lg"
-              style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>Add</button>
+              style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "Dodaj" : "Add"}</button>
           </div>
           {symbols.length > 0 && (
             <div className="flex justify-center gap-1.5 flex-wrap">
@@ -207,7 +209,7 @@ export default function EditDreamEntry() {
         <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--color-dusty-rose)" }}>
           {analysis ? (
             <div className="space-y-4">
-              <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>Dream Analysis</h2>
+              <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("dreams_analysis")}</h2>
               <div
                 className="text-sm leading-relaxed whitespace-pre-wrap"
                 style={{ color: "var(--color-dark)" }}
@@ -225,7 +227,7 @@ export default function EditDreamEntry() {
                     className="text-sm px-4 py-2 rounded-lg border transition-all"
                     style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}
                   >
-                    Unlock unlimited analyses →
+                    {language === "pl" ? "Odblokuj nielimitowane analizy" : "Unlock unlimited analyses"} →
                   </button>
                 </>
               ) : (
@@ -235,10 +237,10 @@ export default function EditDreamEntry() {
                   className="px-6 py-3 rounded-xl text-sm tracking-wide transition-all disabled:opacity-50"
                   style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
                 >
-                  {analysing ? "Analysing your dream..." : "Analyse this dream"}
+                  {analysing ? (language === "pl" ? "Analizowanie snu..." : "Analysing your dream...") : (language === "pl" ? "Analizuj ten sen" : "Analyse this dream")}
                 </button>
               )}
-              <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>1 free analysis per month</p>
+              <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "1 darmowa analiza miesiecznie" : "1 free analysis per month"}</p>
             </div>
           )}
         </div>
