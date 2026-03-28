@@ -39,11 +39,11 @@ export default function GroundingPage() {
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
           <div className="w-12" />
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("grounding_title")}</h1>
+        <h1 className="text-2xl md:text-3xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("grounding_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
-        <p className="text-center text-sm leading-relaxed italic" style={{ color: "var(--color-mauve)" }}>
+        <p className="text-center text-base leading-relaxed italic" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
           &ldquo;{language === "pl" ? "Jestes bezpieczna w tej chwili. Te narzedzia sa tu zeby pomoc ci wrocic do siebie." : "You are safe in this moment. These tools are here to help you return to yourself."}&rdquo;
         </p>
 
@@ -71,7 +71,7 @@ export default function GroundingPage() {
         ) : (
           <div className="space-y-6">
             <section className="space-y-3">
-              <h2 className="text-xs tracking-widest uppercase text-center" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Cwiczenia uziemiajace" : "Grounding Exercises"}</h2>
+              <h2 className="text-sm tracking-widest uppercase text-center" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{language === "pl" ? "Cwiczenia uziemiajace" : "Grounding Exercises"}</h2>
               {GROUNDING_EXERCISES.map((ex) => (
                 <button key={ex.id} onClick={() => { setActiveExercise(ex.id); setCurrentStep(0); }}
                   className="w-full text-left p-4 rounded-2xl border hover:scale-[1.01] transition-all"
