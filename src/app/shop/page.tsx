@@ -121,7 +121,7 @@ export default function ShopPage() {
 
       <main className="max-w-2xl mx-auto px-6 pb-16">
         <p
-          className="text-center text-base md:text-lg leading-relaxed mb-10 italic transition-colors duration-500"
+          className="text-center text-lg md:text-xl leading-relaxed mb-10 italic transition-colors duration-500"
           style={{
             color: "var(--color-mauve)",
             fontFamily: "'Antic Didone', Georgia, serif",
@@ -255,13 +255,13 @@ export default function ShopPage() {
                                 fontWeight: 600,
                               }}
                             >
-                              {product.name}
+                              {language === "pl" ? "Rozszerzone symbole snow" : product.name}
                             </h3>
                             <p
                               className="text-sm leading-relaxed mt-0.5 transition-colors duration-500"
                               style={{ color: "var(--color-mauve)" }}
                             >
-                              {product.description}
+                              {language === "pl" && product.category === "symbol_pack" ? "25+ dodatkowych symboli snow z glebokimi interpretacjami jungowskimi i polaczeniami z praca z cieniem." : product.description}
                             </p>
                           </div>
                           <div className="shrink-0">
@@ -299,79 +299,6 @@ export default function ShopPage() {
           </div>
         )}
 
-        {!loading && (
-          <section className="space-y-4" style={{ marginTop: "2.5rem" }}>
-            <h2
-              className="uppercase mb-4 transition-colors duration-500"
-              style={{
-                color: "var(--color-mauve)",
-                fontWeight: 600,
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                fontSize: "0.8rem",
-                letterSpacing: "0.15em",
-              }}
-            >
-              {language === "pl" ? "Analiza snow" : "Dream Analysis"}
-            </h2>
-
-            <div
-              className="rounded-2xl p-5 flex items-center justify-between transition-all duration-500"
-              style={{
-                background: "var(--color-blush)",
-                border: "1px solid var(--color-dusty-rose)",
-              }}
-            >
-              <div>
-                <h3
-                  className="text-base transition-colors duration-500"
-                  style={{
-                    color: "var(--color-dark)",
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontWeight: 600,
-                  }}
-                >
-                  {language === "pl" ? "5 analiz snow" : "5 dream analyses"}
-                </h3>
-                <p
-                  className="text-2xl mt-1"
-                  style={{
-                    color: "var(--color-dark)",
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  }}
-                >
-                  £2.99
-                </p>
-              </div>
-              <button
-                className="px-5 py-2.5 rounded-lg text-sm tracking-wide font-medium transition-all duration-300 hover:shadow-md"
-                style={{
-                  background: "linear-gradient(135deg, #D4AF37, #B8960B)",
-                  color: "#fff",
-                }}
-                onClick={() => alert("Stripe integration coming soon!")}
-              >
-                {language === "pl" ? "Kup teraz" : "Buy now"}
-              </button>
-            </div>
-
-            <div className="text-center mt-4 space-y-1">
-              <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "lub" : "or"}</p>
-              <button
-                onClick={() => router.push("/premium")}
-                className="text-base tracking-wide transition-colors hover:opacity-80"
-                style={{
-                  color: "var(--color-plum)",
-                  fontWeight: 600,
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  background: "none",
-                  border: "none",
-                }}
-              >
-                {language === "pl" ? "Subskrybuj aby odblokowac wszystkie funkcje" : "Subscribe to unlock all features"}
-              </button>
-            </div>
-          </section>
-        )}
       </main>
     </div>
   );
