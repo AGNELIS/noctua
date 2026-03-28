@@ -43,7 +43,7 @@ export default function GroundingPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
-        <p className="text-center text-base leading-relaxed italic" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+        <p className="text-center text-lg md:text-xl leading-relaxed italic" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
           &ldquo;{language === "pl" ? "Jestes bezpieczna w tej chwili. Te narzedzia sa tu zeby pomoc ci wrocic do siebie." : "You are safe in this moment. These tools are here to help you return to yourself."}&rdquo;
         </p>
 
