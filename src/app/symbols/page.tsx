@@ -78,7 +78,7 @@ export default function SymbolsPage() {
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-5">
         {hasExtended ? (
           <p className="text-center text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>
-            Extended Pack — {symbols.length} {language === "pl" ? "symboli" : "symbols"}
+            {language === "pl" ? "Rozszerzony pakiet" : "Extended Pack"} — {symbols.length} {language === "pl" ? "symboli" : "symbols"}
           </p>
         ) : (
           <div className="text-center space-y-2">
@@ -128,7 +128,7 @@ export default function SymbolsPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-medium capitalize" style={{ color: "var(--color-dark)" }}>{s.symbol}</span>
                     {s.category && (
-                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--color-cream)", color: "var(--color-mauve)" }}>{s.category}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--color-cream)", color: "var(--color-mauve)" }}>{language === "pl" ? (CATEGORIES.find(c => c.value === s.category)?.pl?.replace(/^.\s/, "") || s.category) : s.category}</span>
                     )}
                   </div>
                   <span className="text-xs transition-transform" style={{ color: "var(--color-dusty-rose)", transform: expanded === s.id ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
