@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/lib/i18n";
 
 type Product = {
   id: string;
@@ -15,15 +16,16 @@ type Product = {
   preview_colors: string[];
 };
 
-const CATEGORY_LABELS: Record<string, string> = {
-  theme: "Themes",
-  symbol_pack: "Symbol Packs",
+const CATEGORY_LABELS: Record<string, { en: string; pl: string }> = {
+  theme: { en: "Themes", pl: "Motywy" },
+  symbol_pack: { en: "Symbol Packs", pl: "Paczki symboli" },
 };
 
 const CATEGORY_ORDER = ["theme", "symbol_pack"];
 
 export default function ShopPage() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [purchased, setPurchased] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -85,7 +87,7 @@ export default function ShopPage() {
 
   const grouped = CATEGORY_ORDER.map((cat) => ({
     category: cat,
-    label: CATEGORY_LABELS[cat],
+    label: CATEGORY_LABELS[cat] || { en: cat, pl: cat },
     items: products.filter((p) => p.category === cat),
   })).filter((g) => g.items.length > 0);
 
@@ -101,7 +103,7 @@ export default function ShopPage() {
             className="text-sm tracking-wide transition-colors duration-500"
             style={{ color: "var(--color-mauve)", fontWeight: 500 }}
           >
-            ← Back
+            ← {t("back")}
           </button>
           <div className="w-12" />
         </div>
@@ -113,7 +115,7 @@ export default function ShopPage() {
             fontWeight: 700,
           }}
         >
-          Shop
+          {t("shop_title")}
         </h1>
       </header>
 
@@ -125,12 +127,12 @@ export default function ShopPage() {
             fontFamily: "'Antic Didone', Georgia, serif",
           }}
         >
-          &ldquo;Adorn your sacred space.&rdquo;
+          &ldquo;{language === "pl" ? "Ozdob swoja przestrzen." : "Adorn your sacred space."}&rdquo;
         </p>
 
         {loading ? (
           <p className="text-center text-sm pt-12" style={{ color: "var(--color-dusty-rose)" }}>
-            Loading...
+            {t("loading")}
           </p>
         ) : (
           <div className="space-y-10">
@@ -146,7 +148,7 @@ export default function ShopPage() {
                     letterSpacing: "0.15em",
                   }}
                 >
-                  {group.label}
+                  {language === "pl" ? group.label.pl : group.label.en}
                 </h2>
 
                 {group.category === "theme" ? (
@@ -219,9 +221,9 @@ export default function ShopPage() {
                             }}
                           >
                             {isActive
-                              ? "● Active"
+                              ? (language === "pl" ? "● Aktywny" : "● Active")
                               : owned
-                              ? "Tap to activate"
+                              ? (language === "pl" ? "Kliknij aby aktywowac" : "Tap to activate")
                               : `£${product.price_gbp.toFixed(2)}`}
                           </p>
                         </button>
@@ -268,7 +270,7 @@ export default function ShopPage() {
                                 className="text-sm tracking-wide transition-colors duration-500"
                                 style={{ color: "var(--color-plum)", fontWeight: 500 }}
                               >
-                                Owned ✓
+                                {language === "pl" ? "Posiadane" : "Owned"} ✓
                               </span>
                             ) : (
                               <button
@@ -309,7 +311,7 @@ export default function ShopPage() {
                 letterSpacing: "0.15em",
               }}
             >
-              Dream Analysis
+              {language === "pl" ? "Analiza snow" : "Dream Analysis"}
             </h2>
 
             <div
@@ -328,7 +330,7 @@ export default function ShopPage() {
                     fontWeight: 600,
                   }}
                 >
-                  5 dream analyses
+                  {language === "pl" ? "5 analiz snow" : "5 dream analyses"}
                 </h3>
                 <p
                   className="text-2xl mt-1"
@@ -348,12 +350,12 @@ export default function ShopPage() {
                 }}
                 onClick={() => alert("Stripe integration coming soon!")}
               >
-                Buy now
+                {language === "pl" ? "Kup teraz" : "Buy now"}
               </button>
             </div>
 
             <div className="text-center mt-4 space-y-1">
-              <p className="text-sm" style={{ color: "var(--color-mauve)" }}>or</p>
+              <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "lub" : "or"}</p>
               <button
                 onClick={() => router.push("/premium")}
                 className="text-base tracking-wide transition-colors hover:opacity-80"
@@ -365,7 +367,7 @@ export default function ShopPage() {
                   border: "none",
                 }}
               >
-                Subscribe to unlock all features
+                {language === "pl" ? "Subskrybuj aby odblokowac wszystkie funkcje" : "Subscribe to unlock all features"}
               </button>
             </div>
           </section>
