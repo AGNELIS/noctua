@@ -135,33 +135,7 @@ const saveName = async () => {
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
-          <div
-            className="flex items-center rounded-full overflow-hidden border"
-            style={{ borderColor: "var(--color-dusty-rose)" }}
-          >
-            <button
-              onClick={() => setLanguage("en")}
-              className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300"
-              style={{
-                backgroundColor: language === "en" ? "var(--color-plum)" : "transparent",
-                color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)",
-                fontWeight: language === "en" ? 600 : 400,
-              }}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setLanguage("pl")}
-              className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300"
-              style={{
-                backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent",
-                color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)",
-                fontWeight: language === "pl" ? 600 : 400,
-              }}
-            >
-              PL
-            </button>
-          </div>
+          <div className="w-12" />
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("profile_title")}</h1>
       </header>
@@ -231,7 +205,7 @@ const saveName = async () => {
             </button>
           )}
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{t("profile_member_since")} {createdAt ? new Date(createdAt).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" }) : ""}</p>
+          <p className="text-sm italic" style={{ color: "var(--color-dusty-rose)" }}>{createdAt ? (language === "pl" ? `W Noctui od ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} dni` : `In Noctua for ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} days`) : ""}</p>
         </section>
 
         {/* Divider */}
@@ -241,25 +215,35 @@ const saveName = async () => {
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 
-        {/* Stats */}
-        <section className="grid grid-cols-2 gap-3">
-          {[
-            { label: t("profile_journal_entries"), value: stats.journalCount, icon: "✎" },
-            { label: t("profile_dreams_recorded"), value: stats.dreamCount, icon: "☽" },
-            { label: t("profile_symbols_available"), value: stats.symbolCount, icon: "◈" },
-            { label: t("profile_cycle_entries"), value: stats.cycleCount, icon: "◯" },
-          ].map((s) => (
-            <div key={s.label} className="p-4 rounded-2xl border text-center transition-colors duration-500"
-              style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <p className="text-3xl mt-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{s.value}</p>
-              <p className="text-sm mt-1" style={{ color: "var(--color-dark)" }}>{s.label}</p>
-            </div>
-          ))}
+        {/* Journey stats */}
+        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
+          <p className="text-center mb-4" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.18em" }}>{language === "pl" ? "Twoja podróż" : "Your journey"}</p>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: language === "pl" ? "Wpisy" : "Entries", value: stats.journalCount },
+              { label: language === "pl" ? "Sny" : "Dreams", value: stats.dreamCount },
+              { label: language === "pl" ? "Symbole" : "Symbols", value: stats.symbolCount },
+              { label: language === "pl" ? "Cykl" : "Cycle", value: stats.cycleCount },
+            ].map((s) => (
+              <div key={s.label} className="text-center">
+                <p style={{ fontSize: "22px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>{s.value}</p>
+                <p style={{ fontSize: "9px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: "4px" }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
+{/* Language */}
+        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
+          <p className="mb-3" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.15em" }}>{t("profile_language")}</p>
+          <div className="flex items-center rounded-full overflow-hidden border w-fit" style={{ borderColor: "var(--color-dusty-rose)" }}>
+            <button onClick={() => setLanguage("en")} className="px-4 py-2 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "en" ? "var(--color-plum)" : "transparent", color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "en" ? 600 : 400 }}>EN</button>
+            <button onClick={() => setLanguage("pl")} className="px-4 py-2 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent", color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "pl" ? 600 : 400 }}>PL</button>
+          </div>
+        </section>
         {/* Active theme */}
-        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-          <h2 className="text-sm uppercase tracking-wider mb-3" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("profile_active_theme")}</h2>
+        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
+          <p className="mb-3" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.15em" }}>{t("profile_active_theme")}</p>
           {activeThemeName ? (
             <div className="flex items-center justify-between">
               <p className="text-base" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName}</p>
@@ -274,27 +258,6 @@ const saveName = async () => {
             </div>
           )}
         </section>
-
-        {/* Purchases */}
-        {purchases.length > 0 && (
-          <section className="space-y-3">
-           <h2 className="text-sm uppercase tracking-wider" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{t("profile_purchases")}</h2>
-            {purchases.map((p) => {
-              const shop = Array.isArray(p.shop_products) ? p.shop_products[0] : p.shop_products;
-              return (
-                <div key={p.product_id} className="flex items-center gap-3 p-3 rounded-xl border transition-colors duration-500"
-                  style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                  <div className="flex-1">
-                    <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{shop?.name || "Product"}</p>
-                    <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>
-                      {new Date(p.purchased_at).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </section>
-        )}
 
         {/* Sign out */}
         <section className="pt-4">
