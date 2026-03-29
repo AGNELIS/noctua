@@ -127,7 +127,7 @@ export default function ShopPage() {
             fontFamily: "'Antic Didone', Georgia, serif",
           }}
         >
-          &ldquo;{language === "pl" ? "Ozdob swoja przestrzen." : "Adorn your sacred space."}&rdquo;
+          &ldquo;{language === "pl" ? "Ozdób swoją przestrzeń." : "Adorn your sacred space."}&rdquo;
         </p>
 
         {loading ? (
@@ -261,7 +261,7 @@ export default function ShopPage() {
                               className="text-sm leading-relaxed mt-0.5 transition-colors duration-500"
                               style={{ color: "var(--color-mauve)" }}
                             >
-                              {language === "pl" && product.category === "symbol_pack" ? "25+ dodatkowych symboli snów z głębokimi interpretacjami jungowskimi i polaczeniami z praca z cieniem." : product.description}
+                              {language === "pl" && product.category === "symbol_pack" ? "25+ dodatkowych symboli snów z głębokimi interpretacjami jungowskimi i połączeniami z pracą z cieniem." : product.description}
                             </p>
                           </div>
                           <div className="shrink-0">
