@@ -6,13 +6,13 @@ import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 
 const TONES = [
-  { value: "joyful", label: "✨ Joyful", pl: "✨ Radosnie" },
+  { value: "joyful", label: "✨ Joyful", pl: "✨ Radośnie" },
   { value: "peaceful", label: "🕊 Peaceful", pl: "🕊 Spokojnie" },
   { value: "neutral", label: "○ Neutral", pl: "○ Neutralnie" },
   { value: "anxious", label: "😰 Anxious", pl: "😰 Niespokojnie" },
   { value: "fearful", label: "🌑 Fearful", pl: "🌑 Strasznie" },
   { value: "sad", label: "🌧 Sad", pl: "🌧 Smutno" },
-  { value: "angry", label: "🔥 Angry", pl: "🔥 Ze zloscia" },
+  { value: "angry", label: "🔥 Angry", pl: "🔥 Ze złością" },
 ];
 
 export default function EditDreamEntry() {
@@ -155,7 +155,7 @@ export default function EditDreamEntry() {
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Swiadomosc" : "Lucidity"}</p>
+          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Świadomość" : "Lucidity"}</p>
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setLucidity(lucidity === n ? 0 : n)} className="text-lg transition-all"
@@ -171,7 +171,7 @@ export default function EditDreamEntry() {
               background: isRecurring ? "var(--color-blush)" : "transparent",
               borderColor: isRecurring ? "var(--color-mauve)" : "var(--color-dusty-rose)",
               color: isRecurring ? "var(--color-plum)" : "var(--color-mauve)",
-            }}>{isRecurring ? (language === "pl" ? "↻ Sen powtarzajacy" : "↻ Recurring dream") : (language === "pl" ? "↻ Oznacz jako powtarzajacy" : "↻ Mark as recurring")}</button>
+            }}>{isRecurring ? (language === "pl" ? "↻ Sen powtarzający" : "↻ Recurring dream") : (language === "pl" ? "↻ Oznacz jako powtarzający" : "↻ Mark as recurring")}</button>
         </div>
 
         <input type="text" placeholder={language === "pl" ? "Tytul snu (opcjonalnie)" : "Dream title (optional)"} value={title} onChange={(e) => setTitle(e.target.value)}

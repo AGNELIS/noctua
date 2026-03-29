@@ -99,7 +99,7 @@ export default function DreamsPage() {
                         {new Date(entry.dream_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                       {entry.emotional_tone?.map((t) => (<span key={t} className="text-xs" style={{ color: "var(--color-plum)" }}>{TONE_LABELS[t] || t}</span>))}
-                      {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "powtarzajacy" : "recurring"}</span>)}
+                      {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "powtarzający" : "recurring"}</span>)}
                       {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-mauve)" }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
                     </div>
                     {entry.title && (<h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>)}
