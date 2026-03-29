@@ -21,13 +21,13 @@ type DreamSymbol = {
 
 const CATEGORIES = [
   { value: "all", label: "All", pl: "Wszystkie" },
-  { value: "animals", label: "🦉 Animals", pl: "🦉 Zwierzeta" },
+  { value: "animals", label: "🦉 Animals", pl: "🦉 Zwierzęta" },
   { value: "nature", label: "🌿 Nature", pl: "🌿 Natura" },
   { value: "elements", label: "🔥 Elements", pl: "🔥 Zywioly" },
   { value: "objects", label: "🔑 Objects", pl: "🔑 Przedmioty" },
-  { value: "actions", label: "⚡ Actions", pl: "⚡ Dzialania" },
+  { value: "actions", label: "⚡ Actions", pl: "⚡ Działania" },
   { value: "people", label: "👤 People", pl: "👤 Ludzie" },
-  { value: "body", label: "🩸 Body", pl: "🩸 Cialo" },
+  { value: "body", label: "🩸 Body", pl: "🩸 Ciało" },
   { value: "places", label: "🏠 Places", pl: "🏠 Miejsca" },
 ];
 
