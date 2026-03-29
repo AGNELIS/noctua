@@ -3,9 +3,11 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useLanguage } from "@/lib/i18n";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -17,13 +19,13 @@ export default function ResetPasswordPage() {
     setError(null);
 
     if (password !== confirm) {
-      setError("Passwords do not match.");
+      setError(language === "pl" ? "Hasła nie są takie same." : "Passwords do not match.");
       setLoading(false);
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      setError(language === "pl" ? "Hasło musi mieć minimum 8 znaków." : "Password must be at least 8 characters.");
       setLoading(false);
       return;
     }
@@ -61,11 +63,11 @@ export default function ResetPasswordPage() {
           className="text-2xl text-center font-light tracking-wide"
           style={{ color: "#3d2e4a", fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
-          Set new password
+          {t("auth_set_password")}
         </h1>
 
         <p className="text-sm text-center leading-relaxed" style={{ color: "#9b8a7a" }}>
-          Choose a new password for your account.
+          {language === "pl" ? "Wybierz nowe hasło do swojego konta." : "Choose a new password for your account."}
         </p>
 
         {error && (
@@ -74,7 +76,7 @@ export default function ResetPasswordPage() {
 
         <input
           type="password"
-          placeholder="New password (min. 8 characters)"
+          placeholder={t("auth_new_password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -88,7 +90,7 @@ export default function ResetPasswordPage() {
 
         <input
           type="password"
-          placeholder="Confirm new password"
+          placeholder={t("auth_confirm_password")}
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           required
@@ -106,7 +108,7 @@ export default function ResetPasswordPage() {
           className="w-full py-3 rounded-xl text-sm text-white transition-all disabled:opacity-50"
           style={{ background: "#6b5270" }}
         >
-          {loading ? "Updating..." : "Update password"}
+          {loading ? t("auth_setting_password") : t("auth_set_password")}
         </button>
       </form>
     </div>

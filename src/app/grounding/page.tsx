@@ -14,7 +14,7 @@ const GROUNDING_EXERCISES = [
 
 const CRISIS_RESOURCES = [
   { name: "Samaritans (UK)", phone: "116 123", description: "24/7 emotional support, free to call", descPl: "Całodobowe wsparcie emocjonalne, bezpłatne", url: "https://www.samaritans.org" },
-  { name: "Crisis Text Line", phone: "Text SHOUT to 85258", description: "Free 24/7 text support (UK)", descPl: "Bezpłatne wsparcie SMS 24/7"", url: "https://giveusashout.org" },
+  { name: "Crisis Text Line", phone: "Text SHOUT to 85258", description: "Free 24/7 text support (UK)", descPl: "Bezpłatne wsparcie SMS 24/7 (UK)", url: "https://giveusashout.org" },
   { name: "988 Lifeline (US)", phone: "988", description: "24/7 call or text support", descPl: "Całodobowe wsparcie telefoniczne i SMS", url: "https://988lifeline.org" },
   { name: "Mind", phone: "0300 123 3393", description: "Mental health support (UK)", descPl: "Wsparcie zdrowia psychicznego (UK)", url: "https://www.mind.org.uk" },
 ];
