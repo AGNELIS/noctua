@@ -12,11 +12,18 @@ const GROUNDING_EXERCISES = [
   { id: "cold", title: "Cold Water Reset", titlePl: "Reset zimną wodą", duration: "1 min", description: "A quick physiological reset using cold water.", descPl: "Szybki fizjologiczny reset przy użyciu zimnej wody.", steps: ["Go to a sink or use a glass of cold water.", "Splash cold water on your face.", "Or hold a cold object in your hands.", "Focus completely on the sensation of cold.", "Breathe slowly as the cold brings you into the present.", "Notice: you are here, right now, in this moment."], stepsPl: ["Idź do zlewu lub użyj szklanki zimnej wody.", "Opryskaj twarz zimną wodą.", "Lub trzymaj zimny przedmiot w dłoniach.", "Skup się całkowicie na uczuciu zimna.", "Oddychaj powoli gdy zimno sprowadza Cię do teraźniejszości.", "Zauważ: jesteś tutaj, teraz, w tej chwili."], icon: "💧" },
 ];
 
-const CRISIS_RESOURCES = [
-  { name: "Samaritans (UK)", phone: "116 123", description: "24/7 emotional support, free to call", descPl: "Całodobowe wsparcie emocjonalne, bezpłatne", url: "https://www.samaritans.org" },
-  { name: "Crisis Text Line", phone: "Text SHOUT to 85258", description: "Free 24/7 text support (UK)", descPl: "Bezpłatne wsparcie SMS 24/7 (UK)", url: "https://giveusashout.org" },
-  { name: "988 Lifeline (US)", phone: "988", description: "24/7 call or text support", descPl: "Całodobowe wsparcie telefoniczne i SMS", url: "https://988lifeline.org" },
-  { name: "Mind", phone: "0300 123 3393", description: "Mental health support (UK)", descPl: "Wsparcie zdrowia psychicznego (UK)", url: "https://www.mind.org.uk" },
+const CRISIS_RESOURCES_EN = [
+  { name: "Samaritans (UK)", phone: "116 123", description: "24/7 emotional support, free to call", url: "https://www.samaritans.org" },
+  { name: "Crisis Text Line", phone: "Text SHOUT to 85258", description: "Free 24/7 text support (UK)", url: "https://giveusashout.org" },
+  { name: "988 Lifeline (US)", phone: "988", description: "24/7 call or text support", url: "https://988lifeline.org" },
+  { name: "Mind", phone: "0300 123 3393", description: "Mental health support (UK)", url: "https://www.mind.org.uk" },
+];
+
+const CRISIS_RESOURCES_PL = [
+  { name: "Centrum Wsparcia", phone: "800 70 2222", description: "Bezpłatna pomoc kryzysowa 24/7", url: "https://www.telefonzaufania.pl" },
+  { name: "Telefon Zaufania", phone: "116 123", description: "Wsparcie emocjonalne (EU)", url: "https://www.116123.pl" },
+  { name: "Telefon dla Dzieci i Młodzieży", phone: "116 111", description: "Pomoc dla młodych osób", url: "https://www.116111.pl" },
+  { name: "Fundacja ITAKA", phone: "801 002 801", description: "Pomoc w sytuacjach kryzysowych", url: "https://www.itaka.org.pl" },
 ];
 
 export default function GroundingPage() {
@@ -100,13 +107,13 @@ export default function GroundingPage() {
               {showResources && (
                 <div className="space-y-2">
                   <p className="text-xs text-center leading-relaxed" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Nie jesteś sama. Te serwisy są poufne i dostępne, kiedy ich potrzebujesz." : "You are not alone. These services are confidential and available when you need them."}</p>
-                  {CRISIS_RESOURCES.map((r) => (
+                  {(language === "pl" ? CRISIS_RESOURCES_PL : CRISIS_RESOURCES_EN).map((r: { name: string; phone: string; description: string; url: string }) => (
                     <div key={r.name} onClick={() => window.open(r.url, "_blank")}
                       className="cursor-pointer p-4 rounded-2xl border hover:scale-[1.01] transition-all"
                       style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
                       <h3 className="text-sm font-medium" style={{ color: "var(--color-dark)" }}>{r.name}</h3>
                       <p className="text-base font-medium mt-1" style={{ color: "var(--color-plum)" }}>{r.phone}</p>
-                      <p className="text-xs mt-0.5" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? r.descPl : r.description}</p>
+                      <p className="text-xs mt-0.5" style={{ color: "var(--color-mauve)" }}>{r.description}</p>
                     </div>
                   ))}
                 </div>
