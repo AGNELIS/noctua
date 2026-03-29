@@ -218,7 +218,7 @@ const saveName = async () => {
         {/* Journey stats */}
         <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
           <p className="text-center mb-4" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.18em" }}>{language === "pl" ? "Twoja podróż" : "Your journey"}</p>
-          <div className="grid grid-cols-4 gap-2">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px" }}>
             {[
               { label: language === "pl" ? "Wpisy" : "Entries", value: stats.journalCount },
               { label: language === "pl" ? "Sny" : "Dreams", value: stats.dreamCount },
@@ -233,30 +233,27 @@ const saveName = async () => {
           </div>
         </section>
 
-{/* Language */}
-        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
-          <p className="mb-3" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.15em" }}>{t("profile_language")}</p>
-          <div className="flex items-center rounded-full overflow-hidden border w-fit" style={{ borderColor: "var(--color-dusty-rose)" }}>
-            <button onClick={() => setLanguage("en")} className="px-4 py-2 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "en" ? "var(--color-plum)" : "transparent", color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "en" ? 600 : 400 }}>EN</button>
-            <button onClick={() => setLanguage("pl")} className="px-4 py-2 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent", color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "pl" ? 600 : 400 }}>PL</button>
+{/* Language & Theme */}
+        <section className="space-y-5">
+          <div className="flex items-center justify-between">
+            <p style={{ fontSize: "12px", color: "var(--color-mauve)", letterSpacing: "0.05em" }}>{t("profile_language")}</p>
+            <div className="flex items-center rounded-full overflow-hidden border" style={{ borderColor: "var(--color-dusty-rose)" }}>
+              <button onClick={() => setLanguage("en")} className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "en" ? "var(--color-plum)" : "transparent", color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "en" ? 600 : 400 }}>EN</button>
+              <button onClick={() => setLanguage("pl")} className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent", color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "pl" ? 600 : 400 }}>PL</button>
+            </div>
           </div>
-        </section>
-        {/* Active theme */}
-        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
-          <p className="mb-3" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.15em" }}>{t("profile_active_theme")}</p>
-          {activeThemeName ? (
-            <div className="flex items-center justify-between">
-              <p className="text-base" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName}</p>
-              <button onClick={handleResetTheme} className="text-xs px-3 py-1.5 rounded-lg border transition-all"
-                style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)" }}>{t("profile_reset_theme")}</button>
+          <div className="h-px" style={{ background: "var(--color-dusty-rose)", opacity: 0.3 }} />
+          <div className="flex items-center justify-between">
+            <div>
+              <p style={{ fontSize: "12px", color: "var(--color-mauve)", letterSpacing: "0.05em" }}>{t("profile_active_theme")}</p>
+              <p className="mt-1 italic" style={{ fontSize: "14px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{activeThemeName || t("profile_default_theme")}</p>
             </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <p className="text-sm italic" style={{ color: "var(--color-dark)" }}>{t("profile_default_theme")}</p>
-              <button onClick={() => router.push("/shop")} className="text-xs px-3 py-1.5 rounded-lg border transition-all"
-                style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}>{t("profile_browse_themes")}</button>
-            </div>
-          )}
+            {activeThemeName ? (
+              <button onClick={handleResetTheme} className="text-xs" style={{ color: "var(--color-mauve)" }}>{t("profile_reset_theme")}</button>
+            ) : (
+              <button onClick={() => router.push("/shop")} className="text-xs" style={{ color: "var(--color-gold)" }}>{t("profile_browse_themes")}</button>
+            )}
+          </div>
         </section>
 
         {/* Sign out */}
