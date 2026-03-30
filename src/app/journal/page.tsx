@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { SunIcon, LeafIcon, CircleIcon, DropIcon, SparkIcon } from "@/components/NoctuaIcons";
 
 type JournalEntry = {
   id: string;
@@ -15,12 +16,12 @@ type JournalEntry = {
   created_at: string;
 };
 
-const MOOD_LABELS: Record<string, string> = {
-  radiant: "☀️ Radiant",
-  calm: "🌿 Calm",
-  neutral: "○ Neutral",
-  heavy: "🌧 Heavy",
-  stormy: "⛈ Stormy",
+const MOOD_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
+  radiant: { icon: <SunIcon size={14} color="var(--color-plum)" />, label: "Radiant" },
+  calm: { icon: <LeafIcon size={14} color="var(--color-plum)" />, label: "Calm" },
+  neutral: { icon: <CircleIcon size={14} color="var(--color-plum)" />, label: "Neutral" },
+  heavy: { icon: <DropIcon size={14} color="var(--color-plum)" />, label: "Heavy" },
+  stormy: { icon: <SparkIcon size={14} color="var(--color-plum)" />, label: "Stormy" },
 };
 
 function ConfirmModal({
@@ -134,7 +135,7 @@ export default function JournalPage() {
                       <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
                         {new Date(entry.entry_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
-                      {entry.mood?.map((m) => (<span key={m} className="text-xs" style={{ color: "var(--color-plum)" }}>{MOOD_LABELS[m] || m}</span>))}
+                      {entry.mood?.map((m) => (<span key={m} className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--color-plum)" }}>{MOOD_ICONS[m]?.icon}{MOOD_ICONS[m]?.label || m}</span>))}
                     </div>
                     {entry.title && (
                       <h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>
