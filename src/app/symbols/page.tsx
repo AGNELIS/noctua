@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { OwlIcon, LeafIcon, DiamondIcon, KeyIcon, BoltIcon, SilhouetteIcon, BodyIcon, BuildingIcon } from "@/components/NoctuaIcons";
 type DreamSymbol = {
   id: string;
   symbol: string;
@@ -20,15 +21,15 @@ type DreamSymbol = {
 };
 
 const CATEGORIES = [
-  { value: "all", label: "All", pl: "Wszystkie" },
-  { value: "animals", label: "🦉 Animals", pl: "🦉 Zwierzęta" },
-  { value: "nature", label: "🌿 Nature", pl: "🌿 Natura" },
-  { value: "elements", label: "🔥 Elements", pl: "🔥 Zywioly" },
-  { value: "objects", label: "🔑 Objects", pl: "🔑 Przedmioty" },
-  { value: "actions", label: "⚡ Actions", pl: "⚡ Działania" },
-  { value: "people", label: "👤 People", pl: "👤 Ludzie" },
-  { value: "body", label: "🩸 Body", pl: "🩸 Ciało" },
-  { value: "places", label: "🏠 Places", pl: "🏠 Miejsca" },
+  { value: "all", icon: null, label: "All", pl: "Wszystkie" },
+  { value: "animals", icon: <OwlIcon size={18} />, label: "Animals", pl: "Zwierzęta" },
+  { value: "nature", icon: <LeafIcon size={18} />, label: "Nature", pl: "Natura" },
+  { value: "elements", icon: <DiamondIcon size={18} />, label: "Elements", pl: "Żywioły" },
+  { value: "objects", icon: <KeyIcon size={18} />, label: "Objects", pl: "Przedmioty" },
+  { value: "actions", icon: <BoltIcon size={18} />, label: "Actions", pl: "Działania" },
+  { value: "people", icon: <SilhouetteIcon size={18} />, label: "People", pl: "Ludzie" },
+  { value: "body", icon: <BodyIcon size={18} />, label: "Body", pl: "Ciało" },
+  { value: "places", icon: <BuildingIcon size={18} />, label: "Places", pl: "Miejsca" },
 ];
 
 export default function SymbolsPage() {
@@ -109,7 +110,7 @@ export default function SymbolsPage() {
                 background: category === c.value ? "var(--color-blush)" : "transparent",
                 borderColor: category === c.value ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: category === c.value ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{language === "pl" ? c.pl : c.label}</button>
+              }}><span className="inline-flex items-center gap-1.5">{c.icon}{language === "pl" ? c.pl : c.label}</span></button>
           ))}
         </div>
 
