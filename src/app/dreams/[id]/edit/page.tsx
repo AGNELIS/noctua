@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { SunIcon, GreenSphereIcon, SphereIcon, SpikyIcon, MaskIcon, DropIcon, StarIcon } from "@/components/NoctuaIcons";
 
 const TONES = [
-  { value: "joyful", label: "✨ Joyful", pl: "✨ Radośnie" },
-  { value: "peaceful", label: "🕊 Peaceful", pl: "🕊 Spokojnie" },
-  { value: "neutral", label: "○ Neutral", pl: "○ Neutralnie" },
-  { value: "anxious", label: "😰 Anxious", pl: "😰 Niespokojnie" },
-  { value: "fearful", label: "🌑 Fearful", pl: "🌑 Strasznie" },
-  { value: "sad", label: "🌧 Sad", pl: "🌧 Smutno" },
-  { value: "angry", label: "🔥 Angry", pl: "🔥 Ze złością" },
+  { value: "joyful", icon: <SunIcon size={20} />, label: "Joyful", pl: "Radośnie" },
+  { value: "peaceful", icon: <GreenSphereIcon size={20} />, label: "Peaceful", pl: "Spokojnie" },
+  { value: "neutral", icon: <SphereIcon size={20} />, label: "Neutral", pl: "Neutralnie" },
+  { value: "anxious", icon: <SpikyIcon size={20} />, label: "Anxious", pl: "Niespokojnie" },
+  { value: "fearful", icon: <MaskIcon size={20} />, label: "Fearful", pl: "Strasznie" },
+  { value: "sad", icon: <DropIcon size={20} />, label: "Sad", pl: "Smutno" },
+  { value: "angry", icon: <StarIcon size={20} />, label: "Angry", pl: "Ze złością" },
 ];
 
 export default function EditDreamEntry() {
@@ -152,7 +153,7 @@ export default function EditDreamEntry() {
                 background: tones.includes(t.value) ? "var(--color-blush)" : "transparent",
                 borderColor: tones.includes(t.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: tones.includes(t.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{language === "pl" ? t.pl : t.label}</button>
+              }}><span className="inline-flex items-center gap-1.5">{t.icon}{language === "pl" ? t.pl : t.label}</span></button>
           ))}
         </div>
 

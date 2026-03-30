@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { SunIcon, GreenSphereIcon, SphereIcon, SpikyIcon, MaskIcon, DropIcon, StarIcon } from "@/components/NoctuaIcons";
 
 type DreamEntry = {
   id: string;
@@ -17,9 +18,14 @@ type DreamEntry = {
   dream_date: string;
 };
 
-const TONE_LABELS: Record<string, string> = {
-  joyful: "✨ Joyful", peaceful: "🕊 Peaceful", neutral: "○ Neutral",
-  anxious: "😰 Anxious", fearful: "🌑 Fearful", sad: "🌧 Sad", angry: "🔥 Angry",
+const TONE_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
+  joyful: { icon: <SunIcon size={18} />, label: "Joyful" },
+  peaceful: { icon: <GreenSphereIcon size={18} />, label: "Peaceful" },
+  neutral: { icon: <SphereIcon size={18} />, label: "Neutral" },
+  anxious: { icon: <SpikyIcon size={18} />, label: "Anxious" },
+  fearful: { icon: <MaskIcon size={18} />, label: "Fearful" },
+  sad: { icon: <DropIcon size={18} />, label: "Sad" },
+  angry: { icon: <StarIcon size={18} />, label: "Angry" },
 };
 
 function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
@@ -98,7 +104,7 @@ export default function DreamsPage() {
                       <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
                         {new Date(entry.dream_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
-                      {entry.emotional_tone?.map((t) => (<span key={t} className="text-xs" style={{ color: "var(--color-plum)" }}>{TONE_LABELS[t] || t}</span>))}
+                      {entry.emotional_tone?.map((t) => (<span key={t} className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--color-plum)" }}>{TONE_ICONS[t]?.icon}{TONE_ICONS[t]?.label || t}</span>))}
                       {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "powtarzający" : "recurring"}</span>)}
                       {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-mauve)" }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
                     </div>
