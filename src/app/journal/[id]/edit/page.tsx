@@ -68,14 +68,14 @@ export default function EditJournalEntry() {
     <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
       <header className="flex items-center justify-between px-6 py-5">
         <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("journal_edit")}</h1>
+        <div />
         <button onClick={handleSave} disabled={saving}
           className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
           style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
           {saving ? "..." : t("save")}
         </button>
       </header>
-
+      <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 700 }}>{t("journal_edit")}</h1>
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
