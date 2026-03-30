@@ -5,14 +5,14 @@ import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 
-import { SunIcon, LeafIcon, CircleIcon, DropIcon, SparkIcon } from "@/components/NoctuaIcons";
+import { SunIcon, CloudIcon, SphereIcon, BarbellIcon, StarIcon } from "@/components/NoctuaIcons";
 
 const MOODS = [
-  { value: "radiant", icon: <SunIcon size={16} />, label: "Radiant", pl: "Promiennie" },
-  { value: "calm", icon: <LeafIcon size={16} />, label: "Calm", pl: "Spokojnie" },
-  { value: "neutral", icon: <CircleIcon size={16} />, label: "Neutral", pl: "Neutralnie" },
-  { value: "heavy", icon: <DropIcon size={16} />, label: "Heavy", pl: "Ciężko" },
-  { value: "stormy", icon: <SparkIcon size={16} />, label: "Stormy", pl: "Burzliwie" },
+  { value: "radiant", icon: <SunIcon size={20} />, label: "Radiant", pl: "Promiennie" },
+  { value: "calm", icon: <CloudIcon size={20} />, label: "Calm", pl: "Spokojnie" },
+  { value: "neutral", icon: <SphereIcon size={20} />, label: "Neutral", pl: "Neutralnie" },
+  { value: "heavy", icon: <BarbellIcon size={20} />, label: "Heavy", pl: "Ciężko" },
+  { value: "stormy", icon: <StarIcon size={20} />, label: "Stormy", pl: "Burzliwie" },
 ];
 
 export default function EditJournalEntry() {

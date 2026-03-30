@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
-import { SunIcon, LeafIcon, CircleIcon, DropIcon, SparkIcon } from "@/components/NoctuaIcons";
+import { SunIcon, CloudIcon, SphereIcon, BarbellIcon, StarIcon } from "@/components/NoctuaIcons";
 
 type JournalEntry = {
   id: string;
@@ -17,11 +17,11 @@ type JournalEntry = {
 };
 
 const MOOD_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
-  radiant: { icon: <SunIcon size={14} color="var(--color-plum)" />, label: "Radiant" },
-  calm: { icon: <LeafIcon size={14} color="var(--color-plum)" />, label: "Calm" },
-  neutral: { icon: <CircleIcon size={14} color="var(--color-plum)" />, label: "Neutral" },
-  heavy: { icon: <DropIcon size={14} color="var(--color-plum)" />, label: "Heavy" },
-  stormy: { icon: <SparkIcon size={14} color="var(--color-plum)" />, label: "Stormy" },
+  radiant: { icon: <SunIcon size={18} />, label: "Radiant" },
+  calm: { icon: <CloudIcon size={18} />, label: "Calm" },
+  neutral: { icon: <SphereIcon size={18} />, label: "Neutral" },
+  heavy: { icon: <BarbellIcon size={18} />, label: "Heavy" },
+  stormy: { icon: <StarIcon size={18} />, label: "Stormy" },
 };
 
 function ConfirmModal({
