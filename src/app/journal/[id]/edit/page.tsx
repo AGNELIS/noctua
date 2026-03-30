@@ -5,12 +5,14 @@ import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 
+import { SunIcon, LeafIcon, CircleIcon, DropIcon, SparkIcon } from "@/components/NoctuaIcons";
+
 const MOODS = [
-  { value: "radiant", label: "☀️ Radiant", pl: "☀️ Promiennie" },
-  { value: "calm", label: "🌿 Calm", pl: "🌿 Spokojnie" },
-  { value: "neutral", label: "○ Neutral", pl: "○ Neutralnie" },
-  { value: "heavy", label: "🌧 Heavy", pl: "🌧 Ciezko" },
-  { value: "stormy", label: "⛈ Stormy", pl: "⛈ Burzliwie" },
+  { value: "radiant", icon: <SunIcon size={16} />, label: "Radiant", pl: "Promiennie" },
+  { value: "calm", icon: <LeafIcon size={16} />, label: "Calm", pl: "Spokojnie" },
+  { value: "neutral", icon: <CircleIcon size={16} />, label: "Neutral", pl: "Neutralnie" },
+  { value: "heavy", icon: <DropIcon size={16} />, label: "Heavy", pl: "Ciężko" },
+  { value: "stormy", icon: <SparkIcon size={16} />, label: "Stormy", pl: "Burzliwie" },
 ];
 
 export default function EditJournalEntry() {
@@ -89,7 +91,7 @@ export default function EditJournalEntry() {
                 background: moods.includes(m.value) ? "var(--color-blush)" : "transparent",
                 borderColor: moods.includes(m.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: moods.includes(m.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{language === "pl" ? m.pl : m.label}</button>
+              }}><span className="inline-flex items-center gap-1.5">{m.icon}{language === "pl" ? m.pl : m.label}</span></button>
           ))}
         </div>
 
