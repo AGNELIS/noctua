@@ -22,14 +22,14 @@ type DreamSymbol = {
 
 const CATEGORIES = [
   { value: "all", icon: null, label: "All", pl: "Wszystkie" },
-  { value: "animals", icon: <OwlIcon size={18} />, label: "Animals", pl: "Zwierzęta" },
-  { value: "nature", icon: <LeafIcon size={18} />, label: "Nature", pl: "Natura" },
-  { value: "elements", icon: <DiamondIcon size={18} />, label: "Elements", pl: "Żywioły" },
-  { value: "objects", icon: <KeyIcon size={18} />, label: "Objects", pl: "Przedmioty" },
-  { value: "actions", icon: <BoltIcon size={18} />, label: "Actions", pl: "Działania" },
-  { value: "people", icon: <SilhouetteIcon size={18} />, label: "People", pl: "Ludzie" },
-  { value: "body", icon: <BodyIcon size={18} />, label: "Body", pl: "Ciało" },
-  { value: "places", icon: <BuildingIcon size={18} />, label: "Places", pl: "Miejsca" },
+  { value: "animals", icon: <OwlIcon size={40} />, label: "Animals", pl: "Zwierzęta" },
+  { value: "nature", icon: <LeafIcon size={40} />, label: "Nature", pl: "Natura" },
+  { value: "elements", icon: <DiamondIcon size={40} />, label: "Elements", pl: "Żywioły" },
+  { value: "objects", icon: <KeyIcon size={40} />, label: "Objects", pl: "Przedmioty" },
+  { value: "actions", icon: <BoltIcon size={40} />, label: "Actions", pl: "Działania" },
+  { value: "people", icon: <SilhouetteIcon size={40} />, label: "People", pl: "Ludzie" },
+  { value: "body", icon: <BodyIcon size={40} />, label: "Body", pl: "Ciało" },
+  { value: "places", icon: <BuildingIcon size={40} />, label: "Places", pl: "Miejsca" },
 ];
 
 export default function SymbolsPage() {
@@ -102,15 +102,21 @@ export default function SymbolsPage() {
             style={{ background: "var(--color-blush)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-6 px-6">
-          {CATEGORIES.map((c) => (
+        <div className="grid grid-cols-4 gap-3 gap-y-4">
+          {CATEGORIES.filter(c => c.value !== "all").map((c) => (
             <button key={c.value} onClick={() => setCategory(c.value)}
-              className="px-3 py-1.5 rounded-full text-xs whitespace-nowrap transition-all border shrink-0"
-              style={{
-                background: category === c.value ? "var(--color-blush)" : "transparent",
-                borderColor: category === c.value ? "var(--color-mauve)" : "var(--color-dusty-rose)",
-                color: category === c.value ? "var(--color-plum)" : "var(--color-mauve)",
-              }}><span className="inline-flex items-center gap-1.5">{c.icon}{language === "pl" ? c.pl : c.label}</span></button>
+              className="flex flex-col items-center gap-1 transition-all duration-200"
+              style={{ opacity: category === c.value || category === "all" ? 1 : 0.35 }}>
+              <div style={{ transform: category === c.value ? "scale(1.2)" : "scale(1)", transition: "transform 0.2s" }}>
+                {c.icon}
+              </div>
+              <span className="text-xs" style={{ color: "var(--color-plum)", fontWeight: category === c.value ? 700 : 500 }}>
+                {language === "pl" ? c.pl : c.label}
+              </span>
+              {category === c.value && (
+                <div style={{ width: "20px", height: "2px", background: "var(--color-plum)", borderRadius: "1px" }} />
+              )}
+            </button>
           ))}
         </div>
 
@@ -132,9 +138,7 @@ export default function SymbolsPage() {
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-medium capitalize" style={{ color: "var(--color-dark)" }}>{language === "pl" && s.symbol_pl ? s.symbol_pl : s.symbol}</span>
-                    {s.category && (
-                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--color-cream)", color: "var(--color-mauve)" }}>{language === "pl" ? (CATEGORIES.find(c => c.value === s.category)?.pl?.replace(/^.\s/, "") || s.category) : s.category}</span>
-                    )}
+                    
                   </div>
                   <span className="text-xs transition-transform" style={{ color: "var(--color-dusty-rose)", transform: expanded === s.id ? "rotate(180deg)" : "rotate(0deg)" }}>▾</span>
                 </div>
