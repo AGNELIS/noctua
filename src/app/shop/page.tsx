@@ -174,35 +174,18 @@ export default function ShopPage() {
                         >
                           <div
                             style={{
-                              width: "60px",
-                              height: "100px",
-                              borderRadius: "12px",
+                              width: "64px",
+                              height: "88px",
+                              borderRadius: "14px",
                               border: isActive
                                 ? "2.5px solid var(--color-plum)"
                                 : "1.5px solid var(--color-dusty-rose)",
-                              overflow: "hidden",
-                              background: colors[0] || "#f0e0e4",
+                              background: `linear-gradient(135deg, ${colors[0] || "#ccc"}, ${colors[1] || "#aaa"})`,
                               boxShadow: isActive
                                 ? "0 4px 16px rgba(155,107,141,0.35)"
                                 : "none",
                             }}
-                          >
-                            <div style={{ height: "14px", background: colors[1] || "#ddd", opacity: 0.6 }} />
-                            <div style={{ padding: "5px" }}>
-                              <div
-                                style={{
-                                  width: "22px",
-                                  height: "22px",
-                                  margin: "2px auto",
-                                  borderRadius: "50%",
-                                  background: "radial-gradient(circle, #c0d0e4, #708aaa)",
-                                }}
-                              />
-                              <div style={{ height: "3px", background: colors[1] || "#aaa", borderRadius: "2px", margin: "5px 3px 2px" }} />
-                              <div style={{ height: "3px", background: colors[2] || "#888", borderRadius: "2px", margin: "2px 3px" }} />
-                              <div style={{ height: "3px", background: colors[3] || colors[1] || "#aaa", borderRadius: "2px", margin: "2px 3px", opacity: 0.5 }} />
-                            </div>
-                          </div>
+                          />
                           <p
                             className="text-xs mt-3 flex items-start justify-center text-center transition-colors duration-500"
                             style={{
@@ -246,17 +229,17 @@ export default function ShopPage() {
                             }}
                           >
                             <span
-                              className="text-sm transition-colors duration-500"
+                              className="text-base md:text-lg transition-colors duration-500"
                               style={{
                                 color: "var(--color-dark)",
                                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                                fontWeight: 500,
+                                fontWeight: 600,
                               }}
                             >
                               {product.name}
                             </span>
                             <div className="flex items-center gap-2 shrink-0 ml-3">
-                              <span className="text-xs transition-colors duration-500" style={{
+                              <span className="text-sm transition-colors duration-500" style={{
                                 color: owned ? "var(--color-mauve)" : "var(--color-plum)",
                                 fontWeight: owned ? 500 : 600,
                               }}>
