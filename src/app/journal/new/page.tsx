@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { SunIcon, CloudIcon, SphereIcon, BarbellIcon, StarIcon } from "@/components/NoctuaIcons";
 
 const MOODS = [
-  { value: "radiant", label: "☀️ Radiant" },
-  { value: "calm", label: "🌿 Calm" },
-  { value: "neutral", label: "○ Neutral" },
-  { value: "heavy", label: "🌧 Heavy" },
-  { value: "stormy", label: "⛈ Stormy" },
+  { value: "radiant", icon: <SunIcon size={20} />, label: "Radiant" },
+  { value: "calm", icon: <CloudIcon size={20} />, label: "Calm" },
+  { value: "neutral", icon: <SphereIcon size={20} />, label: "Neutral" },
+  { value: "heavy", icon: <BarbellIcon size={20} />, label: "Heavy" },
+  { value: "stormy", icon: <StarIcon size={20} />, label: "Stormy" },
 ];
 
 export default function NewJournalEntry() {
@@ -65,7 +66,7 @@ export default function NewJournalEntry() {
                 background: moods.includes(m.value) ? "var(--color-blush)" : "transparent",
                 borderColor: moods.includes(m.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: moods.includes(m.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}>{m.label}</button>
+              }}><span className="inline-flex items-center gap-1.5">{m.icon}{m.label}</span></button>
           ))}
         </div>
 
