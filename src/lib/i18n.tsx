@@ -183,15 +183,38 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
 
   useEffect(() => {
-    const saved = localStorage.getItem("noctua-language") as Language;
-    if (saved === "en" || saved === "pl") {
-      setLanguageState(saved);
-    }
+    const loadLanguage = async () => {
+      const saved = localStorage.getItem("noctua-language") as Language;
+      if (saved === "en" || saved === "pl") {
+        setLanguageState(saved);
+      }
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase.from("profiles").select("preferred_language").eq("id", user.id).single();
+          if (profile?.preferred_language) {
+            setLanguageState(profile.preferred_language as Language);
+            localStorage.setItem("noctua-language", profile.preferred_language);
+          }
+        }
+      } catch {}
+    };
+    loadLanguage();
   }, []);
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = async (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("noctua-language", lang);
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({ preferred_language: lang }).eq("id", user.id);
+      }
+    } catch {}
   };
 
   const t = (key: TranslationKey): string => {
