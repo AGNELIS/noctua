@@ -36,9 +36,9 @@ const COMMON_SYMPTOMS = [
 ];
 
 const SYMPTOMS_PL: Record<string, string> = {
-  cramps: "skurcze", bloating: "wzdecia", headache: "bol glowy", fatigue: "zmeczenie",
-  "mood swings": "wahania nastroju", "tender breasts": "bolesnosc piersi", backache: "bol plecow", nausea: "nudnosci",
-  cravings: "zachcianki", insomnia: "bezsennosc", acne: "tradzik", anxiety: "niepokój",
+  cramps: "skurcze", bloating: "wzdęcia", headache: "ból głowy", fatigue: "zmęczenie",
+  "mood swings": "wahania nastroju", "tender breasts": "bolesność piersi", backache: "ból pleców", nausea: "nudności",
+  cravings: "zachcianki", insomnia: "bezsenność", acne: "trądzik", anxiety: "niepokój",
 };
 
 function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
