@@ -55,7 +55,7 @@ export default function LetterPage() {
               style={{
                 color: i === 0 ? "var(--color-dark)" : "var(--color-dark)",
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: i === 0 ? "1.5rem" : i === paragraphs.length - 1 ? "1.1rem" : "1rem",
+                fontSize: i === 0 ? "1.75rem" : i === paragraphs.length - 1 ? "1.25rem" : "1.15rem",
                 fontWeight: i === 0 ? 600 : 400,
                 fontStyle: i === 0 ? "normal" : "normal",
                 opacity: i === 0 ? 1 : 0.85,
