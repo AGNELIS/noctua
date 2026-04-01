@@ -3,18 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 import { SunIcon, CloudIcon, SphereIcon, BarbellIcon, StarIcon } from "@/components/NoctuaIcons";
 
 const MOODS = [
-  { value: "radiant", icon: <SunIcon size={20} />, label: "Radiant" },
-  { value: "calm", icon: <CloudIcon size={20} />, label: "Calm" },
-  { value: "neutral", icon: <SphereIcon size={20} />, label: "Neutral" },
-  { value: "heavy", icon: <BarbellIcon size={20} />, label: "Heavy" },
-  { value: "stormy", icon: <StarIcon size={20} />, label: "Stormy" },
+  { value: "radiant", icon: <SunIcon size={20} />, label: "Radiant", pl: "Promiennie" },
+  { value: "calm", icon: <CloudIcon size={20} />, label: "Calm", pl: "Spokojnie" },
+  { value: "neutral", icon: <SphereIcon size={20} />, label: "Neutral", pl: "Neutralnie" },
+  { value: "heavy", icon: <BarbellIcon size={20} />, label: "Heavy", pl: "Ciężko" },
+  { value: "stormy", icon: <StarIcon size={20} />, label: "Stormy", pl: "Burzliwie" },
 ];
 
 export default function NewJournalEntry() {
   const router = useRouter();
+  const { t, language } = useLanguage();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [moods, setMoods] = useState<string[]>([]);
@@ -42,12 +44,12 @@ export default function NewJournalEntry() {
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← Cancel</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>New Entry</h1>
+        <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
+        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("journal_new")}</h1>
         <button onClick={handleSave} disabled={saving}
           className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
           style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
-          {saving ? "Saving..." : "Save"}
+          {saving ? "..." : t("save")}
         </button>
       </header>
 
@@ -55,7 +57,7 @@ export default function NewJournalEntry() {
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
         <p className="text-xs text-center tracking-wide" style={{ color: "var(--color-dusty-rose)" }}>
-          {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {new Date().toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         <div className="flex justify-center gap-2 flex-wrap">
@@ -66,15 +68,15 @@ export default function NewJournalEntry() {
                 background: moods.includes(m.value) ? "var(--color-blush)" : "transparent",
                 borderColor: moods.includes(m.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                 color: moods.includes(m.value) ? "var(--color-plum)" : "var(--color-mauve)",
-              }}><span className="inline-flex items-center gap-1.5">{m.icon}{m.label}</span></button>
+              }}><span className="inline-flex items-center gap-1.5">{m.icon}{language === "pl" ? m.pl : m.label}</span></button>
           ))}
         </div>
 
-        <input type="text" placeholder="Title (optional)" value={title} onChange={(e) => setTitle(e.target.value)}
+        <input type="text" placeholder={language === "pl" ? "Tytuł (opcjonalnie)" : "Title (optional)"} value={title} onChange={(e) => setTitle(e.target.value)}
           className="w-full text-lg font-light text-center outline-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "12px", fontFamily: "Georgia, 'Times New Roman', serif" }} />
 
-        <textarea placeholder="What's alive in you today?" value={content} onChange={(e) => setContent(e.target.value)} rows={12}
+        <textarea placeholder={language === "pl" ? "Pisz tutaj..." : "What's alive in you today?"} value={content} onChange={(e) => setContent(e.target.value)} rows={12}
           className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
       </main>
