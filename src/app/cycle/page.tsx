@@ -76,7 +76,7 @@ export default function CycleTrackerPage() {
   const [moonEvents, setMoonEvents] = useState<MoonEvent[]>([]);
 
   useEffect(() => {
-    setMoonEvents(getUpcomingMoonEvents(3));
+    setMoonEvents(getUpcomingMoonEvents(12));
   }, []);
 
   const getMoonForDay = (day: number) => {
