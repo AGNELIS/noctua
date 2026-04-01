@@ -16,10 +16,10 @@ type CycleEntry = {
 };
 
 const PHASES = [
-  { value: "menstruation", label: "🌑 Menstruation", pl: "🌑 Menstruacja" },
-  { value: "follicular", label: "🌒 Follicular", pl: "🌒 Folikularna" },
-  { value: "ovulation", label: "🌕 Ovulation", pl: "🌕 Owulacja" },
-  { value: "luteal", label: "🌘 Luteal", pl: "🌘 Lutealna" },
+  { value: "menstruation", label: "Menstruation", pl: "Menstruacja", color: "#c45050" },
+  { value: "follicular", label: "Follicular", pl: "Folikularna", color: "#c49b8e" },
+  { value: "ovulation", label: "Ovulation", pl: "Owulacja", color: "#d4af37" },
+  { value: "luteal", label: "Luteal", pl: "Lutealna", color: "#9b8ec4" },
 ];
 
 const FLOW = [
@@ -183,7 +183,7 @@ export default function CycleTrackerPage() {
             {PHASES.map((p) => (
               <div key={p.value} className="flex items-center gap-1.5">
                 <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: phaseColor(p.value) }} />
-                <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? p.pl?.replace(/^.\s/, "") : p.value}</span>
+                <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? p.pl : p.label}</span>
               </div>
             ))}
           </div>
@@ -199,7 +199,7 @@ export default function CycleTrackerPage() {
               <button key={p.value} onClick={() => setPhase(phase === p.value ? "" : p.value)}
                 className="px-3 py-2 rounded-full text-sm transition-all border"
                 style={{ background: phase === p.value ? "var(--color-blush)" : "transparent", borderColor: phase === p.value ? "var(--color-mauve)" : "var(--color-dusty-rose)", color: phase === p.value ? "var(--color-dark)" : "var(--color-mauve)", fontWeight: phase === p.value ? 600 : 400 }}
-              >{language === "pl" ? p.pl : p.label}</button>
+              ><span className="inline-flex items-center gap-1.5"><span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: p.color }} />{language === "pl" ? p.pl : p.label}</span></button>
             ))}
           </div>
           {phase === "menstruation" && (
