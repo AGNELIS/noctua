@@ -217,7 +217,7 @@ const saveName = async () => {
 
         {/* Journey stats */}
         <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-          <p className="text-center mb-4" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.18em" }}>{language === "pl" ? "Twoja podróż" : "Your journey"}</p>
+          <p className="text-center mb-4" style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.18em", fontWeight: 500 }}>{language === "pl" ? "Twoja podróż" : "Your journey"}</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px" }}>
             {[
               { label: language === "pl" ? "Wpisy" : "Entries", value: stats.journalCount },
@@ -226,8 +226,8 @@ const saveName = async () => {
               { label: language === "pl" ? "Cykl" : "Cycle", value: stats.cycleCount },
             ].map((s) => (
               <div key={s.label} className="text-center">
-                <p style={{ fontSize: "22px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>{s.value}</p>
-                <p style={{ fontSize: "9px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: "4px" }}>{s.label}</p>
+                <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1, fontWeight: 600 }}>{s.value}</p>
+                <p style={{ fontSize: "11px", color: "var(--color-dark)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "6px", fontWeight: 500 }}>{s.label}</p>
               </div>
             ))}
           </div>
