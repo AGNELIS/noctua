@@ -6,13 +6,13 @@ import "./globals.css";
 
 const anticDidone = Antic_Didone({
   weight: "400",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-antic",
 });
 
 const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "500", "600"],
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-cormorant",
 });
 
