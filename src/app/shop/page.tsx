@@ -18,10 +18,19 @@ type Product = {
 
 const CATEGORY_LABELS: Record<string, { en: string; pl: string }> = {
   theme: { en: "Themes", pl: "Motywy" },
-  symbol_pack: { en: "Symbol Packs", pl: "Paczki symboli" },
+  symbol_pack: { en: "Knowledge packs", pl: "Paczki wiedzy" },
+  report: { en: "Reports", pl: "Raporty" },
+  interpretation: { en: "Interpretations", pl: "Interpretacje" },
+  workbook: { en: "Workbooks", pl: "Zeszyty pracy" },
 };
 
-const CATEGORY_ORDER = ["theme", "symbol_pack"];
+const CATEGORY_ORDER = ["theme", "symbol_pack", "report", "interpretation", "workbook"];
+
+const MIN_ENTRIES_REQUIRED: Record<string, number> = {
+  report: 7,
+  interpretation: 1,
+  workbook: 3,
+};
 
 export default function ShopPage() {
   const router = useRouter();
@@ -42,7 +51,7 @@ export default function ShopPage() {
       .from("shop_products")
       .select("*")
       .eq("is_active", true)
-      .in("category", ["theme", "symbol_pack"])
+      .in("category", ["theme", "symbol_pack", "report", "interpretation", "workbook"])
       .order("sort_order");
 
     const { data: purch } = await supabase
@@ -120,15 +129,7 @@ export default function ShopPage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-6 pb-16">
-        <p
-          className="text-center text-lg md:text-xl leading-relaxed mb-10 italic transition-colors duration-500"
-          style={{
-            color: "var(--color-mauve)",
-            fontFamily: "'Antic Didone', Georgia, serif",
-          }}
-        >
-          &ldquo;{language === "pl" ? "Ozdób swoją przestrzeń." : "Adorn your sacred space."}&rdquo;
-        </p>
+
 
         {loading ? (
           <p className="text-center text-sm pt-12" style={{ color: "var(--color-dusty-rose)" }}>
@@ -231,61 +232,68 @@ export default function ShopPage() {
                     })}
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
                     {group.items.map((product) => {
                       const owned = purchased.has(product.id);
+                      const minEntries = MIN_ENTRIES_REQUIRED[product.category] || 0;
                       return (
                         <div
                           key={product.id}
-                          className="flex items-center gap-4 p-4 rounded-2xl border transition-all duration-500"
+                          className="flex flex-col p-4 rounded-2xl border transition-all duration-500"
                           style={{
                             background: "var(--color-blush)",
-                            borderColor: "var(--color-dusty-rose)",
+                            borderColor: owned ? "var(--color-mauve)" : "var(--color-dusty-rose)",
                           }}
                         >
-                          <span className="text-3xl shrink-0">
-                            {product.preview_emoji}
-                          </span>
-                          <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-2">
                             <h3
-                              className="text-base transition-colors duration-500"
+                              className="text-sm leading-tight transition-colors duration-500"
                               style={{
                                 color: "var(--color-dark)",
                                 fontFamily: "'Cormorant Garamond', Georgia, serif",
                                 fontWeight: 600,
                               }}
                             >
-                              {language === "pl" ? "Rozszerzone symbole snów" : product.name}
+                              {product.name}
                             </h3>
-                            <p
-                              className="text-sm leading-relaxed mt-0.5 transition-colors duration-500"
-                              style={{ color: "var(--color-mauve)" }}
+                            <span
+                              className="text-sm shrink-0 ml-2"
+                              style={{ color: "var(--color-plum)", fontWeight: 700 }}
                             >
-                              {language === "pl" && product.category === "symbol_pack" ? "25+ dodatkowych symboli snów z głębokimi interpretacjami jungowskimi i połączeniami z pracą z cieniem." : product.description}
-                            </p>
+                              £{product.price_gbp.toFixed(2)}
+                            </span>
                           </div>
-                          <div className="shrink-0">
+                          <p
+                            className="text-xs leading-relaxed mb-3 flex-1 transition-colors duration-500"
+                            style={{ color: "var(--color-mauve)" }}
+                          >
+                            {product.description}
+                          </p>
+                          {minEntries > 0 && !owned && (
+                            <p className="text-[10px] mb-2 italic" style={{ color: "var(--color-dusty-rose)" }}>
+                              {language === "pl" ? `Min. ${minEntries} wpisów` : `Min. ${minEntries} entries required`}
+                            </p>
+                          )}
+                          <div className="mt-auto">
                             {owned ? (
-                              <span
-                                className="text-sm tracking-wide transition-colors duration-500"
-                                style={{ color: "var(--color-plum)", fontWeight: 500 }}
+                              <div
+                                className="text-center py-1.5 rounded-lg text-xs"
+                                style={{ background: "var(--color-cream)", color: "var(--color-plum)", fontWeight: 500 }}
                               >
-                                {language === "pl" ? "Posiadane" : "Owned"} ✓
-                              </span>
+                                {language === "pl" ? "Posiadane" : "Owned"}
+                              </div>
                             ) : (
                               <button
                                 onClick={() => handlePurchase(product.id)}
                                 disabled={buying === product.id}
-                                className="px-5 py-2.5 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
+                                className="w-full py-1.5 rounded-lg text-xs tracking-wide transition-colors disabled:opacity-50"
                                 style={{
                                   background: "var(--color-plum)",
                                   color: "var(--color-cream)",
-                                  fontWeight: 600,
+                                  fontWeight: 500,
                                 }}
                               >
-                                {buying === product.id
-                                  ? "..."
-                                  : `£${product.price_gbp.toFixed(2)}`}
+                                {buying === product.id ? "..." : (language === "pl" ? "Odblokuj" : "Unlock")}
                               </button>
                             )}
                           </div>
