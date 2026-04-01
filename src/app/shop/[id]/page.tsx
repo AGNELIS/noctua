@@ -13,6 +13,11 @@ type Product = {
   price_gbp: number;
 };
 
+const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
+  "Extended Dream Symbols": { name: "Rozszerzone symbole snów", desc: "25+ dodatkowych symboli snów z głębokimi interpretacjami jungowskimi, znaczeniami archetypowymi i połączeniami z pracą z cieniem. Nowe symbole dodawane z każdą aktualizacją." },
+  "Shadow Work Workbook": { name: "Zeszyt pracy z cieniem", desc: "Prowadzony cyfrowy zeszyt do głębokiej pracy wewnętrznej. Zawiera prompti, refleksje i ćwiczenia dopasowane do faz księżyca." },
+};
+
 export default function ProductPage() {
   const router = useRouter();
   const { t, language } = useLanguage();
@@ -66,16 +71,16 @@ export default function ProductPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-8">
-        <section className="text-center space-y-4 pt-4">
-          <h1 className="text-2xl md:text-3xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
-            {product.name}
-          </h1>
-          <p className="text-sm uppercase tracking-widest" style={{ color: "var(--color-mauve)" }}>
+        <section className="text-center space-y-2 pt-4">
+          <p className="text-xs uppercase tracking-widest" style={{ color: "var(--color-mauve)" }}>
             {language === "pl"
               ? product.category === "theme" ? "Motyw" : product.category === "symbol_pack" ? "Paczka wiedzy" : product.category === "report" ? "Raport" : product.category === "interpretation" ? "Interpretacja" : product.category === "workbook" ? "Zeszyt pracy" : product.category
               : product.category === "theme" ? "Theme" : product.category === "symbol_pack" ? "Knowledge pack" : product.category === "report" ? "Report" : product.category === "interpretation" ? "Interpretation" : product.category === "workbook" ? "Workbook" : product.category
             }
           </p>
+          <h1 className="text-2xl md:text-3xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+            {language === "pl" ? (PRODUCT_PL[product.name]?.name || product.name) : product.name}
+          </h1>
         </section>
 
         <div className="flex items-center justify-center gap-4">
@@ -86,7 +91,7 @@ export default function ProductPage() {
 
         <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {product.description}
+            {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
           </p>
         </section>
 
