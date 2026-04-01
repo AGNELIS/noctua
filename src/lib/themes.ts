@@ -7,6 +7,7 @@ export type ThemeColors = {
   gold: string;
   dark: string;
   deep: string;
+  gradient: string;
 };
 
 export const DEFAULT_THEME: ThemeColors = {
@@ -18,6 +19,7 @@ export const DEFAULT_THEME: ThemeColors = {
   gold: "#C8A87C",
   dark: "#2A1A28",
   deep: "#1A0E1A",
+  gradient: "#FAF7F5",
 };
 
 export const THEME_MAP: Record<string, ThemeColors> = {
@@ -30,6 +32,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     gold: "#d4af37",
     dark: "#ede0f5",
     deep: "#f8f4fc",
+    gradient: "linear-gradient(180deg, #0c0c1e 0%, #1a1030 40%, #241440 100%)",
   },
   "Golden Hour": {
     cream: "#fdfaf2",
@@ -40,6 +43,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     gold: "#d4a020",
     dark: "#3a2a10",
     deep: "#1e1608",
+    gradient: "linear-gradient(180deg, #fdfaf2 0%, #f8f0dc 35%, #f0e4c0 100%)",
   },
   "Ocean Depths": {
     cream: "#f2fafa",
@@ -50,6 +54,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     gold: "#60bab2",
     dark: "#102e2d",
     deep: "#081c1c",
+    gradient: "linear-gradient(180deg, #f2fafa 0%, #e0f0ef 35%, #c8e8e6 100%)",
   },
   "Cherry Blossom": {
     cream: "#fdf5f7",
@@ -60,6 +65,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     gold: "#c8907a",
     dark: "#3a1828",
     deep: "#28101c",
+    gradient: "linear-gradient(180deg, #fdf5f7 0%, #f5e4ea 35%, #ecd0dc 100%)",
   },
   "Aurora Borealis": {
     cream: "#080814",
@@ -70,6 +76,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     gold: "#b7e4c7",
     dark: "#d8f3dc",
     deep: "#f0faf2",
+    gradient: "linear-gradient(180deg, #080814 0%, #0a1420 40%, #0c2020 100%)",
   },
 };
 
