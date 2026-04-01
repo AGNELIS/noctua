@@ -6,7 +6,7 @@ import "./globals.css";
 
 const anticDidone = Antic_Didone({
   weight: "400",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   variable: "--font-antic",
 });
 
