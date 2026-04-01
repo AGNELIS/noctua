@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { getMoonPhase, getUpcomingMoonEvents, type MoonEvent } from "@/lib/moon";
 
 type CycleEntry = {
   id: string;
@@ -71,6 +72,27 @@ export default function CycleTrackerPage() {
   const [saved, setSaved] = useState(false);
   const [existingId, setExistingId] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [moonEvents, setMoonEvents] = useState<MoonEvent[]>([]);
+
+  useEffect(() => {
+    setMoonEvents(getUpcomingMoonEvents(3));
+  }, []);
+
+  const getMoonForDay = (day: number) => {
+    const dateStr = getDateStr(day);
+    const event = moonEvents.find((e) => e.date.toISOString().split("T")[0] === dateStr);
+    if (event) {
+      switch (event.type) {
+        case "new_moon": return "🌑";
+        case "first_quarter": return "🌓";
+        case "full_moon": return "🌕";
+        case "last_quarter": return "🌗";
+        case "lunar_eclipse": return "🌒";
+        default: return null;
+      }
+    }
+    return null;
+  };
 
   useEffect(() => { loadEntries(); }, []);
 
@@ -174,7 +196,10 @@ export default function CycleTrackerPage() {
                   className="relative w-full aspect-square flex flex-col items-center justify-center text-sm transition-all"
                   style={{ borderRadius: "50%", background: isSelected ? "var(--color-dusty-rose)" : "transparent", color: isSelected ? "var(--color-cream)" : "var(--color-dark)", fontWeight: isToday ? 700 : 400 }}>
                   <span>{day}</span>
-                  {entry && (<span style={{ display: "block", width: "5px", height: "5px", borderRadius: "50%", background: phaseColor(entry.cycle_phase), marginTop: "1px" }} />)}
+                  <div className="flex items-center gap-0.5" style={{ marginTop: "1px", minHeight: "8px" }}>
+                    {entry && (<span style={{ display: "block", width: "5px", height: "5px", borderRadius: "50%", background: phaseColor(entry.cycle_phase) }} />)}
+                    {getMoonForDay(day) && (<span style={{ fontSize: "8px", lineHeight: 1 }}>{getMoonForDay(day)}</span>)}
+                  </div>
                 </button>
               );
             })}
@@ -188,6 +213,25 @@ export default function CycleTrackerPage() {
             ))}
           </div>
         </section>
+
+        {moonEvents.length > 0 && (
+          <section className="rounded-2xl border p-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+            <p className="text-xs text-center uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{language === "pl" ? "Nadchodzące wydarzenia księżycowe" : "Upcoming lunar events"}</p>
+            <div className="space-y-2">
+              {moonEvents.filter((e) => e.date.getTime() > Date.now()).slice(0, 6).map((e, i) => (
+                <div key={i} className="flex items-center justify-between text-sm">
+                  <span style={{ color: "var(--color-dark)" }}>
+                    {e.type === "new_moon" ? "🌑" : e.type === "full_moon" ? "🌕" : e.type === "first_quarter" ? "🌓" : e.type === "last_quarter" ? "🌗" : "🌒"}{" "}
+                    {language === "pl" ? e.labelPl : e.label}
+                  </span>
+                  <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
+                    {e.date.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short" })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="space-y-5">
           <p className="text-sm text-center tracking-wide" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
