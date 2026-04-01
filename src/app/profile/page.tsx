@@ -216,7 +216,7 @@ const saveName = async () => {
         </div>
 
         {/* Journey stats */}
-        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "rgba(255,255,255,0.45)", borderColor: "var(--color-dusty-rose)" }}>
+        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
           <p className="text-center mb-4" style={{ fontSize: "9px", color: "var(--color-dusty-rose)", textTransform: "uppercase", letterSpacing: "0.18em" }}>{language === "pl" ? "Twoja podróż" : "Your journey"}</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px" }}>
             {[
