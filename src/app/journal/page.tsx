@@ -104,7 +104,7 @@ export default function JournalPage() {
   };
 
   return (
-    <div className="min-h-screen relative transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen relative transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       {deleteId && <ConfirmModal message={language === "pl" ? "Na pewno chcesz usunac ten wpis?" : "Are you sure you want to delete this entry?"} onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
 
       <header className="px-6 pt-5 pb-2">

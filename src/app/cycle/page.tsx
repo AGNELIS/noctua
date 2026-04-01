@@ -136,7 +136,7 @@ export default function CycleTrackerPage() {
   };
 
   return (
-    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       {deleteConfirm && <ConfirmModal message={language === "pl" ? "Usunac ten wpis?" : "Delete this entry?"} onConfirm={confirmDelete} onCancel={() => setDeleteConfirm(false)} />}
 
       <header className="px-6 pt-5 pb-2">

@@ -58,14 +58,14 @@ export default function EditJournalEntry() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+      <div className="min-h-screen flex items-center justify-center transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
         <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="flex items-center justify-between px-6 py-5">
         <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>
         <div />

@@ -40,7 +40,7 @@ export default function NewJournalEntry() {
   };
 
   return (
-    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="flex items-center justify-between px-6 py-5">
         <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← Cancel</button>
         <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>New Entry</h1>

@@ -57,7 +57,7 @@ export default function NewDreamEntry() {
   };
 
   return (
-    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="flex items-center justify-between px-6 py-5">
         <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
         <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("dreams_new")}</h1>

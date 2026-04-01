@@ -118,14 +118,14 @@ export default function EditDreamEntry() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+      <div className="min-h-screen flex items-center justify-center transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
         <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen transition-colors duration-500" style={{ backgroundColor: "var(--color-cream)" }}>
+    <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
           <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>

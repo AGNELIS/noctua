@@ -155,7 +155,7 @@ export default function DashboardPage() {
   return (
     <div
       className="min-h-screen relative overflow-hidden transition-colors duration-500"
-      style={{ backgroundColor: "var(--color-cream)" }}
+      style={{ background: "var(--color-gradient)" }}
     >
       {/* Decorative stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
