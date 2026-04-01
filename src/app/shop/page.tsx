@@ -26,6 +26,11 @@ const CATEGORY_LABELS: Record<string, { en: string; pl: string }> = {
 
 const CATEGORY_ORDER = ["theme", "symbol_pack", "report", "interpretation", "workbook"];
 
+const PRODUCT_NAME_PL: Record<string, string> = {
+  "Extended Dream Symbols": "Rozszerzone symbole snów",
+  "Shadow Work Workbook": "Zeszyt pracy z cieniem",
+};
+
 const MIN_ENTRIES_REQUIRED: Record<string, number> = {
   report: 7,
   interpretation: 1,
@@ -195,7 +200,7 @@ export default function ShopPage() {
                               fontFamily: "'Cormorant Garamond', Georgia, serif",
                             }}
                           >
-                            {product.name}
+                            {language === "pl" ? (PRODUCT_NAME_PL[product.name] || product.name) : product.name}
                           </p>
                           <p
                             className="text-[10px] mt-1 text-center w-full"
