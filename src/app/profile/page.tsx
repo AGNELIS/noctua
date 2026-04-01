@@ -205,7 +205,7 @@ const saveName = async () => {
             </button>
           )}
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
-          <p className="text-sm italic" style={{ color: "var(--color-dusty-rose)" }}>{createdAt ? (language === "pl" ? `W Noctui od ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} dni` : `In Noctua for ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} days`) : ""}</p>
+          <p className="text-base italic" style={{ color: "var(--color-dusty-rose)" }}>{createdAt ? (language === "pl" ? `W Noctui od ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} dni` : `In Noctua for ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} days`) : ""}</p>
         </section>
 
         {/* Divider */}
@@ -236,7 +236,7 @@ const saveName = async () => {
 {/* Language & Theme */}
         <section className="space-y-5">
           <div className="flex items-center justify-between">
-            <p style={{ fontSize: "12px", color: "var(--color-mauve)", letterSpacing: "0.05em" }}>{t("profile_language")}</p>
+            <p style={{ fontSize: "14px", color: "var(--color-mauve)", letterSpacing: "0.05em", fontWeight: 500 }}>{t("profile_language")}</p>
             <div className="flex items-center rounded-full overflow-hidden border" style={{ borderColor: "var(--color-dusty-rose)" }}>
               <button onClick={() => setLanguage("en")} className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "en" ? "var(--color-plum)" : "transparent", color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "en" ? 600 : 400 }}>EN</button>
               <button onClick={() => setLanguage("pl")} className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent", color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "pl" ? 600 : 400 }}>PL</button>
@@ -245,13 +245,13 @@ const saveName = async () => {
           <div className="h-px" style={{ background: "var(--color-dusty-rose)", opacity: 0.3 }} />
           <div className="flex items-center justify-between">
             <div>
-              <p style={{ fontSize: "12px", color: "var(--color-mauve)", letterSpacing: "0.05em" }}>{t("profile_active_theme")}</p>
-              <p className="mt-1 italic" style={{ fontSize: "14px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{activeThemeName || t("profile_default_theme")}</p>
+              <p style={{ fontSize: "14px", color: "var(--color-mauve)", letterSpacing: "0.05em", fontWeight: 500 }}>{t("profile_active_theme")}</p>
+              <p className="mt-1 italic" style={{ fontSize: "16px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName || t("profile_default_theme")}</p>
             </div>
             {activeThemeName ? (
-              <button onClick={handleResetTheme} className="text-xs" style={{ color: "var(--color-mauve)" }}>{t("profile_reset_theme")}</button>
+              <button onClick={handleResetTheme} className="text-sm" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{t("profile_reset_theme")}</button>
             ) : (
-              <button onClick={() => router.push("/shop")} className="text-xs" style={{ color: "var(--color-gold)" }}>{t("profile_browse_themes")}</button>
+              <button onClick={() => router.push("/shop")} className="text-sm" style={{ color: "var(--color-gold)", fontWeight: 500 }}>{t("profile_browse_themes")}</button>
             )}
           </div>
         </section>
