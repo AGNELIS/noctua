@@ -1,10 +1,5 @@
-// Simple moon phase calculator based on lunar cycle (29.53 days)
-// No external API needed — pure math
-
-const LUNAR_CYCLE = 29.53058867;
-
-// Reference new moon: January 6, 2000 18:14 UTC
-const KNOWN_NEW_MOON = new Date("2000-01-06T18:14:00Z").getTime();
+// Accurate moon phase calculator using astronomy-engine
+import * as Astronomy from "astronomy-engine";
 
 export type MoonPhaseInfo = {
   phase: string;
@@ -14,84 +9,84 @@ export type MoonPhaseInfo = {
   description: string;
 };
 
+export type MoonEvent = {
+  date: Date;
+  type: "new_moon" | "first_quarter" | "full_moon" | "last_quarter" | "lunar_eclipse";
+  label: string;
+  labelPl: string;
+};
+
 export function getMoonPhase(date: Date = new Date()): MoonPhaseInfo {
-  const diffMs = date.getTime() - KNOWN_NEW_MOON;
-  const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  const daysIntoCycle = ((diffDays % LUNAR_CYCLE) + LUNAR_CYCLE) % LUNAR_CYCLE;
+  const astroDate = Astronomy.MakeTime(date);
+  const phaseAngle = Astronomy.MoonPhase(astroDate);
+  const illum = Astronomy.Illumination(Astronomy.Body.Moon, astroDate);
+  const illumination = Math.round(illum.phase_fraction * 100);
 
-  // Calculate illumination (0 to 1 and back to 0)
-  const illumination =
-    daysIntoCycle <= LUNAR_CYCLE / 2
-      ? (daysIntoCycle / (LUNAR_CYCLE / 2)) * 100
-      : ((LUNAR_CYCLE - daysIntoCycle) / (LUNAR_CYCLE / 2)) * 100;
+  const LUNAR_CYCLE = 29.53;
+  const daysIntoCycle = Math.round((phaseAngle / 360) * LUNAR_CYCLE * 10) / 10;
 
-  // Determine phase name
-  if (daysIntoCycle < 1.85) {
-    return {
-      phase: "New Moon",
-      emoji: "🌑",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "A time for new beginnings. Set intentions in the dark.",
-    };
-  } else if (daysIntoCycle < 7.38) {
-    return {
-      phase: "Waxing Crescent",
-      emoji: "🌒",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "Your intentions take root. Nurture what you've planted.",
-    };
-  } else if (daysIntoCycle < 9.23) {
-    return {
-      phase: "First Quarter",
-      emoji: "🌓",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "A crossroads. Make decisions and take action.",
-    };
-  } else if (daysIntoCycle < 14.77) {
-    return {
-      phase: "Waxing Gibbous",
-      emoji: "🌔",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "Refine and adjust. Trust the process unfolding.",
-    };
-  } else if (daysIntoCycle < 16.61) {
-    return {
-      phase: "Full Moon",
-      emoji: "🌕",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description:
-        "Illumination and release. See what the light reveals.",
-    };
-  } else if (daysIntoCycle < 22.15) {
-    return {
-      phase: "Waning Gibbous",
-      emoji: "🌖",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "Gratitude and sharing. Give back what you've received.",
-    };
-  } else if (daysIntoCycle < 24.0) {
-    return {
-      phase: "Last Quarter",
-      emoji: "🌗",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "Release and forgive. Let go of what no longer serves you.",
-    };
+  if (phaseAngle < 22.5) {
+    return { phase: "New Moon", emoji: "🌑", illumination, daysIntoCycle, description: "A time for new beginnings. Set intentions in the dark." };
+  } else if (phaseAngle < 90) {
+    return { phase: "Waxing Crescent", emoji: "🌒", illumination, daysIntoCycle, description: "Your intentions take root. Nurture what you've planted." };
+  } else if (phaseAngle < 112.5) {
+    return { phase: "First Quarter", emoji: "🌓", illumination, daysIntoCycle, description: "A crossroads. Make decisions and take action." };
+  } else if (phaseAngle < 180) {
+    return { phase: "Waxing Gibbous", emoji: "🌔", illumination, daysIntoCycle, description: "Refine and adjust. Trust the process unfolding." };
+  } else if (phaseAngle < 202.5) {
+    return { phase: "Full Moon", emoji: "🌕", illumination, daysIntoCycle, description: "Illumination and release. See what the light reveals." };
+  } else if (phaseAngle < 270) {
+    return { phase: "Waning Gibbous", emoji: "🌖", illumination, daysIntoCycle, description: "Gratitude and sharing. Give back what you've received." };
+  } else if (phaseAngle < 292.5) {
+    return { phase: "Last Quarter", emoji: "🌗", illumination, daysIntoCycle, description: "Release and forgive. Let go of what no longer serves you." };
   } else {
-    return {
-      phase: "Waning Crescent",
-      emoji: "🌘",
-      illumination: Math.round(illumination),
-      daysIntoCycle: Math.round(daysIntoCycle * 10) / 10,
-      description: "Rest and surrender. The dark holds wisdom.",
-    };
+    return { phase: "Waning Crescent", emoji: "🌘", illumination, daysIntoCycle, description: "Rest and surrender. The dark holds wisdom." };
   }
+}
+
+export function getUpcomingMoonEvents(months: number = 3): MoonEvent[] {
+  const events: MoonEvent[] = [];
+  const now = new Date();
+  const end = new Date(now);
+  end.setMonth(end.getMonth() + months);
+
+  let searchDate = Astronomy.MakeTime(now);
+  const endTime = Astronomy.MakeTime(end);
+
+  const phases = [
+    { target: 0, type: "new_moon" as const, label: "New Moon", labelPl: "Nów" },
+    { target: 90, type: "first_quarter" as const, label: "First Quarter", labelPl: "Pierwsza kwadra" },
+    { target: 180, type: "full_moon" as const, label: "Full Moon", labelPl: "Pełnia" },
+    { target: 270, type: "last_quarter" as const, label: "Last Quarter", labelPl: "Ostatnia kwadra" },
+  ];
+
+  for (const p of phases) {
+    let s = Astronomy.MakeTime(now);
+    for (let i = 0; i < months * 2; i++) {
+      const result = Astronomy.SearchMoonPhase(p.target, s, 40);
+      if (result && result.date.getTime() < end.getTime()) {
+        events.push({ date: result.date, type: p.type, label: p.label, labelPl: p.labelPl });
+        s = Astronomy.MakeTime(new Date(result.date.getTime() + 24 * 60 * 60 * 1000));
+      } else {
+        break;
+      }
+    }
+  }
+
+  let eclipseSearch = Astronomy.SearchLunarEclipse(Astronomy.MakeTime(now));
+  while (eclipseSearch.peak.date.getTime() < end.getTime()) {
+    if (eclipseSearch.kind !== "penumbral") {
+      events.push({
+        date: eclipseSearch.peak.date,
+        type: "lunar_eclipse",
+        label: `Lunar Eclipse (${eclipseSearch.kind})`,
+        labelPl: `Zaćmienie Księżyca (${eclipseSearch.kind === "total" ? "całkowite" : "częściowe"})`,
+      });
+    }
+    eclipseSearch = Astronomy.NextLunarEclipse(eclipseSearch.peak);
+  }
+
+  return events.sort((a, b) => a.date.getTime() - b.date.getTime());
 }
 
 export function getGreeting(lang: "en" | "pl" = "en"): string {
