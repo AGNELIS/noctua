@@ -72,12 +72,7 @@ export default function ProductPage() {
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-8">
         <section className="text-center space-y-2 pt-4">
-          <p className="text-xs uppercase tracking-widest" style={{ color: "var(--color-mauve)" }}>
-            {language === "pl"
-              ? product.category === "theme" ? "Motyw" : product.category === "symbol_pack" ? "Paczka wiedzy" : product.category === "report" ? "Raport" : product.category === "interpretation" ? "Interpretacja" : product.category === "workbook" ? "Zeszyt pracy" : product.category
-              : product.category === "theme" ? "Theme" : product.category === "symbol_pack" ? "Knowledge pack" : product.category === "report" ? "Report" : product.category === "interpretation" ? "Interpretation" : product.category === "workbook" ? "Workbook" : product.category
-            }
-          </p>
+
           <h1 className="text-2xl md:text-3xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
             {language === "pl" ? (PRODUCT_PL[product.name]?.name || product.name) : product.name}
           </h1>
