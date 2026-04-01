@@ -232,71 +232,42 @@ export default function ShopPage() {
                     })}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    {group.items.map((product) => {
+                  <div className="flex flex-col gap-px rounded-2xl overflow-hidden border transition-all duration-500" style={{ borderColor: "color-mix(in srgb, var(--color-dusty-rose) 30%, transparent)" }}>
+                    {group.items.map((product, idx) => {
                       const owned = purchased.has(product.id);
-                      const minEntries = MIN_ENTRIES_REQUIRED[product.category] || 0;
                       return (
-                        <div
-                          key={product.id}
-                          className="flex flex-col p-4 rounded-2xl border transition-all duration-500"
-                          style={{
-                            background: "var(--color-blush)",
-                            borderColor: owned ? "var(--color-mauve)" : "var(--color-dusty-rose)",
-                          }}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <h3
-                              className="text-sm leading-tight transition-colors duration-500"
+                        <div key={product.id}>
+                          <button
+                            onClick={() => owned ? null : handlePurchase(product.id)}
+                            disabled={buying === product.id}
+                            className="w-full flex justify-between items-center px-4 py-3.5 transition-all duration-500 hover:opacity-80"
+                            style={{
+                              background: "linear-gradient(135deg, color-mix(in srgb, var(--color-blush) 80%, transparent), color-mix(in srgb, var(--color-cream) 60%, transparent))",
+                            }}
+                          >
+                            <span
+                              className="text-sm transition-colors duration-500"
                               style={{
                                 color: "var(--color-dark)",
                                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                                fontWeight: 600,
+                                fontWeight: 500,
                               }}
                             >
                               {product.name}
-                            </h3>
-                            <span
-                              className="text-sm shrink-0 ml-2"
-                              style={{ color: "var(--color-plum)", fontWeight: 700 }}
-                            >
-                              £{product.price_gbp.toFixed(2)}
                             </span>
-                          </div>
-                          <p
-                            className="text-xs leading-relaxed mb-3 flex-1 transition-colors duration-500"
-                            style={{ color: "var(--color-mauve)" }}
-                          >
-                            {product.description}
-                          </p>
-                          {minEntries > 0 && !owned && (
-                            <p className="text-[10px] mb-2 italic" style={{ color: "var(--color-dusty-rose)" }}>
-                              {language === "pl" ? `Min. ${minEntries} wpisów` : `Min. ${minEntries} entries required`}
-                            </p>
+                            <div className="flex items-center gap-2 shrink-0 ml-3">
+                              <span className="text-xs transition-colors duration-500" style={{
+                                color: owned ? "var(--color-mauve)" : "var(--color-plum)",
+                                fontWeight: owned ? 500 : 600,
+                              }}>
+                                {owned ? (language === "pl" ? "Posiadane" : "Owned") : `£${product.price_gbp.toFixed(2)}`}
+                              </span>
+                              <span className="text-xs transition-colors duration-500" style={{ color: "var(--color-dusty-rose)" }}>›</span>
+                            </div>
+                          </button>
+                          {idx < group.items.length - 1 && (
+                            <div className="h-px transition-colors duration-500" style={{ background: "color-mix(in srgb, var(--color-dusty-rose) 20%, transparent)" }} />
                           )}
-                          <div className="mt-auto">
-                            {owned ? (
-                              <div
-                                className="text-center py-1.5 rounded-lg text-xs"
-                                style={{ background: "var(--color-cream)", color: "var(--color-plum)", fontWeight: 500 }}
-                              >
-                                {language === "pl" ? "Posiadane" : "Owned"}
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => handlePurchase(product.id)}
-                                disabled={buying === product.id}
-                                className="w-full py-1.5 rounded-lg text-xs tracking-wide transition-colors disabled:opacity-50"
-                                style={{
-                                  background: "var(--color-plum)",
-                                  color: "var(--color-cream)",
-                                  fontWeight: 500,
-                                }}
-                              >
-                                {buying === product.id ? "..." : (language === "pl" ? "Odblokuj" : "Unlock")}
-                              </button>
-                            )}
-                          </div>
                         </div>
                       );
                     })}
