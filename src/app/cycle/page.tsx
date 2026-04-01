@@ -231,9 +231,9 @@ export default function CycleTrackerPage() {
               ))}
             </div>
           </div>
-          <textarea placeholder={language === "pl" ? "Notatki na dzis..." : "Any notes for today..."} value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
-            className="w-full bg-transparent text-sm leading-relaxed outline-none resize-none"
-            style={{ color: "var(--color-dark)" }} />
+          <textarea placeholder={language === "pl" ? "Notatki na dzis..." : "Any notes for today..."} value={notes} onChange={(e) => setNotes(e.target.value)} rows={6}
+            className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
+            style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px", border: "1px solid var(--color-dusty-rose)" }} />
           <div className="flex justify-center gap-3">
             <button onClick={handleSave} disabled={saving}
               className="px-8 py-3 rounded-xl text-base transition-all disabled:opacity-50"
