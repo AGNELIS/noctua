@@ -29,7 +29,7 @@ const LETTER_PL = [
   "Prompty w tej aplikacji są bezpośrednie. Zaprojektowane, żeby przebić się przez historie, które sobie opowiadasz, i dotrzeć do tego, co jest naprawdę pod spodem. Niektóre trafią od razu. Niektóre nabiorą sensu później. Niektóre będziesz chciała pominąć, i ten opór też jest informacją.",
   "To nie jest coś do ukończenia. To coś, do czego się wraca. Twoje odpowiedzi będą się zmieniać, tak jak Ty się zmieniasz. Prompt, który dziś nic nie znaczy, może Cię otworzyć za pół roku.",
   "Używaj tego, co Ci służy. Ignoruj to, co nie. Wracaj, kiedy coś się zmieni.",
-  "To jest Twoja praca. Nie czyjaś innej.",
+  "To jest Twoja praca. Niczyja inna.",
   "Witaj.",
 ];
 
