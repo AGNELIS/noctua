@@ -221,8 +221,7 @@ export default function ShopPage() {
                       return (
                         <div key={product.id}>
                           <button
-                            onClick={() => owned ? null : handlePurchase(product.id)}
-                            disabled={buying === product.id}
+                            onClick={() => router.push(`/shop/${product.id}`)}
                             className="w-full flex justify-between items-center px-4 py-3.5 transition-all duration-500 hover:opacity-80"
                             style={{
                               background: "linear-gradient(135deg, color-mix(in srgb, var(--color-blush) 80%, transparent), color-mix(in srgb, var(--color-cream) 60%, transparent))",
