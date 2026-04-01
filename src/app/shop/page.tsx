@@ -240,7 +240,7 @@ export default function ShopPage() {
                                 fontWeight: 600,
                               }}
                             >
-                              {product.name}
+                              {language === "pl" ? (PRODUCT_NAME_PL[product.name] || product.name) : product.name}
                             </span>
                             <div className="flex items-center gap-2 shrink-0 ml-3">
                               <span className="text-sm transition-colors duration-500" style={{
