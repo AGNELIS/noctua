@@ -259,3 +259,35 @@ export const BodyIcon = ({ size = 24, className }: IconProps) => (
     <ellipse cx="36" cy="14" rx="3" ry="4" fill="#f0c8c8" opacity="0.4"/>
   </svg>
 );
+// 🌙 Mini moon phases for calendar
+export const MiniMoon = ({ phase, size = 16 }: { phase: "new_moon" | "first_quarter" | "full_moon" | "last_quarter" | "lunar_eclipse"; size?: number }) => {
+  const r = 8;
+  const cx = 10, cy = 10;
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+      <defs>
+        <radialGradient id={`mm-${phase}`} cx="42%" cy="38%" r="58%">
+          <stop offset="0%" stopColor="#d8e4f0" />
+          <stop offset="60%" stopColor="#a0b4cc" />
+          <stop offset="100%" stopColor="#708aaa" />
+        </radialGradient>
+        <radialGradient id={`ms-${phase}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#0c1a2e" stopOpacity="0.92" />
+          <stop offset="100%" stopColor="#050e1e" stopOpacity="0.98" />
+        </radialGradient>
+        <clipPath id={`mc-${phase}`}><circle cx={cx} cy={cy} r={r} /></clipPath>
+      </defs>
+      <g clipPath={`url(#mc-${phase})`}>
+        <circle cx={cx} cy={cy} r={r} fill={`url(#mm-${phase})`} />
+        {phase === "new_moon" && <circle cx={cx} cy={cy} r={r} fill={`url(#ms-${phase})`} />}
+        {phase === "first_quarter" && <rect x={cx - r} y={cy - r} width={r} height={r * 2} fill={`url(#ms-${phase})`} />}
+        {phase === "last_quarter" && <rect x={cx} y={cy - r} width={r} height={r * 2} fill={`url(#ms-${phase})`} />}
+        {phase === "lunar_eclipse" && <>
+          <circle cx={cx} cy={cy} r={r} fill={`url(#ms-${phase})`} />
+          <circle cx={cx} cy={cy} r={r} fill="#8a2020" fillOpacity="0.4" />
+        </>}
+      </g>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#8ca8c8" strokeWidth="0.5" opacity="0.35" />
+    </svg>
+  );
+};

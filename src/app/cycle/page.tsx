@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { getMoonPhase, getUpcomingMoonEvents, type MoonEvent } from "@/lib/moon";
+import { MiniMoon } from "@/components/NoctuaIcons";
 
 type CycleEntry = {
   id: string;
@@ -81,16 +82,7 @@ export default function CycleTrackerPage() {
   const getMoonForDay = (day: number) => {
     const dateStr = getDateStr(day);
     const event = moonEvents.find((e) => e.date.toISOString().split("T")[0] === dateStr);
-    if (event) {
-      switch (event.type) {
-        case "new_moon": return "🌑";
-        case "first_quarter": return "🌓";
-        case "full_moon": return "🌕";
-        case "last_quarter": return "🌗";
-        case "lunar_eclipse": return "🌒";
-        default: return null;
-      }
-    }
+    if (event) return <MiniMoon phase={event.type} size={10} />;
     return null;
   };
 
@@ -198,7 +190,7 @@ export default function CycleTrackerPage() {
                   <span>{day}</span>
                   <div className="flex items-center gap-0.5" style={{ marginTop: "1px", minHeight: "8px" }}>
                     {entry && (<span style={{ display: "block", width: "5px", height: "5px", borderRadius: "50%", background: phaseColor(entry.cycle_phase) }} />)}
-                    {getMoonForDay(day) && (<span style={{ fontSize: "8px", lineHeight: 1 }}>{getMoonForDay(day)}</span>)}
+                    {getMoonForDay(day)}
                   </div>
                 </button>
               );
@@ -221,7 +213,7 @@ export default function CycleTrackerPage() {
               {moonEvents.filter((e) => e.date.getTime() > Date.now()).slice(0, 6).map((e, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
                   <span style={{ color: "var(--color-dark)" }}>
-                    {e.type === "new_moon" ? "🌑" : e.type === "full_moon" ? "🌕" : e.type === "first_quarter" ? "🌓" : e.type === "last_quarter" ? "🌗" : "🌒"}{" "}
+                    <MiniMoon phase={e.type} size={18} />{" "}
                     {language === "pl" ? e.labelPl : e.label}
                   </span>
                   <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
