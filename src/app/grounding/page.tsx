@@ -4,6 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
 
+const EXERCISE_ICONS: Record<string, React.ReactNode> = {
+  "54321": <SunIcon size={32} />,
+  "breathing": <CloudIcon size={32} />,
+  "bodyscan": <BodyIcon size={32} />,
+  "rooting": <LeafIcon size={32} />,
+  "cold": <DropIcon size={32} />,
+};
+import { SunIcon, CloudIcon, BodyIcon, LeafIcon, DropIcon } from "@/components/NoctuaIcons";
+
 const GROUNDING_EXERCISES = [
   { id: "54321", title: "5-4-3-2-1 Senses", titlePl: "5-4-3-2-1 Zmysły", duration: "3-5 min", description: "Ground yourself through your senses.", descPl: "Uziemij się przez zmysły.", steps: ["Take a slow, deep breath.", "Look around and name 5 things you can SEE.", "Reach out and name 4 things you can TOUCH.", "Listen carefully and name 3 things you can HEAR.", "Notice 2 things you can SMELL.", "Name 1 thing you can TASTE.", "Take another deep breath. You are here. You are safe."], stepsPl: ["Weź powolny, głęboki oddech.", "Rozejrzyj się i nazwij 5 rzeczy które WIDZISZ.", "Nazwij 4 rzeczy których możesz DOTKNĄĆ.", "Wsłuchaj się i nazwij 3 rzeczy które SŁYSZYSZ.", "Zauważ 2 rzeczy które CZUJESZ zapachem.", "Nazwij 1 rzecz którą możesz POSMAKOWAĆ.", "Weź kolejny głęboki oddech. Jesteś tutaj. Jesteś bezpieczna."], icon: "✋" },
   { id: "breathing", title: "Box Breathing", titlePl: "Oddychanie pudełkowe", duration: "2-4 min", description: "Inhale, hold, exhale, hold - each for 4 counts.", descPl: "Wdech, wstrzymaj, wydech, wstrzymaj - każde na 4.", steps: ["Sit comfortably and close your eyes if you wish.", "Breathe IN slowly for 4 counts.", "HOLD your breath for 4 counts.", "Breathe OUT slowly for 4 counts.", "HOLD empty for 4 counts.", "Repeat 4-6 times.", "Notice how your body feels now."], stepsPl: ["Usiądź wygodnie i zamknij oczy jeśli chcesz.", "WDYCHAJ powoli licząc do 4.", "WSTRZYMAJ oddech licząc do 4.", "WYDYCHAJ powoli licząc do 4.", "WSTRZYMAJ bez powietrza licząc do 4.", "Powtórz 4-6 razy.", "Zauważ jak czuje się teraz Twoje ciało."], icon: "🌬" },
@@ -57,7 +66,7 @@ export default function GroundingPage() {
         {exercise ? (
           <section className="rounded-2xl border p-6 space-y-6 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <div className="text-center space-y-2">
-              <span className="text-3xl">{exercise.icon}</span>
+              <span>{EXERCISE_ICONS[exercise.id] || exercise.icon}</span>
               <h2 className="text-lg font-medium" style={{ color: "var(--color-dark)" }}>{language === "pl" ? exercise.titlePl : exercise.title}</h2>
               <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? `Krok ${currentStep + 1} z ${exercise.steps.length}` : `Step ${currentStep + 1} of ${exercise.steps.length}`}</p>
             </div>
@@ -84,7 +93,7 @@ export default function GroundingPage() {
                   className="w-full text-left p-4 rounded-2xl border hover:scale-[1.01] transition-all"
                   style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl">{ex.icon}</span>
+                    <span>{EXERCISE_ICONS[ex.id] || ex.icon}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <h3 className="text-sm font-medium" style={{ color: "var(--color-dark)" }}>{language === "pl" ? ex.titlePl : ex.title}</h3>
