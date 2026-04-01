@@ -120,7 +120,7 @@ export default function ShopPage() {
           className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3 transition-colors duration-500"
           style={{
             color: "var(--color-plum)",
-            fontFamily: "'Antic Didone', Georgia, serif",
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
             fontWeight: 700,
           }}
         >

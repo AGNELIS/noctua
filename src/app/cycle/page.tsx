@@ -144,14 +144,14 @@ export default function CycleTrackerPage() {
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
           <div className="w-12" />
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 400 }}>{t("cycle_title")}</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("cycle_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
         <section className="rounded-2xl border p-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
           <div className="flex items-center justify-between mb-4">
             <button onClick={prevMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>‹</button>
-            <h2 className="text-base font-medium tracking-wide" style={{ color: "var(--color-dark)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 600 }}>
+            <h2 className="text-base font-medium tracking-wide" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
               {currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" })}
             </h2>
             <button onClick={nextMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>›</button>

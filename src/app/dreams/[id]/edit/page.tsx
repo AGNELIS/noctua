@@ -135,7 +135,7 @@ export default function EditDreamEntry() {
             {saving ? "..." : t("save")}
           </button>
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 400 }}>{t("dreams_edit")}</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_edit")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">

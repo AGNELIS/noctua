@@ -75,7 +75,7 @@ export default function EditJournalEntry() {
           {saving ? "..." : t("save")}
         </button>
       </header>
-      <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Antic Didone', Georgia, serif", fontWeight: 400 }}>{t("journal_edit")}</h1>
+      <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("journal_edit")}</h1>
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
