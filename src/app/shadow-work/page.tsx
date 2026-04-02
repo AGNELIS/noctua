@@ -157,6 +157,21 @@ export default function ShadowWorkPage() {
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-8">
 
+        {/* Workbook CTA */}
+        <section className="text-center pt-2 pb-2">
+          <button
+            onClick={() => router.push("/shadow-work/workbook")}
+            className="px-6 py-2.5 rounded-xl text-xs tracking-[0.2em] uppercase transition-all hover:opacity-80"
+            style={{
+              background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))",
+              color: "var(--color-cream)",
+              fontWeight: 600,
+            }}
+          >
+            {language === "pl" ? "◈ Rozpocznij Workbook" : "◈ Begin Workbook"}
+          </button>
+        </section>
+
         {/* Today's prompt */}
         <section className="text-center space-y-4 pt-4">
           <p className="text-base uppercase tracking-widest" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>
