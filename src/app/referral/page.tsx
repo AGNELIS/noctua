@@ -95,8 +95,11 @@ export default function ReferralPage() {
           <section className="rounded-2xl border p-6 text-center space-y-3" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
               {language === "pl"
-                ? `Potrzebujesz min. 3 wpisy w dzienniku żeby zapraszać. Masz: ${journalCount}/3`
-                : `You need at least 3 journal entries to start inviting. You have: ${journalCount}/3`}
+                ? "Potrzebujesz min. 3 wpisy w dzienniku żeby zapraszać."
+                : "You need at least 3 journal entries to start inviting."}
+            </p>
+            <p className="text-lg mt-2" style={{ color: "var(--color-plum)", fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+              {language === "pl" ? `Masz: ${journalCount}/3` : `You have: ${journalCount}/3`}
             </p>
            
           </section>
@@ -140,7 +143,7 @@ export default function ReferralPage() {
                   <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
                     {language === "pl" ? r.pl : r.en}
                   </p>
-                  <p className="text-xs mt-1" style={{ color: "var(--color-mauve)" }}>
+                  <p className="text-sm mt-1" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
                     {language === "pl" ? `${r.threshold} zaproszeń` : `${r.threshold} invitations`}
                   </p>
                 </div>
@@ -150,7 +153,7 @@ export default function ReferralPage() {
                   ) : earned ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>{language === "pl" ? "Odblokowane!" : "Unlocked!"}</span>
                   ) : (
-                    <span className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{completedCount}/{r.threshold}</span>
+                    <span className="text-base" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{completedCount}/{r.threshold}</span>
                   )}
                 </div>
               </div>
