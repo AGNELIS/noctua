@@ -160,6 +160,7 @@ export default function WorkbookPage() {
   const [loading, setLoading] = useState(true);
   const [gateBlocked, setGateBlocked] = useState(false);
   const [journalCount, setJournalCount] = useState(0);
+  const [shadowCount, setShadowCount] = useState(0);
   const [session, setSession] = useState<Session | null>(null);
   const [patterns, setPatterns] = useState<Patterns | null>(null);
   const [response, setResponse] = useState("");
@@ -178,16 +179,23 @@ export default function WorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    // Gate: minimum 3 journal entries
-    const { count } = await supabase
+    // Gate: minimum 3 journal entries AND 3 shadow work entries
+    const { count: jRaw } = await supabase
       .from("journal_entries")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id);
 
-    const jCount = count || 0;
-    setJournalCount(jCount);
+    const { count: sRaw } = await supabase
+      .from("shadow_work_entries")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id);
 
-    if (jCount < 3) {
+    const jCount = jRaw || 0;
+    const sCount = sRaw || 0;
+    setJournalCount(jCount);
+    setShadowCount(sCount);
+
+    if (jCount < 3 || sCount < 3) {
       setGateBlocked(true);
       setLoading(false);
       return;
@@ -315,16 +323,37 @@ export default function WorkbookPage() {
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
             {pl
-              ? `Ten workbook czyta twoje wzorce. Żeby to zrobić, potrzebuje twoich danych. Masz ${journalCount}/3 wymaganych wpisów w dzienniku.`
-              : `This workbook reads your patterns. To do that, it needs your data. You have ${journalCount}/3 required journal entries.`}
+              ? "Ten workbook czyta twoje wzorce. Żeby to zrobić, potrzebuje twoich danych. Minimum 3 wpisy w dzienniku i 3 wpisy w pracy z cieniem."
+              : "This workbook reads your patterns. To do that, it needs your data. Minimum 3 journal entries and 3 shadow work entries."}
           </p>
-          <button
-            onClick={() => router.push("/journal/new")}
-            className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
-            style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
-          >
-            {pl ? "Napisz w dzienniku" : "Write in journal"}
-          </button>
+          <div className="space-y-2 pt-2">
+            <p className="text-sm" style={{ color: journalCount >= 3 ? "var(--color-plum)" : "var(--color-mauve)" }}>
+              {journalCount >= 3 ? "✓" : "○"} {pl ? `Dziennik: ${journalCount}/3` : `Journal: ${journalCount}/3`}
+            </p>
+            <p className="text-sm" style={{ color: shadowCount >= 3 ? "var(--color-plum)" : "var(--color-mauve)" }}>
+              {shadowCount >= 3 ? "✓" : "○"} {pl ? `Praca z cieniem: ${shadowCount}/3` : `Shadow work: ${shadowCount}/3`}
+            </p>
+          </div>
+          <div className="flex gap-3 pt-2">
+            {journalCount < 3 && (
+              <button
+                onClick={() => router.push("/journal/new")}
+                className="px-6 py-3 rounded-xl text-sm tracking-widest uppercase"
+                style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
+              >
+                {pl ? "Dziennik" : "Journal"}
+              </button>
+            )}
+            {shadowCount < 3 && (
+              <button
+                onClick={() => router.push("/shadow-work")}
+                className="px-6 py-3 rounded-xl text-sm tracking-widest uppercase"
+                style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
+              >
+                {pl ? "Praca z cieniem" : "Shadow work"}
+              </button>
+            )}
+          </div>
         </main>
       </div>
     );
