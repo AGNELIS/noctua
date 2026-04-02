@@ -255,7 +255,16 @@ const saveName = async () => {
             )}
           </div>
         </section>
-{/* Letter from AGNÉLIS */}
+{/* Referral */}
+        <section>
+          <button onClick={() => router.push("/referral")}
+            className="w-full py-3 rounded-xl text-sm tracking-wide transition-all border"
+            style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-plum)", fontWeight: 500 }}>
+            {language === "pl" ? "Zaproś i odblokuj nagrody" : "Invite & unlock rewards"}
+          </button>
+        </section>
+
+        {/* Letter from AGNÉLIS */}
         <section>
           <button onClick={() => router.push("/letter")}
             className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
