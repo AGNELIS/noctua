@@ -85,6 +85,21 @@ export default function DreamsPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12">
+        {!loading && entries.length >= 3 && (
+          <section className="text-center pt-2 pb-4">
+            <button
+              onClick={() => router.push("/dreams/workbook")}
+              className="px-6 py-2.5 rounded-xl text-xs tracking-[0.2em] uppercase transition-all hover:opacity-80"
+              style={{
+                background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))",
+                color: "var(--color-cream)",
+                fontWeight: 600,
+              }}
+            >
+              {language === "pl" ? "Rozpocznij Workbook" : "Begin Workbook"}
+            </button>
+          </section>
+        )}
         {loading ? (
           <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
         ) : entries.length === 0 ? (
