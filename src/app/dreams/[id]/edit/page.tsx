@@ -95,12 +95,18 @@ export default function EditDreamEntry() {
       if (res.ok) {
         setAnalysis(data.analysis);
       } else if (data.error === "limit_reached") {
-        setAnalysisError("You've used your free analysis this month. Subscribe for unlimited dream insights.");
+        setAnalysisError(language === "pl"
+          ? "Wykorzystano limit 5 analiz w tym miesiącu. Możesz dokupić analizę w sklepie za £1.49."
+          : "You've used all 5 analyses this month. You can buy additional analyses in the shop for £1.49.");
+      } else if (data.error === "no_access") {
+        setAnalysisError(language === "pl"
+          ? "Analiza snów jest dostępna dla subskrybentów premium lub jako zakup w sklepie za £2.99."
+          : "Dream analysis is available for premium subscribers or as a single purchase in the shop for £2.99.");
       } else {
-        setAnalysisError("Analysis failed. Please try again.");
+        setAnalysisError(language === "pl" ? "Analiza nie powiodła się. Spróbuj ponownie." : "Analysis failed. Please try again.");
       }
     } catch {
-      setAnalysisError("Something went wrong.");
+      setAnalysisError(language === "pl" ? "Coś poszło nie tak." : "Something went wrong.");
     }
     setAnalysing(false);
   };
@@ -204,6 +210,34 @@ export default function EditDreamEntry() {
                   {s}<button onClick={() => removeSymbol(s)} className="opacity-60">×</button>
                 </span>
               ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-center gap-4 mt-2">
+          <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
+          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>◇</span>
+          <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
+        </div>
+
+        <div className="space-y-4">
+          {analysis ? (
+            <div className="rounded-2xl border p-5 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+              <p className="text-xs uppercase tracking-widest text-center mb-4" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+                {language === "pl" ? "Analiza AI" : "AI Analysis"}
+              </p>
+              <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--color-dark)" }}>{analysis}</p>
+            </div>
+          ) : (
+            <div className="text-center space-y-3">
+              <button onClick={handleAnalyse} disabled={analysing}
+                className="px-6 py-2.5 rounded-xl text-sm tracking-wide transition-all disabled:opacity-50"
+                style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                {analysing ? (language === "pl" ? "Analizowanie..." : "Analysing...") : (language === "pl" ? "Analizuj ten sen" : "Analyse this dream")}
+              </button>
+              {analysisError && (
+                <p className="text-sm leading-relaxed" style={{ color: "var(--color-dusty-rose)" }}>{analysisError}</p>
+              )}
             </div>
           )}
         </div>
