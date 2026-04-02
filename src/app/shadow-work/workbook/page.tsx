@@ -334,26 +334,7 @@ export default function WorkbookPage() {
               {shadowCount >= 3 ? "✓" : "○"} {pl ? `Praca z cieniem: ${shadowCount}/3` : `Shadow work: ${shadowCount}/3`}
             </p>
           </div>
-          <div className="flex gap-3 pt-2">
-            {journalCount < 3 && (
-              <button
-                onClick={() => router.push("/journal/new")}
-                className="px-6 py-3 rounded-xl text-sm tracking-widest uppercase"
-                style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
-              >
-                {pl ? "Dziennik" : "Journal"}
-              </button>
-            )}
-            {shadowCount < 3 && (
-              <button
-                onClick={() => router.push("/shadow-work")}
-                className="px-6 py-3 rounded-xl text-sm tracking-widest uppercase"
-                style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
-              >
-                {pl ? "Praca z cieniem" : "Shadow work"}
-              </button>
-            )}
-          </div>
+          
         </main>
       </div>
     );
