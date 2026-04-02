@@ -89,7 +89,7 @@ export default function EditDreamEntry() {
       const res = await fetch("/api/analyse-dream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dreamId: id }),
+        body: JSON.stringify({ dreamId: id, language }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -223,8 +223,8 @@ export default function EditDreamEntry() {
         <div className="space-y-4">
           {analysis ? (
             <div className="rounded-2xl border p-5 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <p className="text-xs uppercase tracking-widest text-center mb-4" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
-                {language === "pl" ? "Analiza AI" : "AI Analysis"}
+              <p className="text-xs uppercase tracking-[0.3em] text-center mb-4" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+                {language === "pl" ? "Wgląd" : "Insight"}
               </p>
               <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--color-dark)" }}>{analysis}</p>
             </div>

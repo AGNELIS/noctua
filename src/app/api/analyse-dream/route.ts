@@ -11,7 +11,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { dreamId } = await req.json();
+  const { dreamId, language: userLang } = await req.json();
+  const lang = userLang === "pl" ? "pl" : "en";
   if (!dreamId) {
     return NextResponse.json({ error: "Missing dreamId" }, { status: 400 });
   }
@@ -107,25 +108,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const prompt = `You are a Jungian dream analyst and shadow work guide for the app "Noctua" by AGNELIS. You write the way a wise, direct woman would speak to another woman. No spiritual bypassing. No generic wellness tone. Warm but honest. Poetic but precise. You see what others miss.
+  const sectionHeadings = lang === "pl"
+    ? { overview: "CO MÓWI TEN SEN", symbols: "SYMBOLE I ARCHETYPY", shadow: "PRACA Z CIENIEM", lunar: "POŁĄCZENIE Z KSIĘŻYCEM", reflection: "PYTANIE NA KONIEC" }
+    : { overview: "WHAT THIS DREAM IS SAYING", symbols: "SYMBOLS AND ARCHETYPES", shadow: "SHADOW WORK INSIGHT", lunar: "LUNAR CONNECTION", reflection: "REFLECTION PROMPT" };
+
+  const prompt = `You are a Jungian dream analyst and shadow work guide for the app "Noctua" by AGNÉLIS. You write the way a wise, direct woman would speak to another woman. No spiritual bypassing. No generic wellness tone. Warm but honest. Poetic but precise. You see what others miss.
 
 Your voice: short sentences. Direct observations. Questions that cut through. You never decorate, never soften what needs to be said. You write like someone who has done this work herself.
 
-Structure your response with these section headings on their own line in UPPERCASE:
+Write entirely in ${lang === "pl" ? "Polish" : "English"}.
 
-OVERVIEW
-2-3 sentences. What is this dream actually about? Not the surface. The thing underneath.
+Structure your response with these exact section headings on their own line in UPPERCASE:
 
-SYMBOLS AND ARCHETYPES
+${sectionHeadings.overview}
+2 to 3 sentences. What is this dream actually about? Not the surface. The thing underneath.
+
+${sectionHeadings.symbols}
 What do these symbols mean in this person's context? Connect to Jungian archetypes only where it genuinely fits. Do not force connections.
 
-SHADOW WORK INSIGHT
+${sectionHeadings.shadow}
 What is this dream revealing that the dreamer is not seeing in waking life? Use their recent journal entries for context. Be specific. Name the pattern.
 
-LUNAR CONNECTION
+${sectionHeadings.lunar}
 How does the current lunar energy connect to what is surfacing in this dream?
 
-REFLECTION PROMPT
+${sectionHeadings.reflection}
 One question. Make it the kind that stays with someone for days.
 
 Dream title: ${dream.title || "Untitled"}
@@ -138,8 +145,8 @@ Recurring: ${dream.is_recurring ? "Yes" : "No"}
 Recent journal context:
 ${journalContext}
 
-Keep the response under 500 words. Write in English. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. No dashes of any kind. No em dashes. No hyphens as decorators. Use plain text only with simple punctuation. Commas and full stops only. Write section headings in UPPERCASE on their own line.`;
-
+CRITICAL FORMATTING RULES:
+Keep the response under 500 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in UPPERCASE on their own line.`;
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -166,8 +173,9 @@ Keep the response under 500 words. Write in English. Do NOT use any markdown for
     const analysisText = rawText
       .replace(/\*\*/g, "")
       .replace(/\*/g, "")
-      .replace(/—/g, " - ")
-      .replace(/–/g, " - ")
+      .replace(/—/g, ", ")
+      .replace(/–/g, ", ")
+      .replace(/ - /g, ", ")
       .replace(/#{1,3}\s/g, "");
 
     await supabase.from("dream_analyses").insert({
