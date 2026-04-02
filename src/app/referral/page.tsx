@@ -87,7 +87,7 @@ export default function ReferralPage() {
 
         <p className="text-center leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
           {language === "pl"
-            ? "Zaproś osoby, którym zależy na pracy wewnętrznej. Za każde zaproszenie, które się spełni, odblokowujesz nagrody."
+            ? "Zaproś osoby, którym zależy na pracy wewnętrznej. Za każde zaproszenie, które się spełni, manifestujesz nagrody."
             : "Invite people who care about inner work. For every invitation that completes, you unlock rewards."}
         </p>
 
@@ -98,9 +98,7 @@ export default function ReferralPage() {
                 ? `Potrzebujesz min. 3 wpisy w dzienniku żeby zapraszać. Masz: ${journalCount}/3`
                 : `You need at least 3 journal entries to start inviting. You have: ${journalCount}/3`}
             </p>
-            <button onClick={() => router.push("/journal/new")} className="px-5 py-2 rounded-xl text-sm" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
-              {language === "pl" ? "Napisz wpis" : "Write an entry"}
-            </button>
+           
           </section>
         ) : (
           <section className="rounded-2xl border p-6 text-center space-y-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
