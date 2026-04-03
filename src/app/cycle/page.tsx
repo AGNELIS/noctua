@@ -162,6 +162,21 @@ export default function CycleTrackerPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
+        {!loading && entries.length >= 5 && (
+          <section className="text-center pt-2 pb-2">
+            <button
+              onClick={() => router.push("/cycle/workbook")}
+              className="px-6 py-2.5 rounded-xl text-xs tracking-[0.2em] uppercase transition-all hover:opacity-80"
+              style={{
+                background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))",
+                color: "var(--color-cream)",
+                fontWeight: 600,
+              }}
+            >
+              {language === "pl" ? "Rozpocznij Workbook" : "Begin Workbook"}
+            </button>
+          </section>
+        )}
         <section className="rounded-2xl border p-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
           <div className="flex items-center justify-between mb-4">
             <button onClick={prevMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>‹</button>
