@@ -25,13 +25,62 @@ export default function ReportsPage() {
   const [generated, setGenerated] = useState(false);
 
   useEffect(() => {
-    checkAuth();
+    loadExisting();
   }, []);
 
-  const checkAuth = async () => {
+  const loadExisting = async () => {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) router.push("/login");
+    if (!user) { router.push("/login"); return; }
+
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+    // Try loading full report first, then mid
+    const { data: fullReport } = await supabase
+      .from("smart_reports")
+      .select("report_text, report_data")
+      .eq("user_id", user.id)
+      .eq("report_month", `${monthKey}-full`)
+      .eq("language", language)
+      .single();
+
+    if (fullReport) {
+      setReport(fullReport.report_text);
+      setReportData(fullReport.report_data as ReportData);
+      setGenerated(true);
+      return;
+    }
+
+    const { data: midReport } = await supabase
+      .from("smart_reports")
+      .select("report_text, report_data")
+      .eq("user_id", user.id)
+      .eq("report_month", `${monthKey}-mid`)
+      .eq("language", language)
+      .single();
+
+    if (midReport) {
+      setReport(midReport.report_text);
+      setReportData(midReport.report_data as ReportData);
+      setGenerated(true);
+      return;
+    }
+
+    // Also check old format (before mid/full was added)
+    const { data: oldReport } = await supabase
+      .from("smart_reports")
+      .select("report_text, report_data")
+      .eq("user_id", user.id)
+      .eq("report_month", monthKey)
+      .eq("language", language)
+      .single();
+
+    if (oldReport) {
+      setReport(oldReport.report_text);
+      setReportData(oldReport.report_data as ReportData);
+      setGenerated(true);
+    }
   };
 
   const generateReport = async () => {
@@ -184,15 +233,61 @@ export default function ReportsPage() {
               </div>
             )}
 
-            {/* Generate new */}
-            <div className="text-center pt-4">
+            {/* PDF + Generate new */}
+            <div className="text-center pt-4 space-y-3">
               <button
-                onClick={() => { setGenerated(false); setReport(null); setReportData(null); }}
-                className="text-sm tracking-wide"
-                style={{ color: "var(--color-mauve)" }}
+                onClick={() => {
+                  const printWindow = window.open("", "_blank");
+                  if (!printWindow) return;
+                  const counts = reportData ? `
+                    <div style="display:flex;justify-content:center;gap:32px;margin:20px 0;">
+                      ${[
+                        { l: pl ? "Dziennik" : "Journal", c: reportData.counts.journal },
+                        { l: pl ? "Sny" : "Dreams", c: reportData.counts.dreams },
+                        { l: pl ? "Cień" : "Shadow", c: reportData.counts.shadow },
+                        { l: pl ? "Cykl" : "Cycle", c: reportData.counts.cycle },
+                      ].map(i => `<div style="text-align:center"><div style="font-size:18px;color:#50403C;font-weight:600">${i.c}</div><div style="font-size:10px;color:#A08C78;text-transform:uppercase;letter-spacing:2px">${i.l}</div></div>`).join("")}
+                    </div>` : "";
+                  const formattedReport = (report || "").split("\n").map(line => {
+                    if (!line.trim()) return "<br/>";
+                    const isHeading = /^[A-ZŻŹĆĄŚĘŁÓŃ]/.test(line.trim()) && line.trim().length < 40 && !line.trim().includes(".");
+                    return isHeading
+                      ? `<h3 style="font-size:14px;color:#50403C;margin:20px 0 8px;font-weight:600">${line.trim()}</h3>`
+                      : `<p style="font-size:12px;color:#3C3228;line-height:1.7;margin:0 0 6px">${line.trim()}</p>`;
+                  }).join("");
+                  printWindow.document.write(`<!DOCTYPE html><html><head><title>Noctua Reading</title><style>@page{margin:20mm 25mm}body{font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:40px 20px}@media print{body{padding:0}}</style></head><body>
+                    <div style="text-align:center;margin-bottom:10px">
+                      <div style="font-size:10px;color:#A08C78;letter-spacing:6px">N O C T U A</div>
+                      <div style="font-size:8px;color:#A08C78;margin-top:4px">by AGNÉLIS</div>
+                    </div>
+                    <h1 style="text-align:center;font-size:24px;color:#50403C;font-weight:400;margin:16px 0 4px">${pl ? "Odczyt" : "Reading"}</h1>
+                    <p style="text-align:center;font-size:12px;color:#A08C78;margin:0 0 20px">${monthLabel()}</p>
+                    ${counts}
+                    <hr style="border:none;border-top:1px solid #D4C4B4;margin:20px 60px"/>
+                    <div style="margin-top:24px">${formattedReport}</div>
+                    <div style="text-align:center;margin-top:40px;font-size:8px;color:#B4A494">Noctua by AGNÉLIS</div>
+                  </body></html>`);
+                  printWindow.document.close();
+                  setTimeout(() => { printWindow.print(); }, 500);
+                }}
+                className="px-6 py-2.5 rounded-xl text-sm tracking-widest uppercase"
+                style={{
+                  background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))",
+                  color: "var(--color-cream)",
+                  fontWeight: 600,
+                }}
               >
-                {pl ? "Wygeneruj ponownie" : "Generate again"}
+                {pl ? "Pobierz PDF" : "Download PDF"}
               </button>
+              <div>
+                <button
+                  onClick={() => { setGenerated(false); setReport(null); setReportData(null); }}
+                  className="text-sm tracking-wide"
+                  style={{ color: "var(--color-mauve)" }}
+                >
+                  {pl ? "Wygeneruj ponownie" : "Generate again"}
+                </button>
+              </div>
             </div>
           </div>
         )}
