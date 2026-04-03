@@ -69,7 +69,7 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
         ? `"${symptomPL}" pojawia się najczęściej w twoich wpisach. Gdzie w życiu wymuszasz coś, zamiast pozwolić sobie na to, czego potrzebujesz?`
         : "Jaki objaw powtarza się co miesiąc? Co twoje ciało próbuje ci powiedzieć, a ty ignorujesz?",
       energy !== null
-        ? `Twoja średnia energia to ${energy!.toFixed(1)}/5. Gdzie tracisz energię, bo nie słuchasz swojego cyklu?`
+        ? `Twoja średnia energia to ${(energy ?? 0).toFixed(1)}/5. Gdzie tracisz energię, bo nie słuchasz swojego cyklu?`
         : "W których dniach cyklu zmuszasz się do rzeczy, na które nie masz siły? Co by się stało, gdybyś przestała?",
       "Gdybyś przez jeden cykl żyła w zgodzie ze swoim ciałem zamiast z kalendarzem, co by się zmieniło? Konkretnie.",
     ];
@@ -82,7 +82,7 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
       ? `"${topSymptom}" appears most often in your entries. Where in your life are you forcing something instead of allowing what you need?`
       : "What symptom repeats every month? What is your body trying to tell you that you keep ignoring?",
     energy !== null
-      ? `Your average energy is ${energy!.toFixed(1)}/5. Where are you losing energy because you're not listening to your cycle?`
+      ? `Your average energy is ${(energy ?? 0).toFixed(1)}/5. Where are you losing energy because you're not listening to your cycle?`
       : "On which days of your cycle do you push through things you have no energy for? What would happen if you stopped?",
     "If you lived one full cycle in alignment with your body instead of your calendar, what would change? Specifically.",
   ];
