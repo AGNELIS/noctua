@@ -72,7 +72,7 @@ export default function ReportsPage() {
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
           style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
-          {pl ? "Twój Wgląd" : "Your Insight"}
+          {pl ? "Odczyt" : "Reading"}
         </h1>
         <p className="text-center text-sm mt-1" style={{ color: "var(--color-mauve)" }}>
           {monthLabel()}
@@ -85,15 +85,15 @@ export default function ReportsPage() {
             <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.3 }}>◈</div>
             <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
               {pl
-                ? "Ten raport czyta twoje wzorce z tego miesiąca. Dziennik, sny, praca z cieniem, cykl. Wszystko, co zostawiłaś w Noctui."
-                : "This report reads your patterns from this month. Journal, dreams, shadow work, cycle. Everything you've left in Noctua."}
+                ? "Odczyt twojego miesiąca. Dziennik, sny, praca z cieniem, cykl. Wszystko, co zostawiłaś w Noctui, przeczytane z powrotem do ciebie."
+                : "A reading of your month. Journal, dreams, shadow work, cycle. Everything you've left in Noctua, read back to you."}
             </p>
             <button
               onClick={generateReport}
               className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
               style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
             >
-              {pl ? "Wygeneruj wgląd" : "Generate insight"}
+              {pl ? "Wygeneruj odczyt" : "Generate reading"}
             </button>
             {error && (
               <p className="text-sm leading-relaxed" style={{ color: "var(--color-dusty-rose)" }}>{error}</p>
