@@ -88,15 +88,20 @@ export default function ReportsPage() {
                 ? "Odczyt twojego miesiąca. Dziennik, sny, praca z cieniem, cykl. Wszystko, co zostawiłaś w Noctui, przeczytane z powrotem do ciebie."
                 : "A reading of your month. Journal, dreams, shadow work, cycle. Everything you've left in Noctua, read back to you."}
             </p>
+            <p className="text-xs mt-2" style={{ color: "var(--color-mauve)", opacity: 0.7 }}>
+              {pl
+                ? "Dostępny od 15. dnia miesiąca (min. 8 wpisów). Pełny odczyt od 25. dnia (min. 15 wpisów)."
+                : "Available from the 15th (min. 8 entries). Full reading from the 25th (min. 15 entries)."}
+            </p>
             <button
               onClick={generateReport}
-              className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
+              className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase mt-4"
               style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
             >
               {pl ? "Wygeneruj odczyt" : "Generate reading"}
             </button>
             {error && (
-              <p className="text-sm leading-relaxed" style={{ color: "var(--color-dusty-rose)" }}>{error}</p>
+              <p className="text-sm leading-relaxed mt-3" style={{ color: "var(--color-dusty-rose)" }}>{error}</p>
             )}
           </div>
         )}

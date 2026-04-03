@@ -10,20 +10,36 @@ export async function POST(req: NextRequest) {
   const lang = userLang === "pl" ? "pl" : "en";
 
   const now = new Date();
+  const dayOfMonth = now.getDate();
   const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+  // Determine report type based on day of month
+  const reportType = dayOfMonth >= 25 ? "full" : dayOfMonth >= 15 ? "mid" : null;
+  const minEntries = reportType === "full" ? 15 : 8;
+
+  if (!reportType) {
+    return NextResponse.json({
+      error: "too_early",
+      message: lang === "pl"
+        ? `Odczyt będzie dostępny od 15. dnia miesiąca. Dziś jest ${dayOfMonth}. dzień.`
+        : `Your reading will be available from the 15th of the month. Today is day ${dayOfMonth}.`,
+      dayOfMonth,
+      availableFrom: 15,
+    }, { status: 400 });
+  }
 
   // Check cache
   const { data: cached } = await supabase
     .from("smart_reports")
     .select("report_text, report_data")
     .eq("user_id", user.id)
-    .eq("report_month", monthKey)
+    .eq("report_month", `${monthKey}-${reportType}`)
     .eq("language", lang)
     .single();
 
   if (cached) {
-    return NextResponse.json({ report: cached.report_text, data: cached.report_data, cached: true });
+    return NextResponse.json({ report: cached.report_text, data: cached.report_data, reportType, cached: true });
   }
 
   // Gather data
@@ -57,12 +73,12 @@ export async function POST(req: NextRequest) {
 
   const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0) + (cycleData?.length || 0);
 
-  if (totalEntries < 5) {
+  if (totalEntries < minEntries) {
     return NextResponse.json({
       error: "not_enough_data",
       message: lang === "pl"
-        ? "Za mało danych z tego miesiąca. Potrzebuję minimum 5 wpisów łącznie."
-        : "Not enough data this month. I need at least 5 entries total.",
+        ? `Za mało danych z tego miesiąca. Potrzebuję minimum ${minEntries} wpisów łącznie. Masz ${totalEntries}.`
+        : `Not enough data this month. I need at least ${minEntries} entries total. You have ${totalEntries}.`,
       counts: {
         journal: journalData?.length || 0,
         dreams: dreamData?.length || 0,
@@ -188,13 +204,13 @@ Keep the response under 600 words. Do NOT use any markdown formatting. No asteri
 
     await supabase.from("smart_reports").insert({
       user_id: user.id,
-      report_month: monthKey,
+      report_month: `${monthKey}-${reportType}`,
       report_text: reportText,
       report_data: reportData,
       language: lang,
     });
 
-    return NextResponse.json({ report: reportText, data: reportData, cached: false });
+    return NextResponse.json({ report: reportText, data: reportData, reportType, cached: false });
   } catch (err) {
     console.error("Report error:", err);
     return NextResponse.json({ error: "Report generation failed" }, { status: 500 });
