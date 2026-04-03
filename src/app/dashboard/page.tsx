@@ -13,6 +13,7 @@ const NAV_CARDS = [
   { titleKey: "nav_symbols" as const, descKey: "nav_symbols_desc" as const, href: "/symbols" },
   { titleKey: "nav_cycle" as const, descKey: "nav_cycle_desc" as const, href: "/cycle" },
   { titleKey: "nav_grounding" as const, descKey: "nav_grounding_desc" as const, href: "/grounding" },
+  { titleKey: "nav_reports" as const, descKey: "nav_reports_desc" as const, href: "/reports" },
   { titleKey: "nav_shop" as const, descKey: "nav_shop_desc" as const, href: "/shop" },
 ];
 
