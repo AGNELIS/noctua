@@ -109,8 +109,8 @@ export async function POST(req: NextRequest) {
   }
 
   const sectionHeadings = lang === "pl"
-    ? { overview: "CO MÓWI TEN SEN", symbols: "SYMBOLE I ARCHETYPY", shadow: "PRACA Z CIENIEM", lunar: "POŁĄCZENIE Z KSIĘŻYCEM", reflection: "PYTANIE NA KONIEC" }
-    : { overview: "WHAT THIS DREAM IS SAYING", symbols: "SYMBOLS AND ARCHETYPES", shadow: "SHADOW WORK INSIGHT", lunar: "LUNAR CONNECTION", reflection: "REFLECTION PROMPT" };
+    ? { overview: "Co mówi ten sen", symbols: "Symbole i archetypy", shadow: "Praca z cieniem", lunar: "Połączenie z księżycem", reflection: "Pytanie na koniec" }
+    : { overview: "What this dream is saying", symbols: "Symbols and archetypes", shadow: "Shadow work insight", lunar: "Lunar connection", reflection: "Reflection prompt" };
 
   const prompt = `You are a Jungian dream analyst and shadow work guide for the app "Noctua" by AGNÉLIS. You write the way a wise, direct woman would speak to another woman. No spiritual bypassing. No generic wellness tone. Warm but honest. Poetic but precise. You see what others miss.
 
@@ -118,7 +118,7 @@ Your voice: short sentences. Direct observations. Questions that cut through. Yo
 
 Write entirely in ${lang === "pl" ? "Polish" : "English"}.
 
-Structure your response with these exact section headings on their own line in UPPERCASE:
+Structure your response with these exact section headings on their own line in Title Case, not uppercase:
 
 ${sectionHeadings.overview}
 2 to 3 sentences. What is this dream actually about? Not the surface. The thing underneath.
@@ -146,7 +146,7 @@ Recent journal context:
 ${journalContext}
 
 CRITICAL FORMATTING RULES:
-Keep the response under 500 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in UPPERCASE on their own line.`;
+Keep the response under 500 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in Title Case on their own line. Never use the word "Droga" or "Dear" or any greeting.`;
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
