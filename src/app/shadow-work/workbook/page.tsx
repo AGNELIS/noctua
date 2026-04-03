@@ -195,7 +195,8 @@ export default function WorkbookPage() {
     setJournalCount(jCount);
     setShadowCount(sCount);
 
-    if (jCount < 3 || sCount < 3) {
+    // TEMP: gate disabled for testing — restore: if (jCount < 3 || sCount < 3)
+    if (false) {
       setGateBlocked(true);
       setLoading(false);
       return;

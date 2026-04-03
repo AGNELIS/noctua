@@ -173,7 +173,8 @@ export default function DreamWorkbookPage() {
     const dCount = count || 0;
     setDreamCount(dCount);
 
-    if (dCount < 3) {
+    // TEMP: gate disabled for testing — restore: if (dCount < 3)
+    if (false) {
       setGateBlocked(true);
       setLoading(false);
       return;

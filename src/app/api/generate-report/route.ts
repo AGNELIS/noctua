@@ -15,19 +15,9 @@ export async function POST(req: NextRequest) {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   // Determine report type based on day of month
-  const reportType = dayOfMonth >= 25 ? "full" : dayOfMonth >= 15 ? "mid" : null;
-  const minEntries = reportType === "full" ? 15 : 8;
-
-  if (!reportType) {
-    return NextResponse.json({
-      error: "too_early",
-      message: lang === "pl"
-        ? `Odczyt będzie dostępny od 15. dnia miesiąca. Dziś jest ${dayOfMonth}. dzień.`
-        : `Your reading will be available from the 15th of the month. Today is day ${dayOfMonth}.`,
-      dayOfMonth,
-      availableFrom: 15,
-    }, { status: 400 });
-  }
+  // TEMP: gates disabled for testing — restore before launch
+  const reportType = dayOfMonth >= 25 ? "full" : "mid";
+  const minEntries = 1;
 
   // Check cache
   const { data: cached } = await supabase

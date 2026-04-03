@@ -156,7 +156,8 @@ export default function CycleWorkbookPage() {
     const cCount = count || 0;
     setCycleCount(cCount);
 
-    if (cCount < 5) {
+    // TEMP: gate disabled for testing — restore: if (cCount < 5)
+    if (false) {
       setGateBlocked(true);
       setLoading(false);
       return;
