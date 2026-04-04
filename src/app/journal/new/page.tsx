@@ -43,14 +43,19 @@ export default function NewJournalEntry() {
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
-      <header className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
-        <h1 className="text-sm tracking-[0.35em] uppercase font-light" style={{ color: "var(--color-plum)" }}>{t("journal_new")}</h1>
-        <button onClick={handleSave} disabled={saving}
-          className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
-          style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
-          {saving ? "..." : t("save")}
-        </button>
+      <header className="px-6 pt-5 pb-2">
+        <div className="flex items-center justify-between">
+          <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
+          <button onClick={handleSave} disabled={saving}
+            className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
+            style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
+            {saving ? "..." : t("save")}
+          </button>
+        </div>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
+          style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
+          {t("journal_new")}
+        </h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
