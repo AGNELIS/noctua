@@ -233,7 +233,7 @@ export default function DashboardPage() {
               const moonSign = getMoonSign();
               return (
                 <p
-                  className="text-sm tracking-wider transition-colors duration-500"
+                  className="text-lg tracking-wider transition-colors duration-500"
                   style={{ color: "var(--color-plum)", fontWeight: 500, fontFamily: "'Cormorant Garamond', Georgia, serif" }}
                 >
                   {language === "pl"
