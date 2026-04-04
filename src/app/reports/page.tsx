@@ -102,15 +102,11 @@ export default function ReportsPage() {
       if (!line.trim()) return "<br/>";
       const isHeading = /^[A-ZŻŹĆĄŚĘŁÓŃ]/.test(line.trim()) && line.trim().length < 40 && !line.trim().includes(".");
       return isHeading
-        ? `<h3 style="font-size:14px;color:#50403C;margin:20px 0 8px;font-weight:600">${line.trim()}</h3>`
-        : `<p style="font-size:12px;color:#3C3228;line-height:1.7;margin:0 0 6px">${line.trim()}</p>`;
+        ? `<h3 style="font-size:15px;color:#50403C;margin:24px 0 6px;font-weight:600;letter-spacing:0.5px">${line.trim()}</h3>`
+        : `<p style="font-size:12px;color:#3C3228;line-height:1.8;margin:0 0 6px;text-align:justify">${line.trim()}</p>`;
     }).join("");
     printWindow.document.write(`<!DOCTYPE html><html><head><title>Noctua Reading</title><style>@page{margin:20mm 25mm}body{font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:40px 20px}@media print{body{padding:0}}</style></head><body>
-      <div style="text-align:center;margin-bottom:10px">
-        <div style="font-size:10px;color:#A08C78;letter-spacing:6px">N O C T U A</div>
-        <div style="font-size:8px;color:#A08C78;margin-top:4px">by AGNÉLIS</div>
-      </div>
-      <h1 style="text-align:center;font-size:24px;color:#50403C;font-weight:400;margin:16px 0 4px">${label.type}</h1>
+      <h1 style="text-align:center;font-size:24px;color:#50403C;font-weight:400;margin:30px 0 4px">${label.type}</h1>
       <p style="text-align:center;font-size:12px;color:#A08C78;margin:0 0 20px">${label.month}</p>
       ${counts}
       <hr style="border:none;border-top:1px solid #D4C4B4;margin:20px 60px"/>
@@ -227,9 +223,21 @@ export default function ReportsPage() {
                   {/* Expanded content */}
                   {isExpanded && (
                     <div className="px-4 pb-4" style={{ borderTop: "1px solid var(--color-dusty-rose)" }}>
-                      <p className="text-sm leading-relaxed whitespace-pre-line pt-4" style={{ color: "var(--color-dark)" }}>
-                        {r.report_text}
-                      </p>
+                     <div className="pt-4 space-y-1">
+                        {r.report_text.split("\n").map((line: string, i: number) => {
+                          if (!line.trim()) return <div key={i} className="h-2" />;
+                          const isHeading = /^[A-ZŻŹĆĄŚĘŁÓŃ]/.test(line.trim()) && line.trim().length < 40 && !line.trim().includes(".");
+                          return isHeading ? (
+                            <p key={i} className="text-base mt-5 mb-1" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.1rem" }}>
+                              {line.trim()}
+                            </p>
+                          ) : (
+                            <p key={i} className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>
+                              {line.trim()}
+                            </p>
+                          );
+                        })}
+                      </div>
 
                       {/* Patterns */}
                       {r.report_data && (r.report_data.topSymbols?.length > 0 || r.report_data.topEmotions?.length > 0) && (
