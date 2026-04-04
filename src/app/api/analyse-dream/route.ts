@@ -184,6 +184,23 @@ Keep the response under 500 words. Do NOT use any markdown formatting. No asteri
       analysis_text: analysisText,
     });
 
+    // Mark one credit as used (for non-premium or over-limit premium)
+    const { data: productData } = await supabase.from("shop_products").select("id").eq("name", "Dream AI Analysis").single();
+    if (productData) {
+      const { data: unusedCredit } = await supabase
+        .from("user_purchases")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("product_id", productData.id)
+        .is("used_at", null)
+        .limit(1);
+      if (unusedCredit && unusedCredit.length > 0) {
+        await supabase.from("user_purchases")
+          .update({ used_at: new Date().toISOString() })
+          .eq("id", unusedCredit[0].id);
+      }
+    }
+
     return NextResponse.json({ analysis: analysisText, cached: false });
   } catch (err) {
     console.error("Analysis error:", err);
