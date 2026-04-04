@@ -18,6 +18,7 @@ type SavedReport = {
   report_month: string;
   report_text: string;
   report_data: ReportData | null;
+  reflection_response: string | null;
   created_at: string;
 };
 
@@ -240,6 +241,62 @@ export default function ReportsPage() {
                             </p>
                           );
                         })}
+                      </div>
+
+                      {/* Reflection */}
+                      <div className="rounded-xl border p-4 mt-4 transition-colors duration-500" style={{ background: "var(--color-cream)", borderColor: "var(--color-dusty-rose)" }}>
+                        <p className="text-base mb-3" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
+                          {pl ? "Co w tobie rezonuje po tym odczycie?" : "What resonates after this reading?"}
+                        </p>
+                        {r.reflection_response ? (
+                          <div>
+                            <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>
+                              {r.reflection_response}
+                            </p>
+                            <button
+                              onClick={() => {
+                                const updated = reports.map(rep => rep.id === r.id ? { ...rep, reflection_response: null } : rep);
+                                setReports(updated);
+                              }}
+                              className="text-xs mt-3 transition-opacity hover:opacity-70"
+                              style={{ color: "var(--color-mauve)" }}
+                            >
+                              {pl ? "Edytuj" : "Edit"}
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            <textarea
+                              defaultValue=""
+                              id={`reflection-${r.id}`}
+                              rows={4}
+                              placeholder={pl ? "Pisz tutaj..." : "Write here..."}
+                              className="w-full rounded-xl border p-3 text-sm resize-none transition-colors duration-500"
+                              style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
+                            />
+                            <button
+                              onClick={async () => {
+                                const textarea = document.getElementById(`reflection-${r.id}`) as HTMLTextAreaElement;
+                                const value = textarea?.value?.trim();
+                                if (!value) return;
+                                const supabase = createClient();
+                                await supabase.from("smart_reports")
+                                  .update({ reflection_response: value })
+                                  .eq("id", r.id);
+                                const updated = reports.map(rep => rep.id === r.id ? { ...rep, reflection_response: value } : rep);
+                                setReports(updated);
+                              }}
+                              className="px-5 py-2 rounded-xl text-xs tracking-widest uppercase transition-all"
+                              style={{
+                                backgroundColor: "var(--color-plum)",
+                                color: "var(--color-cream)",
+                                fontWeight: 600,
+                              }}
+                            >
+                              {pl ? "Zapisz" : "Save"}
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       {/* Patterns */}
