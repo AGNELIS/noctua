@@ -76,7 +76,9 @@ export default function CycleTrackerPage() {
   const [moonEvents, setMoonEvents] = useState<MoonEvent[]>([]);
 
   useEffect(() => {
-    setMoonEvents(getUpcomingMoonEvents(12));
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 1);
+    setMoonEvents(getUpcomingMoonEvents(13, startDate));
   }, []);
 
   const getMoonForDay = (day: number) => {
@@ -86,7 +88,7 @@ export default function CycleTrackerPage() {
       const eventStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       return eventStr === dateStr;
     });
-    if (event) return <MiniMoon phase={event.type} size={10} />;
+    if (event) return <MiniMoon phase={event.type} size={14} />;
     return null;
   };
 

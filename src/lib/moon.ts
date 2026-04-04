@@ -77,9 +77,9 @@ export function getMoonSign(date: Date = new Date()): MoonSignInfo {
   return signs[index];
 }
 
-export function getUpcomingMoonEvents(months: number = 3): MoonEvent[] {
+export function getUpcomingMoonEvents(months: number = 3, startFrom?: Date): MoonEvent[] {
   const events: MoonEvent[] = [];
-  const now = new Date();
+  const now = startFrom || new Date();
   const end = new Date(now);
   end.setMonth(end.getMonth() + months);
 
