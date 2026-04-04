@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
@@ -22,6 +22,21 @@ export default function NewJournalEntry() {
   const [moods, setMoods] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkToday = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const today = new Date().toISOString().split("T")[0];
+      const { data } = await supabase.from("journal_entries")
+        .select("id").eq("user_id", user.id).eq("entry_date", today).limit(1);
+      if (data && data.length > 0) {
+        router.push(`/journal/${data[0].id}/edit`);
+      }
+    };
+    checkToday();
+  }, []);
 
   const toggleMood = (value: string) => {
     setMoods((prev) => prev.includes(value) ? prev.filter((m) => m !== value) : [...prev, value]);
