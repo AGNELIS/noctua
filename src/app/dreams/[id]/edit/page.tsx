@@ -36,6 +36,9 @@ export default function EditDreamEntry() {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [analysing, setAnalysing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [reflectionResponse, setReflectionResponse] = useState("");
+  const [reflectionSaved, setReflectionSaved] = useState(false);
+  const [reflectionSaving, setReflectionSaving] = useState(false);
 
   useEffect(() => {
     const loadEntry = async () => {
@@ -64,6 +67,10 @@ export default function EditDreamEntry() {
         const data = await res.json();
         if (res.ok && data.analysis) {
           setAnalysis(data.analysis);
+          if (data.reflection) {
+            setReflectionResponse(data.reflection);
+            setReflectionSaved(true);
+          }
         }
       } catch {}
     };
@@ -222,6 +229,7 @@ export default function EditDreamEntry() {
 
         <div className="space-y-4">
           {analysis ? (
+            <>
             <div className="rounded-2xl border p-5 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
               <p className="text-xs uppercase tracking-[0.3em] text-center mb-4" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
                 {language === "pl" ? "Wgląd" : "Insight"}
@@ -242,6 +250,68 @@ export default function EditDreamEntry() {
                 })}
               </div>
             </div>
+            {/* Reflection prompt */}
+            {analysis && (() => {
+              const lines = analysis.split("\n");
+              const lastLine = lines.filter(l => l.trim()).pop() || "";
+              const isQuestion = lastLine.includes("?");
+              if (!isQuestion) return null;
+              return (
+                <div className="rounded-2xl border p-5 mt-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+                  <p className="text-base leading-relaxed mb-4" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: "1.05rem" }}>
+                    {lastLine.trim()}
+                  </p>
+                  {reflectionSaved ? (
+                    <div>
+                      <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>
+                        {reflectionResponse}
+                      </p>
+                      <button
+                        onClick={() => setReflectionSaved(false)}
+                        className="text-xs mt-3 transition-opacity hover:opacity-70"
+                        style={{ color: "var(--color-mauve)" }}
+                      >
+                        {language === "pl" ? "Edytuj" : "Edit"}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <textarea
+                        value={reflectionResponse}
+                        onChange={(e) => setReflectionResponse(e.target.value)}
+                        rows={4}
+                        placeholder={language === "pl" ? "Pisz tutaj..." : "Write here..."}
+                        className="w-full rounded-xl border p-3 text-sm resize-none transition-colors duration-500"
+                        style={{ backgroundColor: "var(--color-cream)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
+                      />
+                      <button
+                        onClick={async () => {
+                          if (!reflectionResponse.trim()) return;
+                          setReflectionSaving(true);
+                          const supabase = createClient();
+                          await supabase.from("dream_analyses")
+                            .update({ reflection_response: reflectionResponse.trim() })
+                            .eq("dream_entry_id", id);
+                          setReflectionSaving(false);
+                          setReflectionSaved(true);
+                        }}
+                        disabled={reflectionSaving || !reflectionResponse.trim()}
+                        className="px-5 py-2 rounded-xl text-xs tracking-widest uppercase transition-all"
+                        style={{
+                          backgroundColor: reflectionResponse.trim() ? "var(--color-plum)" : "var(--color-dusty-rose)",
+                          color: reflectionResponse.trim() ? "var(--color-cream)" : "var(--color-mauve)",
+                          fontWeight: 600,
+                          opacity: reflectionResponse.trim() ? 1 : 0.5,
+                        }}
+                      >
+                        {reflectionSaving ? "..." : (language === "pl" ? "Zapisz" : "Save")}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+            </>
           ) : (
             <div className="text-center space-y-3">
               <button onClick={handleAnalyse} disabled={analysing}

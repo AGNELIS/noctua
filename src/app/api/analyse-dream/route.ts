@@ -19,12 +19,12 @@ export async function POST(req: NextRequest) {
 
   const { data: existing } = await supabase
     .from("dream_analyses")
-    .select("analysis_text")
+    .select("analysis_text, reflection_response")
     .eq("dream_entry_id", dreamId)
     .single();
 
   if (existing) {
-    return NextResponse.json({ analysis: existing.analysis_text, cached: true });
+    return NextResponse.json({ analysis: existing.analysis_text, reflection: existing.reflection_response || null, cached: true });
   }
 
   const { data: profile } = await supabase
