@@ -142,6 +142,45 @@ export default function DashboardPage() {
   useEffect(() => {
     setMoon(getMoonPhase());
     setGreeting(getGreeting(language));
+
+    // Check referral completion
+    const checkReferral = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Am I a referred user with pending status?
+      const { data: myReferral } = await supabase
+        .from("referrals")
+        .select("id, status")
+        .eq("referred_id", user.id)
+        .eq("status", "pending")
+        .single();
+
+      if (!myReferral) return;
+
+      // Count my entries (journal + shadow work)
+      const { count: jCount } = await supabase
+        .from("journal_entries")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      const { count: sCount } = await supabase
+        .from("shadow_work_entries")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      const total = (jCount || 0) + (sCount || 0);
+
+      if (total >= 3) {
+        await supabase
+          .from("referrals")
+          .update({ status: "completed", completed_at: new Date().toISOString() })
+          .eq("id", myReferral.id);
+      }
+    };
+
+    checkReferral();
   }, [language]);
 
   const handleLogout = async () => {
