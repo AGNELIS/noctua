@@ -101,9 +101,27 @@ export default function ProductPage() {
           </p>
 
           {owned ? (
-            <div className="py-3 rounded-xl text-sm tracking-wide" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>
-              {language === "pl" ? "Posiadane" : "Owned"}
-            </div>
+            <button
+              onClick={() => {
+                const routes: Record<string, string> = {
+                  "Shadow Work Workbook": "/shadow-work/workbook",
+                  "Dream Integration Workbook": "/dreams/workbook",
+                  "Cycle Alignment Workbook": "/cycle/workbook",
+                  "Monthly Reading": "/reports",
+                  "Pattern Reading": "/reports",
+                };
+                const route = routes[product.name];
+                if (route) router.push(route);
+              }}
+              className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
+              style={{
+                background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))",
+                color: "var(--color-cream)",
+                fontWeight: 600,
+              }}
+            >
+              {language === "pl" ? "Otwórz" : "Open"}
+            </button>
           ) : (
             <button onClick={handlePurchase} disabled={buying}
               className="w-full py-3 rounded-xl text-sm tracking-wide transition-all disabled:opacity-50"
