@@ -7,8 +7,8 @@ import { useLanguage } from "@/lib/i18n";
 
 const REWARDS = [
   { threshold: 3, type: "dream_analysis", en: "1 free AI dream analysis", pl: "1 darmowa analiza snu AI" },
-  { threshold: 10, type: "monthly_report", en: "1 free monthly report", pl: "1 darmowy raport miesięczny" },
-  { threshold: 20, type: "subscription_discount", en: "30% off subscription", pl: "30% zniżki na subskrypcję" },
+  { threshold: 10, type: "monthly_report", en: "1 free monthly reading", pl: "1 darmowy odczyt miesięczny" },
+  { threshold: 20, type: "ambassador", en: "Ambassador status + 30% off subscription", pl: "Status Ambasadorki + 30% zniżki na subskrypcję" },
 ];
 
 export default function ReferralPage() {
@@ -60,6 +60,9 @@ export default function ReferralPage() {
   };
 
   const canRefer = journalCount >= 3;
+  const isAmbassador = completedCount >= 20;
+  const cycleCount = isAmbassador ? completedCount % 20 : completedCount;
+  const cycleNumber = Math.floor(completedCount / 20);
 
   if (loading) {
     return (
@@ -87,9 +90,23 @@ export default function ReferralPage() {
 
         <p className="text-center leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
           {language === "pl"
-            ? "Zaproś osoby, którym zależy na pracy wewnętrznej. Za każde zaproszenie, które się spełni, manifestujesz nagrody."
+            ? "Zaproś osoby, którym zależy na pracy wewnętrznej. Za każde zaproszenie, które się spełni, odblokowujesz nagrody."
             : "Invite people who care about inner work. For every invitation that completes, you unlock rewards."}
         </p>
+
+        {/* Ambassador badge */}
+        {isAmbassador && (
+          <div className="text-center py-3 rounded-2xl border" style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", borderColor: "var(--color-gold)" }}>
+            <p className="text-xs uppercase tracking-[0.3em]" style={{ color: "var(--color-cream)", fontWeight: 600 }}>
+              {language === "pl" ? "Ambasadorka Noctua" : "Noctua Ambassador"}
+            </p>
+            {cycleNumber > 1 && (
+              <p className="text-xs mt-1" style={{ color: "var(--color-cream)", opacity: 0.7 }}>
+                {language === "pl" ? `Cykl ${cycleNumber}` : `Cycle ${cycleNumber}`}
+              </p>
+            )}
+          </div>
+        )}
 
         {!canRefer ? (
           <section className="rounded-2xl border p-6 text-center space-y-3" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
@@ -101,7 +118,6 @@ export default function ReferralPage() {
             <p className="text-lg mt-2" style={{ color: "var(--color-plum)", fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
               {language === "pl" ? `Masz: ${journalCount}/3` : `You have: ${journalCount}/3`}
             </p>
-           
           </section>
         ) : (
           <section className="rounded-2xl border p-6 text-center space-y-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
@@ -133,9 +149,14 @@ export default function ReferralPage() {
         <section className="space-y-3">
           <p className="text-xs uppercase tracking-widest text-center" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
             {language === "pl" ? "Nagrody" : "Rewards"}
+            {isAmbassador && (
+              <span style={{ opacity: 0.6 }}>
+                {" "}{language === "pl" ? `(cykl ${cycleNumber + 1})` : `(cycle ${cycleNumber + 1})`}
+              </span>
+            )}
           </p>
           {REWARDS.map((r) => {
-            const earned = completedCount >= r.threshold;
+            const earned = cycleCount >= r.threshold;
             const claimed = rewards.includes(r.type);
             return (
               <div key={r.type} className="flex items-center justify-between p-4 rounded-2xl border transition-all" style={{ background: "var(--color-blush)", borderColor: earned ? "var(--color-mauve)" : "var(--color-dusty-rose)", opacity: earned ? 1 : 0.6 }}>
@@ -148,12 +169,14 @@ export default function ReferralPage() {
                   </p>
                 </div>
                 <div className="shrink-0 ml-3">
-                  {claimed ? (
+                  {r.type === "ambassador" && isAmbassador ? (
+                    <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}>✓</span>
+                  ) : claimed ? (
                     <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Wykorzystane" : "Used"}</span>
                   ) : earned ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>{language === "pl" ? "Odblokowane!" : "Unlocked!"}</span>
                   ) : (
-                    <span className="text-base" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{completedCount}/{r.threshold}</span>
+                    <span className="text-base" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{cycleCount}/{r.threshold}</span>
                   )}
                 </div>
               </div>
@@ -166,7 +189,7 @@ export default function ReferralPage() {
             {completedCount}
           </p>
           <p className="text-xs uppercase tracking-widest" style={{ color: "var(--color-mauve)" }}>
-            {language === "pl" ? "zaliczonych zaproszeń" : "completed invitations"}
+            {language === "pl" ? "zaliczonych zaproszeń łącznie" : "total completed invitations"}
           </p>
         </section>
 
