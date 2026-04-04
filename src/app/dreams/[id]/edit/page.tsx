@@ -62,7 +62,7 @@ export default function EditDreamEntry() {
           body: JSON.stringify({ dreamId: id }),
         });
         const data = await res.json();
-        if (res.ok && data.cached) {
+        if (res.ok && data.analysis) {
           setAnalysis(data.analysis);
         }
       } catch {}
