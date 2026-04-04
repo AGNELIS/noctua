@@ -16,15 +16,24 @@ type Session = {
   id: string;
   current_stage: number;
   stage_1_response: string | null;
+  stage_1_ai_reaction: string | null;
+  stage_1_followup: string | null;
   stage_2_response: string | null;
+  stage_2_ai_reaction: string | null;
+  stage_2_followup: string | null;
   stage_3_response: string | null;
+  stage_3_ai_reaction: string | null;
+  stage_3_followup: string | null;
   stage_4_response: string | null;
+  stage_4_ai_reaction: string | null;
+  stage_4_followup: string | null;
   user_patterns: Patterns | null;
+  summary: string | null;
   completed: boolean;
 };
 
 const STAGE_LABELS_EN = ["Awareness", "Pattern", "Emotional", "Integration"];
-const STAGE_LABELS_PL = ["Konfrontacja", "Konkret", "Głębiej", "Integracja"];
+const STAGE_LABELS_PL = ["Konfrontacja", "Wzorzec", "Głębiej", "Integracja"];
 
 const STAGE_INTROS_EN = [
   "Before you begin — this is not journaling. This is confrontation. You're here because something keeps returning. Let's find it.",
@@ -74,83 +83,34 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
 
 async function extractPatterns(userId: string): Promise<Patterns> {
   const supabase = createClient();
+  const { data: journalData } = await supabase.from("journal_entries").select("mood, content").eq("user_id", userId).order("created_at", { ascending: false }).limit(20);
+  const { data: dreamData } = await supabase.from("dream_entries").select("symbols, content").eq("user_id", userId).order("created_at", { ascending: false }).limit(20);
+  const { data: shadowData } = await supabase.from("shadow_work_entries").select("emotions").eq("user_id", userId).order("created_at", { ascending: false }).limit(20);
 
-  // Journal emotions
-  const { data: journalData } = await supabase
-    .from("journal_entries")
-    .select("mood, content")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  // Dream symbols
-  const { data: dreamData } = await supabase
-    .from("dream_entries")
-    .select("symbols, content")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  // Shadow work emotions
-  const { data: shadowData } = await supabase
-    .from("shadow_work_entries")
-    .select("emotions")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  // Count emotions
   const emotionCounts: Record<string, number> = {};
-  shadowData?.forEach((e) => {
-    (e.emotions as string[] || []).forEach((em: string) => {
-      emotionCounts[em] = (emotionCounts[em] || 0) + 1;
-    });
-  });
-  journalData?.forEach((e) => {
-    if (e.mood) emotionCounts[e.mood] = (emotionCounts[e.mood] || 0) + 1;
-  });
-  const topEmotions = Object.entries(emotionCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([k]) => k);
+  shadowData?.forEach((e) => { (e.emotions as string[] || []).forEach((em: string) => { emotionCounts[em] = (emotionCounts[em] || 0) + 1; }); });
+  journalData?.forEach((e) => { if (e.mood) emotionCounts[e.mood] = (emotionCounts[e.mood] || 0) + 1; });
+  const topEmotions = Object.entries(emotionCounts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
 
-  // Dream symbols
   const symbolCounts: Record<string, number> = {};
-  dreamData?.forEach((d) => {
-    (d.symbols as string[] || []).forEach((s: string) => {
-      symbolCounts[s] = (symbolCounts[s] || 0) + 1;
-    });
-  });
-  const dreamSymbols = Object.entries(symbolCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([k]) => k);
+  dreamData?.forEach((d) => { (d.symbols as string[] || []).forEach((s: string) => { symbolCounts[s] = (symbolCounts[s] || 0) + 1; }); });
+  const dreamSymbols = Object.entries(symbolCounts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
 
-  // Recurring words from journal content (simple extraction)
   const wordCounts: Record<string, number> = {};
   const stopWords = new Set(["the","a","an","i","my","me","is","was","to","and","of","in","it","that","this","for","but","not","with","on","at","from","or","so","if","be","do","have","had","has","am","are","were","been","will","would","can","could","just","like","very","really","also","about","what","when","how","all","some","them","they","their","there","than","then","more","out","up","no","yes","your","you"]);
   journalData?.forEach((e) => {
     if (e.content) {
-      const words = (e.content as string).toLowerCase().replace(/[^a-zA-Z\s]/g, "").split(/\s+/);
-      words.forEach((w) => {
-        if (w.length > 3 && !stopWords.has(w)) {
-          wordCounts[w] = (wordCounts[w] || 0) + 1;
-        }
+      (e.content as string).toLowerCase().replace(/[^a-zA-Z\s]/g, "").split(/\s+/).forEach((w) => {
+        if (w.length > 3 && !stopWords.has(w)) wordCounts[w] = (wordCounts[w] || 0) + 1;
       });
     }
   });
-  const recurringThemes = Object.entries(wordCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([k]) => k);
+  const recurringThemes = Object.entries(wordCounts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
 
-  return {
-    topEmotions,
-    recurringThemes,
-    dreamSymbols,
-    entryCount: (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0),
-  };
+  return { topEmotions, recurringThemes, dreamSymbols, entryCount: (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0) };
 }
+
+type StagePhase = "question" | "responding" | "ai_reacting" | "ai_shown" | "followup" | "saving_followup";
 
 export default function WorkbookPage() {
   const router = useRouter();
@@ -164,32 +124,25 @@ export default function WorkbookPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [patterns, setPatterns] = useState<Patterns | null>(null);
   const [response, setResponse] = useState("");
-  const [saving, setSaving] = useState(false);
+  const [followup, setFollowup] = useState("");
+  const [aiReaction, setAiReaction] = useState("");
+  const [phase, setPhase] = useState<StagePhase>("question");
   const [completed, setCompleted] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [generatingSummary, setGeneratingSummary] = useState(false);
 
   const stageLabels = pl ? STAGE_LABELS_PL : STAGE_LABELS_EN;
   const stageIntros = pl ? STAGE_INTROS_PL : STAGE_INTROS_EN;
 
-  useEffect(() => {
-    init();
-  }, []);
+  useEffect(() => { init(); }, []);
 
   const init = async () => {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    // Gate: minimum 3 journal entries AND 3 shadow work entries
-    const { count: jRaw } = await supabase
-      .from("journal_entries")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id);
-
-    const { count: sRaw } = await supabase
-      .from("shadow_work_entries")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id);
-
+    const { count: jRaw } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    const { count: sRaw } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
     const jCount = jRaw || 0;
     const sCount = sRaw || 0;
     setJournalCount(jCount);
@@ -202,105 +155,162 @@ export default function WorkbookPage() {
       return;
     }
 
-    // Extract patterns
     const p = await extractPatterns(user.id);
     setPatterns(p);
 
-    // Load or create session
-    const { data: existing } = await supabase
-      .from("workbook_sessions")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("workbook_type", "shadow_work")
-      .eq("completed", false)
-      .order("created_at", { ascending: false })
-      .limit(1);
+    const { data: existing } = await supabase.from("workbook_sessions").select("*")
+      .eq("user_id", user.id).eq("workbook_type", "shadow_work").eq("completed", false)
+      .order("created_at", { ascending: false }).limit(1);
 
     if (existing && existing.length > 0) {
       const s = existing[0] as Session;
       setSession(s);
       setPatterns(s.user_patterns || p);
-      // Pre-fill current stage response if returning
-      const stageKey = `stage_${s.current_stage}_response` as keyof Session;
-      if (s[stageKey]) setResponse(s[stageKey] as string);
+      // Restore state based on what's saved
+      const stage = s.current_stage;
+      const stageResponse = s[`stage_${stage}_response` as keyof Session] as string | null;
+      const stageReaction = s[`stage_${stage}_ai_reaction` as keyof Session] as string | null;
+      const stageFollowup = s[`stage_${stage}_followup` as keyof Session] as string | null;
+
+      if (stageFollowup) {
+        // This stage is complete, should have moved to next
+        setPhase("question");
+      } else if (stageReaction) {
+        setAiReaction(stageReaction);
+        setPhase("ai_shown");
+      } else if (stageResponse) {
+        setResponse(stageResponse);
+        setPhase("ai_reacting");
+        // Auto-trigger AI reaction
+      } else {
+        setPhase("question");
+      }
+
+      if (s.summary) {
+        setSummary(s.summary);
+        setCompleted(true);
+      }
     } else {
-      const { data: newSession } = await supabase
-        .from("workbook_sessions")
-        .insert({
-          user_id: user.id,
-          workbook_type: "shadow_work",
-          current_stage: 1,
-          user_patterns: p,
-        })
-        .select()
-        .single();
+      const { data: newSession } = await supabase.from("workbook_sessions")
+        .insert({ user_id: user.id, workbook_type: "shadow_work", current_stage: 1, user_patterns: p })
+        .select().single();
       setSession(newSession as Session);
     }
 
     setLoading(false);
   };
 
-  const handleNext = async () => {
+  const getPreviousResponses = () => {
+    if (!session) return [];
+    const prev = [];
+    for (let i = 1; i <= 4; i++) {
+      const r = session[`stage_${i}_response` as keyof Session] as string | null;
+      const f = session[`stage_${i}_followup` as keyof Session] as string | null;
+      if (r) prev.push({ stage: i, response: r, followup: f || undefined });
+    }
+    return prev;
+  };
+
+  const handleSubmitResponse = async () => {
     if (!session || !response.trim()) return;
-    setSaving(true);
+    setPhase("ai_reacting");
 
     const supabase = createClient();
     const stage = session.current_stage;
-    const stageField = `stage_${stage}_response`;
+    await supabase.from("workbook_sessions")
+      .update({ [`stage_${stage}_response`]: response.trim(), updated_at: new Date().toISOString() })
+      .eq("id", session.id);
+
+    try {
+      const res = await fetch("/api/workbook-react", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: session.id,
+          stage,
+          response: response.trim(),
+          previousResponses: getPreviousResponses(),
+          patterns,
+          language,
+          workbookType: "shadow_work",
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAiReaction(data.reaction);
+        setSession({ ...session, [`stage_${stage}_response`]: response.trim(), [`stage_${stage}_ai_reaction`]: data.reaction } as Session);
+        setPhase("ai_shown");
+      } else {
+        setPhase("question");
+      }
+    } catch {
+      setPhase("question");
+    }
+  };
+
+  const handleSubmitFollowup = async () => {
+    if (!session || !followup.trim()) return;
+    setPhase("saving_followup");
+
+    const supabase = createClient();
+    const stage = session.current_stage;
+
+    await supabase.from("workbook_sessions")
+      .update({ [`stage_${stage}_followup`]: followup.trim(), updated_at: new Date().toISOString() })
+      .eq("id", session.id);
+
+    const updatedSession = { ...session, [`stage_${stage}_followup`]: followup.trim() } as Session;
 
     if (stage < 4) {
-      await supabase
-        .from("workbook_sessions")
-        .update({
-          [stageField]: response.trim(),
-          current_stage: stage + 1,
-          updated_at: new Date().toISOString(),
-        })
+      await supabase.from("workbook_sessions")
+        .update({ current_stage: stage + 1, updated_at: new Date().toISOString() })
         .eq("id", session.id);
-
-      setSession({ ...session, current_stage: stage + 1, [stageField]: response.trim() } as Session);
+      updatedSession.current_stage = stage + 1;
+      setSession(updatedSession);
       setResponse("");
+      setFollowup("");
+      setAiReaction("");
+      setPhase("question");
     } else {
-      // Final stage
-      await supabase
-        .from("workbook_sessions")
-        .update({
-          [stageField]: response.trim(),
-          completed: true,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", session.id);
-
-      setCompleted(true);
+      // Final stage — generate summary
+      setSession(updatedSession);
+      setGeneratingSummary(true);
+      try {
+        const res = await fetch("/api/workbook-react", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: session.id,
+            stage: 4,
+            response: "",
+            previousResponses: [...getPreviousResponses(), { stage: 4, response: session.stage_4_response || response.trim(), followup: followup.trim() }],
+            patterns,
+            language,
+            workbookType: "shadow_work",
+            isSummary: true,
+          }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setSummary(data.reaction);
+          setCompleted(true);
+        }
+      } catch {}
+      setGeneratingSummary(false);
     }
-
-    setSaving(false);
   };
 
   const handleStartNew = async () => {
-    setCompleted(false);
-    setResponse("");
-    setSession(null);
-    setLoading(true);
-
+    setCompleted(false); setResponse(""); setFollowup(""); setAiReaction("");
+    setSummary(null); setSession(null); setLoading(true); setPhase("question");
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-
     const p = await extractPatterns(user.id);
     setPatterns(p);
-
-    const { data: newSession } = await supabase
-      .from("workbook_sessions")
-      .insert({
-        user_id: user.id,
-        workbook_type: "shadow_work",
-        current_stage: 1,
-        user_patterns: p,
-      })
-      .select()
-      .single();
-
+    const { data: newSession } = await supabase.from("workbook_sessions")
+      .insert({ user_id: user.id, workbook_type: "shadow_work", current_stage: 1, user_patterns: p })
+      .select().single();
     setSession(newSession as Session);
     setLoading(false);
   };
@@ -308,7 +318,7 @@ export default function WorkbookPage() {
   const stage = session?.current_stage || 1;
   const questions = buildQuestions(patterns, language);
 
-  // --- GATE SCREEN ---
+  // --- GATE ---
   if (!loading && gateBlocked) {
     return (
       <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
@@ -323,8 +333,7 @@ export default function WorkbookPage() {
             {pl ? "Jeszcze nie teraz" : "Not yet"}
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {pl
-              ? "Ten workbook czyta twoje wzorce. Żeby to zrobić, potrzebuje twoich danych. Minimum 3 wpisy w dzienniku i 3 wpisy w pracy z cieniem."
+            {pl ? "Ten workbook czyta twoje wzorce. Żeby to zrobić, potrzebuje twoich danych. Minimum 3 wpisy w dzienniku i 3 wpisy w pracy z cieniem."
               : "This workbook reads your patterns. To do that, it needs your data. Minimum 3 journal entries and 3 shadow work entries."}
           </p>
           <div className="space-y-2 pt-2">
@@ -335,7 +344,6 @@ export default function WorkbookPage() {
               {shadowCount >= 3 ? "✓" : "○"} {pl ? `Praca z cieniem: ${shadowCount}/3` : `Shadow work: ${shadowCount}/3`}
             </p>
           </div>
-          
         </main>
       </div>
     );
@@ -352,8 +360,8 @@ export default function WorkbookPage() {
     );
   }
 
-  // --- COMPLETED ---
-  if (completed) {
+  // --- COMPLETED WITH SUMMARY ---
+  if (completed && summary) {
     return (
       <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
         <header className="px-6 pt-5 pb-2">
@@ -361,33 +369,57 @@ export default function WorkbookPage() {
             ← {pl ? "Wróć" : "Back"}
           </button>
         </header>
-        <main className="max-w-md mx-auto px-6 pt-12 text-center space-y-6">
-          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.4 }}>◇</div>
-          <h1 className="text-2xl tracking-wide" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-            {pl ? "Przeszłaś przez to." : "You went through it."}
-          </h1>
-          <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {pl
-              ? "Nie szukaj teraz odpowiedzi. Pozwól temu pracować w tle. Wróć za kilka dni — zobaczysz, co się zmieniło."
-              : "Don't look for answers right now. Let this work in the background. Come back in a few days — you'll see what shifted."}
+        <main className="max-w-xl mx-auto px-6 pt-8 pb-16 space-y-6">
+          <div className="text-center">
+            <div className="text-4xl mb-3" style={{ color: "var(--color-plum)", opacity: 0.4 }}>◇</div>
+            <h1 className="text-2xl tracking-wide" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+              {pl ? "Przeszłaś przez to." : "You went through it."}
+            </h1>
+          </div>
+
+          <div className="rounded-2xl border p-5" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+            <div className="space-y-1">
+              {summary.split("\n").map((line: string, i: number) => {
+                if (!line.trim()) return <div key={i} className="h-2" />;
+                const isHeading = /^[A-ZŻŹĆĄŚĘŁÓŃ]/.test(line.trim()) && line.trim().length < 30 && !line.trim().includes(".");
+                return isHeading ? (
+                  <p key={i} className="text-base mt-4 mb-1" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.1rem" }}>
+                    {line.trim()}
+                  </p>
+                ) : (
+                  <p key={i} className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>
+                    {line.trim()}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+
+          <p className="text-sm text-center leading-relaxed" style={{ color: "var(--color-dark)", opacity: 0.7 }}>
+            {pl ? "Nie szukaj teraz odpowiedzi. Pozwól temu pracować w tle. Wróć za kilka dni." : "Don't look for answers now. Let this work in the background. Come back in a few days."}
           </p>
-          <div className="flex flex-col gap-3 pt-4">
-            <button
-              onClick={handleStartNew}
-              className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
-              style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
-            >
-              {pl ? "Zacznij nową sesję" : "Start a new session"}
+
+          <div className="flex flex-col gap-3 text-center pt-2">
+            <button onClick={handleStartNew} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
+              style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+              {pl ? "Nowa sesja" : "New session"}
             </button>
-            <button
-              onClick={() => router.push("/shadow-work")}
-              className="text-sm tracking-wide"
-              style={{ color: "var(--color-mauve)" }}
-            >
+            <button onClick={() => router.push("/shadow-work")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)" }}>
               {pl ? "Wróć do pracy z cieniem" : "Back to shadow work"}
             </button>
           </div>
         </main>
+      </div>
+    );
+  }
+
+  // --- GENERATING SUMMARY ---
+  if (generatingSummary) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
+        <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
+          {pl ? "Analizuję twoją sesję..." : "Analysing your session..."}
+        </p>
       </div>
     );
   }
@@ -428,46 +460,81 @@ export default function WorkbookPage() {
         </p>
 
         {/* Question */}
-        <h2
-          className="text-xl md:text-2xl leading-relaxed mb-8"
-          style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
-        >
+        <h2 className="text-xl md:text-2xl leading-relaxed mb-6"
+          style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
           {questions[stage - 1]}
         </h2>
 
-        {/* Response */}
-        <textarea
-          value={response}
-          onChange={(e) => setResponse(e.target.value)}
-          rows={8}
-          placeholder={pl ? "Pisz tutaj... bądź szczera." : "Write here... be honest."}
-          className="w-full rounded-2xl border p-4 text-base resize-none transition-colors duration-500 mb-6"
-          style={{
-            backgroundColor: "var(--color-blush)",
-            borderColor: "var(--color-dusty-rose)",
-            color: "var(--color-dark)",
-            fontFamily: "Georgia, serif",
-          }}
-        />
+        {/* Phase: Question — write response */}
+        {(phase === "question" || phase === "responding") && (
+          <div className="space-y-4">
+            <textarea
+              value={response}
+              onChange={(e) => setResponse(e.target.value)}
+              rows={6}
+              placeholder={pl ? "Pisz tutaj... bądź szczera." : "Write here... be honest."}
+              className="w-full rounded-2xl border p-4 text-base resize-none transition-colors duration-500"
+              style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
+            />
+            <button
+              onClick={handleSubmitResponse}
+              disabled={!response.trim()}
+              className="w-full py-3.5 rounded-xl text-sm tracking-widest uppercase transition-all"
+              style={{
+                backgroundColor: response.trim() ? "var(--color-plum)" : "var(--color-dusty-rose)",
+                color: response.trim() ? "var(--color-cream)" : "var(--color-mauve)",
+                fontWeight: 600, opacity: response.trim() ? 1 : 0.5,
+              }}>
+              {pl ? "Wyślij" : "Submit"}
+            </button>
+          </div>
+        )}
 
-        {/* Next / Complete */}
-        <button
-          onClick={handleNext}
-          disabled={saving || !response.trim()}
-          className="w-full py-3.5 rounded-xl text-sm tracking-widest uppercase transition-all"
-          style={{
-            backgroundColor: response.trim() ? "var(--color-plum)" : "var(--color-dusty-rose)",
-            color: response.trim() ? "var(--color-cream)" : "var(--color-mauve)",
-            fontWeight: 600,
-            opacity: response.trim() ? 1 : 0.5,
-          }}
-        >
-          {saving
-            ? "..."
-            : stage < 4
-              ? (pl ? "Dalej →" : "Next →")
-              : (pl ? "Zakończ" : "Complete")}
-        </button>
+        {/* Phase: AI reacting */}
+        {phase === "ai_reacting" && (
+          <div className="text-center py-8">
+            <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
+              {pl ? "Czytam co napisałaś..." : "Reading what you wrote..."}
+            </p>
+          </div>
+        )}
+
+        {/* Phase: AI shown — display reaction + followup */}
+        {(phase === "ai_shown" || phase === "saving_followup") && (
+          <div className="space-y-6">
+            {/* User's response */}
+            <div className="rounded-xl p-4" style={{ background: "var(--color-blush)", borderLeft: "3px solid var(--color-dusty-rose)" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>{response}</p>
+            </div>
+
+            {/* AI reaction */}
+            <div className="rounded-xl p-4" style={{ background: "var(--color-cream)", borderLeft: "3px solid var(--color-plum)" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>{aiReaction}</p>
+            </div>
+
+            {/* Followup textarea */}
+            <textarea
+              value={followup}
+              onChange={(e) => setFollowup(e.target.value)}
+              rows={4}
+              placeholder={pl ? "Odpowiedz na to pytanie..." : "Respond to this question..."}
+              className="w-full rounded-2xl border p-4 text-base resize-none transition-colors duration-500"
+              style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
+            />
+
+            <button
+              onClick={handleSubmitFollowup}
+              disabled={phase === "saving_followup" || !followup.trim()}
+              className="w-full py-3.5 rounded-xl text-sm tracking-widest uppercase transition-all"
+              style={{
+                backgroundColor: followup.trim() ? "var(--color-plum)" : "var(--color-dusty-rose)",
+                color: followup.trim() ? "var(--color-cream)" : "var(--color-mauve)",
+                fontWeight: 600, opacity: followup.trim() ? 1 : 0.5,
+              }}>
+              {phase === "saving_followup" ? "..." : stage < 4 ? (pl ? "Dalej →" : "Next →") : (pl ? "Zakończ sesję" : "Complete session")}
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
