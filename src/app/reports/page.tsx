@@ -111,7 +111,10 @@ export default function ReportsPage() {
       ${counts}
       <hr style="border:none;border-top:1px solid #D4C4B4;margin:20px 60px"/>
       <div style="margin-top:24px">${formattedReport}</div>
-      <div style="text-align:center;margin-top:40px;font-size:8px;color:#B4A494">Noctua by AGNÉLIS</div>
+      <div style="text-align:center;margin-top:40px">
+        <div style="font-size:10px;color:#B4A494;letter-spacing:4px">N O C T U A</div>
+        <div style="font-size:7px;color:#C4B4A4;margin-top:3px;letter-spacing:2px">by AGNÉLIS</div>
+      </div>
     </body></html>`);
     printWindow.document.close();
     setTimeout(() => { printWindow.print(); }, 500);
