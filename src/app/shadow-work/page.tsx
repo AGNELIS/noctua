@@ -11,7 +11,7 @@ import type { TranslationKey } from "@/lib/i18n";
 const EMOTIONS = [
   "anger", "fear", "sadness", "shame", "guilt",
   "confusion", "resistance", "grief", "anxiety", "numbness",
-  "relief", "clarity", "discomfort", "longing", "frustration",
+  "relief", "clarity", "discomfort", "longing", "frustration", "disappointment",
 ];
 
 const EMOTIONS_PL: Record<string, string> = {
@@ -19,7 +19,7 @@ const EMOTIONS_PL: Record<string, string> = {
   guilt: "poczucie winy", confusion: "zagubienie", resistance: "opór",
   grief: "żal", anxiety: "niepokój", numbness: "odrętwienie",
   relief: "ulga", clarity: "jasność", discomfort: "dyskomfort",
-  longing: "tęsknota", frustration: "frustracja",
+  longing: "tęsknota", frustration: "frustracja", disappointment: "rozczarowanie",
 };
 
 type Entry = {
