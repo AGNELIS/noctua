@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getMoonPhase, getGreeting, getDailyInsight, type MoonPhaseInfo } from "@/lib/moon";
+import { getMoonPhase, getMoonSign, getGreeting, getDailyInsight, type MoonPhaseInfo, type MoonSignInfo } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
 
 const NAV_CARDS = [
@@ -229,6 +229,19 @@ export default function DashboardPage() {
             >
               {t((moonPhaseKey[moon.phase] || "moon_new") as any)}
             </h2>
+            {(() => {
+              const moonSign = getMoonSign();
+              return (
+                <p
+                  className="text-sm tracking-wider transition-colors duration-500"
+                  style={{ color: "var(--color-plum)", fontWeight: 500, fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                >
+                  {language === "pl"
+                    ? `w ${moonSign.signPl} · ${moonSign.elementPl}`
+                    : `in ${moonSign.sign} · ${moonSign.element}`}
+                </p>
+              );
+            })()}
             <p
               className="text-base md:text-lg tracking-widest uppercase transition-colors duration-500"
               style={{ color: "var(--color-mauve)", fontWeight: 500 }}

@@ -44,6 +44,39 @@ export function getMoonPhase(date: Date = new Date()): MoonPhaseInfo {
   }
 }
 
+export type MoonSignInfo = {
+  sign: string;
+  signPl: string;
+  element: string;
+  elementPl: string;
+};
+
+export function getMoonSign(date: Date = new Date()): MoonSignInfo {
+  const astroDate = Astronomy.MakeTime(date);
+  const equator = Astronomy.Equator(Astronomy.Body.Moon, astroDate, new Astronomy.Observer(51.5, 0, 0), true, true);
+  const ecliptic = Astronomy.Ecliptic(equator.vec);
+  let lon = ecliptic.elon;
+  if (lon < 0) lon += 360;
+
+  const signs: { sign: string; signPl: string; element: string; elementPl: string }[] = [
+    { sign: "Aries", signPl: "Baran", element: "Fire", elementPl: "Ogień" },
+    { sign: "Taurus", signPl: "Byk", element: "Earth", elementPl: "Ziemia" },
+    { sign: "Gemini", signPl: "Bliźnięta", element: "Air", elementPl: "Powietrze" },
+    { sign: "Cancer", signPl: "Rak", element: "Water", elementPl: "Woda" },
+    { sign: "Leo", signPl: "Lew", element: "Fire", elementPl: "Ogień" },
+    { sign: "Virgo", signPl: "Panna", element: "Earth", elementPl: "Ziemia" },
+    { sign: "Libra", signPl: "Waga", element: "Air", elementPl: "Powietrze" },
+    { sign: "Scorpio", signPl: "Skorpion", element: "Water", elementPl: "Woda" },
+    { sign: "Sagittarius", signPl: "Strzelec", element: "Fire", elementPl: "Ogień" },
+    { sign: "Capricorn", signPl: "Koziorożec", element: "Earth", elementPl: "Ziemia" },
+    { sign: "Aquarius", signPl: "Wodnik", element: "Air", elementPl: "Powietrze" },
+    { sign: "Pisces", signPl: "Ryby", element: "Water", elementPl: "Woda" },
+  ];
+
+  const index = Math.floor(lon / 30) % 12;
+  return signs[index];
+}
+
 export function getUpcomingMoonEvents(months: number = 3): MoonEvent[] {
   const events: MoonEvent[] = [];
   const now = new Date();
