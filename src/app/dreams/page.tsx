@@ -46,6 +46,7 @@ export default function DreamsPage() {
   const router = useRouter();
   const { t, language } = useLanguage();
   const [entries, setEntries] = useState<DreamEntry[]>([]);
+  const [analysedIds, setAnalysedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -54,6 +55,8 @@ export default function DreamsPage() {
   const loadEntries = async () => {
     const supabase = createClient();
     const { data } = await supabase.from("dream_entries").select("*").order("dream_date", { ascending: false });
+    const { data: analyses } = await supabase.from("dream_analyses").select("dream_entry_id");
+    setAnalysedIds(new Set((analyses || []).map((a: { dream_entry_id: string }) => a.dream_entry_id)));
     setEntries(data || []);
     setLoading(false);
   };
@@ -121,6 +124,10 @@ export default function DreamsPage() {
                       </span>
                       {entry.emotional_tone?.map((t) => (<span key={t} className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--color-plum)" }}>{TONE_ICONS[t]?.icon}{TONE_ICONS[t]?.label || t}</span>))}
                       {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "powtarzający" : "recurring"}</span>)}
+                      {analysedIds.has(entry.id)
+                        ? (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>{language === "pl" ? "przeanalizowany" : "analysed"}</span>)
+                        : (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)" }}>{language === "pl" ? "do analizy" : "ready to analyse"}</span>)
+                      }
                       {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-mauve)" }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
                     </div>
                     {entry.title && (<h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>)}
