@@ -163,7 +163,7 @@ export default function ShopPage() {
                 </h2>
 
                 {group.category === "theme" ? (
-                  <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: "none" }}>
+                  <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: "thin" }}>
                     {group.items.map((product) => {
                       const owned = purchased.has(product.id);
                       const isActive = activeThemeId === product.id;
