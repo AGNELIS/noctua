@@ -156,8 +156,14 @@ export default function CycleWorkbookPage() {
     const cCount = count || 0;
     setCycleCount(cCount);
 
-    // TEMP: gate disabled for testing — restore: if (cCount < 5)
-    if (false) {
+    const { data: lastCycleSession } = await supabase.from("workbook_sessions")
+      .select("created_at").eq("user_id", user.id).eq("workbook_type", "cycle_alignment").eq("completed", true)
+      .order("created_at", { ascending: false }).limit(1);
+    const sinceCycle = lastCycleSession && lastCycleSession.length > 0 ? lastCycleSession[0].created_at : new Date(0).toISOString();
+    const { count: newCycleEntries } = await supabase.from("cycle_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceCycle);
+    const { count: newJournalCycle } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceCycle);
+    const totalNewCycle = (newCycleEntries || 0) + (newJournalCycle || 0);
+    if (totalNewCycle < 5) {
       setGateBlocked(true);
       setLoading(false);
       return;

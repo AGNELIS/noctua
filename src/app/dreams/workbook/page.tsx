@@ -173,8 +173,14 @@ export default function DreamWorkbookPage() {
     const dCount = count || 0;
     setDreamCount(dCount);
 
-    // TEMP: gate disabled for testing — restore: if (dCount < 3)
-    if (false) {
+    const { data: lastDreamSession } = await supabase.from("workbook_sessions")
+      .select("created_at").eq("user_id", user.id).eq("workbook_type", "dream_integration").eq("completed", true)
+      .order("created_at", { ascending: false }).limit(1);
+    const sinceDream = lastDreamSession && lastDreamSession.length > 0 ? lastDreamSession[0].created_at : new Date(0).toISOString();
+    const { count: newDreams } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDream);
+    const { count: newJournal } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDream);
+    const totalNewDream = (newDreams || 0) + (newJournal || 0);
+    if (totalNewDream < 5) {
       setGateBlocked(true);
       setLoading(false);
       return;
@@ -280,12 +286,12 @@ export default function DreamWorkbookPage() {
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
             {pl
-              ? "Ten workbook czyta twoje sny. Żeby to zrobić, potrzebuje twoich danych. Minimum 3 zapisane sny."
-              : "This workbook reads your dreams. To do that, it needs your data. Minimum 3 recorded dreams."}
+              ? "Potrzebujesz minimum 5 nowych wpisów od ostatniej sesji (sny + dziennik)."
+              : "You need at least 5 new entries since your last session (dreams + journal)."}
           </p>
           <div className="pt-2">
-            <p className="text-sm" style={{ color: dreamCount >= 3 ? "var(--color-plum)" : "var(--color-mauve)" }}>
-              {dreamCount >= 3 ? "✓" : "○"} {pl ? `Sny: ${dreamCount}/3` : `Dreams: ${dreamCount}/3`}
+            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
+              {pl ? "Wróć kiedy będziesz miała więcej materiału do pracy." : "Come back when you have more material to work with."}
             </p>
           </div>
         </main>

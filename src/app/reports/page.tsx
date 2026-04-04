@@ -153,8 +153,8 @@ export default function ReportsPage() {
           )}
           <p className="text-xs mt-3" style={{ color: "var(--color-mauve)", opacity: 0.6 }}>
             {pl
-              ? "Dostępny od 15. dnia miesiąca (min. 8 wpisów). Pełny odczyt od 25. dnia (min. 15 wpisów)."
-              : "Available from the 15th (min. 8 entries). Full reading from the 25th (min. 15 entries)."}
+              ? "Minimum 8 wpisów od ostatniego odczytu. Pełny odczyt od 15 wpisów."
+              : "Minimum 8 entries since your last reading. Full reading from 15 entries."}
           </p>
         </div>
 

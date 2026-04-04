@@ -148,8 +148,15 @@ export default function WorkbookPage() {
     setJournalCount(jCount);
     setShadowCount(sCount);
 
-    // TEMP: gate disabled for testing — restore: if (jCount < 3 || sCount < 3)
-    if (false) {
+    const { data: lastSession } = await supabase.from("workbook_sessions")
+      .select("created_at").eq("user_id", user.id).eq("workbook_type", "shadow_work").eq("completed", true)
+      .order("created_at", { ascending: false }).limit(1);
+    const sinceDateWb = lastSession && lastSession.length > 0 ? lastSession[0].created_at : new Date(0).toISOString();
+    const { count: newJ } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
+    const { count: newS } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
+    const { count: newD } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
+    const totalNewEntries = (newJ || 0) + (newS || 0) + (newD || 0);
+    if (totalNewEntries < 5) {
       setGateBlocked(true);
       setLoading(false);
       return;
@@ -337,11 +344,8 @@ export default function WorkbookPage() {
               : "This workbook reads your patterns. To do that, it needs your data. Minimum 3 journal entries and 3 shadow work entries."}
           </p>
           <div className="space-y-2 pt-2">
-            <p className="text-sm" style={{ color: journalCount >= 3 ? "var(--color-plum)" : "var(--color-mauve)" }}>
-              {journalCount >= 3 ? "✓" : "○"} {pl ? `Dziennik: ${journalCount}/3` : `Journal: ${journalCount}/3`}
-            </p>
-            <p className="text-sm" style={{ color: shadowCount >= 3 ? "var(--color-plum)" : "var(--color-mauve)" }}>
-              {shadowCount >= 3 ? "✓" : "○"} {pl ? `Praca z cieniem: ${shadowCount}/3` : `Shadow work: ${shadowCount}/3`}
+            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
+              {pl ? "Potrzebujesz minimum 5 nowych wpisów od ostatniej sesji (dziennik, sny, praca z cieniem)." : "You need at least 5 new entries since your last session (journal, dreams, shadow work)."}
             </p>
           </div>
         </main>

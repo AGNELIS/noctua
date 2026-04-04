@@ -10,14 +10,40 @@ export async function POST(req: NextRequest) {
   const lang = userLang === "pl" ? "pl" : "en";
 
   const now = new Date();
-  const dayOfMonth = now.getDate();
   const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-  // Determine report type based on day of month
-  // TEMP: gates disabled for testing — restore before launch
-  const reportType = dayOfMonth >= 25 ? "full" : "mid";
-  const minEntries = 1;
+  // Count entries since last reading
+  const { data: lastReport } = await supabase
+    .from("smart_reports")
+    .select("created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  const sinceDate = lastReport && lastReport.length > 0
+    ? lastReport[0].created_at
+    : new Date(0).toISOString();
+
+  const { count: jSince } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDate);
+  const { count: dSince } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDate);
+  const { count: sSince } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDate);
+  const { count: cSince } = await supabase.from("cycle_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDate);
+
+  const totalSinceLastReading = (jSince || 0) + (dSince || 0) + (sSince || 0) + (cSince || 0);
+  const reportType = totalSinceLastReading >= 15 ? "full" : "mid";
+
+  if (totalSinceLastReading < 8) {
+    return NextResponse.json({
+      error: "not_enough_entries",
+      message: lang === "pl"
+        ? `Potrzebujesz minimum 8 wpisów od ostatniego odczytu. Masz: ${totalSinceLastReading}.`
+        : `You need at least 8 entries since your last reading. You have: ${totalSinceLastReading}.`,
+      current: totalSinceLastReading,
+      required: 8,
+    }, { status: 400 });
+  }
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   // Check cache
   const { data: cached } = await supabase
@@ -60,23 +86,7 @@ export async function POST(req: NextRequest) {
     .eq("user_id", user.id)
     .gte("entry_date", startOfMonth.slice(0, 10))
     .order("entry_date", { ascending: false });
-
-  const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0) + (cycleData?.length || 0);
-
-  if (totalEntries < minEntries) {
-    return NextResponse.json({
-      error: "not_enough_data",
-      message: lang === "pl"
-        ? `Za mało danych z tego miesiąca. Potrzebuję minimum ${minEntries} wpisów łącznie. Masz ${totalEntries}.`
-        : `Not enough data this month. I need at least ${minEntries} entries total. You have ${totalEntries}.`,
-      counts: {
-        journal: journalData?.length || 0,
-        dreams: dreamData?.length || 0,
-        shadow: shadowData?.length || 0,
-        cycle: cycleData?.length || 0,
-      },
-    }, { status: 400 });
-  }
+const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0) + (cycleData?.length || 0);
 
   // Build context
   const journalSummary = journalData?.map(e => `[${new Date(e.created_at).toLocaleDateString()}] Mood: ${e.mood || "none"}. ${(e.content || "").slice(0, 200)}`).join("\n") || "No journal entries.";
