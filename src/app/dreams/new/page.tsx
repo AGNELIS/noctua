@@ -113,6 +113,7 @@ export default function NewDreamEntry() {
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "12px", fontFamily: "Georgia, 'Times New Roman', serif" }} />
 
         <textarea placeholder={language === "pl" ? "Opisz swoj sen..." : "Describe your dream... What did you see, feel, hear?"} value={content}
+          onChange={(e) => setContent(e.target.value)} rows={10}
           className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
 

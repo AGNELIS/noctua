@@ -109,6 +109,7 @@ export default function ProductPage() {
                   "Cycle Alignment Workbook": "/cycle/workbook",
                   "Monthly Reading": "/reports",
                   "Pattern Reading": "/reports",
+                  "Dream AI Analysis": "/dreams",
                 };
                 const route = routes[product.name];
                 if (route) router.push(route);
