@@ -62,7 +62,7 @@ export default function EditDreamEntry() {
         const res = await fetch("/api/analyse-dream", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ dreamId: id }),
+          body: JSON.stringify({ dreamId: id, language }),
         });
         const data = await res.json();
         if (res.ok && data.analysis) {
