@@ -64,14 +64,23 @@ export default function ShopPage() {
       .in("category", ["theme", "symbol_pack", "report", "interpretation", "workbook"])
       .order("sort_order");
 
-    const { data: purch } = await supabase
+   const { data: purch } = await supabase
       .from("user_purchases")
-      .select("product_id");
+      .select("product_id, used_at");
+
+    const consumableCategories = ["interpretation", "report"];
+    const ownedSet = new Set<string>();
+    (purch || []).forEach((p: { product_id: string; used_at: string | null }) => {
+      const prod = (prods || []).find((pr: { id: string }) => pr.id === p.product_id);
+      if (prod && consumableCategories.includes(prod.category)) {
+        if (!p.used_at) ownedSet.add(p.product_id);
+      } else {
+        ownedSet.add(p.product_id);
+      }
+    });
 
     setProducts(prods || []);
-    setPurchased(
-      new Set((purch || []).map((p: { product_id: string }) => p.product_id))
-    );
+    setPurchased(ownedSet);
     setLoading(false);
   };
 
