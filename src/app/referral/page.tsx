@@ -188,6 +188,14 @@ export default function ReferralPage() {
                     >
                       {pl ? "Otwórz" : "Open"}
                     </button>
+                  ) : earned && r.type === "exclusive_theme" ? (
+                    <button
+                      onClick={() => router.push("/referral/themes")}
+                      className="text-xs px-3 py-1.5 rounded-full transition-all"
+                      style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}
+                    >
+                      {pl ? "Wybierz" : "Choose"}
+                    </button>
                   ) : earned ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Odblokowane" : "Unlocked"}
