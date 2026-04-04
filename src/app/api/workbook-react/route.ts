@@ -52,7 +52,7 @@ ${lang === "pl" ? "Co obserwować" : "What to watch"}
 One concrete thing to notice in the coming days. Not advice. An observation point.
 
 CRITICAL RULES:
-Keep under 300 words. No markdown. No asterisks. No dashes. No greetings. No "Droga". Commas and full stops only. Title Case headings on their own line.`;
+Keep under 300 words. No markdown. No asterisks. Never use dashes, hyphens, em dashes or en dashes anywhere. No greetings. No "Droga". Commas and full stops only. Use colons where you would use a dash. Title Case headings on their own line.`;
   } else {
     prompt = `You are a shadow work guide for the app "Noctua" by AGNÉLIS. You are in stage ${stage}/4 (${stageNames[stage - 1]}) of a guided session.
 
@@ -81,7 +81,7 @@ Rules for your reaction:
 }
 
 CRITICAL RULES:
-Keep under 150 words. No markdown. No asterisks. No dashes. No greetings. No "Droga". Commas and full stops only. Write as flowing text, not sections.`;
+Keep under 150 words. No markdown. No asterisks. Never use dashes, hyphens, em dashes or en dashes anywhere. No greetings. No "Droga". Commas and full stops only. Use colons where you would use a dash. Write as flowing text, not sections.`;
   }
 
   try {
@@ -113,6 +113,7 @@ Keep under 150 words. No markdown. No asterisks. No dashes. No greetings. No "Dr
       .replace(/—/g, ", ")
       .replace(/–/g, ", ")
       .replace(/ - /g, ", ")
+      .replace(/-/g, ", ")
       .replace(/#{1,3}\s/g, "");
 
     // Save to database
