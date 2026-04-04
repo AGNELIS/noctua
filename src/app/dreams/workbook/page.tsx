@@ -28,13 +28,13 @@ const STAGE_LABELS_PL = ["Świadomość", "Symbol", "Emocje", "Integracja"];
 
 const STAGE_INTROS_EN = [
   "Your dreams are not random. They're speaking to you in a language you haven't learned yet. Let's start listening.",
-  "Symbols repeat for a reason. They're not decoration — they're messages. Let's decode yours.",
+  "Symbols repeat for a reason. They're not decoration. They're messages. Let's decode yours.",
   "This is where it gets uncomfortable. Your dreams show what you won't look at during the day.",
   "Understanding means nothing without action. What does your dream life demand from your waking life?",
 ];
 const STAGE_INTROS_PL = [
   "Twoje sny nie są przypadkowe. Mówią do ciebie językiem, którego jeszcze nie znasz. Zacznijmy słuchać.",
-  "Symbole powtarzają się nie bez powodu. To nie dekoracja — to wiadomości. Odczytajmy twoje.",
+  "Symbole powtarzają się nie bez powodu. To nie dekoracja. To wiadomości. Odczytajmy twoje.",
   "Tu robi się niekomfortowo. Twoje sny pokazują to, na co nie chcesz patrzeć za dnia.",
   "Zrozumienie bez działania nic nie znaczy. Czego twoje sny wymagają od twojego życia na jawie?",
 ];
@@ -49,27 +49,27 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
     return [
       topEmo
         ? `Twoje sny najczęściej niosą ton "${topEmo}". Co czujesz w ciele, kiedy się budzisz po takim śnie?`
-        : "Przypomnij sobie ostatni sen, który został z tobą po przebudzeniu. Co czułaś — nie co się działo, ale co czułaś?",
+        : "Przypomnij sobie ostatni sen, który został z tobą po przebudzeniu. Co czułaś? Nie co się działo, ale co czułaś?",
       topSymbol
-        ? `"${topSymbol}" pojawia się w twoich snach wielokrotnie.${secondSymbol ? ` Podobnie "${secondSymbol}".` : ""} Co ten symbol znaczy dla CIEBIE — nie ze słownika, tylko z twojego życia?`
-        : "Jaki symbol lub obraz wraca w twoich snach? Co on dla ciebie znaczy — osobiście, nie z interpretacji?",
+        ? `"${topSymbol}" pojawia się w twoich snach wielokrotnie.${secondSymbol ? ` Podobnie "${secondSymbol}".` : ""} Co ten symbol znaczy dla CIEBIE? Nie ze słownika, tylko z twojego życia.`
+        : "Jaki symbol lub obraz wraca w twoich snach? Co on dla ciebie znaczy? Osobiście, nie z interpretacji.",
       theme
         ? `W twoich snach i wpisach przewija się temat "${theme}". Jakie emocje blokujesz na jawie, które twoje sny próbują ci pokazać?`
         : "Czego twoje sny próbują ci powiedzieć, na co nie chcesz patrzeć za dnia?",
-      "Gdybyś potraktowała swój ostatni sen jak list od siebie samej — co byś z nim zrobiła? Konkretnie.",
+      "Gdybyś potraktowała swój ostatni sen jak list od siebie samej, co byś z nim zrobiła? Konkretnie.",
     ];
   }
   return [
     topEmo
       ? `Your dreams most often carry the tone "${topEmo}". What do you feel in your body when you wake from a dream like that?`
-      : "Think of the last dream that stayed with you after waking. What did you feel — not what happened, but what you felt?",
+      : "Think of the last dream that stayed with you after waking. What did you feel? Not what happened, but what you felt.",
     topSymbol
-      ? `"${topSymbol}" appears in your dreams repeatedly.${secondSymbol ? ` So does "${secondSymbol}".` : ""} What does this symbol mean to YOU — not from a dictionary, but from your life?`
-      : "What symbol or image keeps returning in your dreams? What does it mean to you — personally, not from an interpretation guide?",
+      ? `"${topSymbol}" appears in your dreams repeatedly.${secondSymbol ? ` So does "${secondSymbol}".` : ""} What does this symbol mean to YOU? Not from a dictionary, but from your life.`
+      : "What symbol or image keeps returning in your dreams? What does it mean to you? Personally, not from an interpretation guide.",
     theme
       ? `Your dreams and entries keep circling back to "${theme}". What emotions are you blocking in waking life that your dreams are trying to show you?`
       : "What are your dreams trying to tell you that you refuse to look at during the day?",
-    "If you treated your last dream as a letter from yourself — what would you do with it? Specifically.",
+    "If you treated your last dream as a letter from yourself, what would you do with it? Specifically.",
   ];
 }
 
@@ -318,8 +318,8 @@ export default function DreamWorkbookPage() {
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
             {pl
-              ? "Nie analizuj tego teraz. Zapisz dzisiejszy sen — zobaczysz, czy coś się zmieni."
-              : "Don't analyse this now. Record tonight's dream — see if something shifts."}
+              ? "Nie analizuj tego teraz. Zapisz dzisiejszy sen. Zobaczysz, czy coś się zmieni."
+              : "Don't analyse this now. Record tonight's dream. See if something shifts."}
           </p>
           <div className="flex flex-col gap-3 pt-4">
             <button onClick={handleStartNew} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
