@@ -226,7 +226,21 @@ export default function EditDreamEntry() {
               <p className="text-xs uppercase tracking-[0.3em] text-center mb-4" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
                 {language === "pl" ? "Wgląd" : "Insight"}
               </p>
-              <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--color-dark)" }}>{analysis}</p>
+              <div className="space-y-1">
+                {analysis.split("\n").map((line: string, i: number) => {
+                  if (!line.trim()) return <div key={i} className="h-2" />;
+                  const isHeading = /^[A-ZŻŹĆĄŚĘŁÓŃ]/.test(line.trim()) && line.trim().length < 40 && !line.trim().includes(".");
+                  return isHeading ? (
+                    <p key={i} className="text-base mt-5 mb-1" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.1rem" }}>
+                      {line.trim()}
+                    </p>
+                  ) : (
+                    <p key={i} className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>
+                      {line.trim()}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
           ) : (
             <div className="text-center space-y-3">
