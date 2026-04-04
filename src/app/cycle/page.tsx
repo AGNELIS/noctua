@@ -225,7 +225,7 @@ export default function CycleTrackerPage() {
           <section className="rounded-2xl border p-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <p className="text-xs text-center uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{language === "pl" ? "Nadchodzące wydarzenia księżycowe" : "Upcoming lunar events"}</p>
             <div className="space-y-2">
-              {moonEvents.filter((e) => e.date.getTime() > Date.now()).slice(0, 6).map((e, i) => (
+              {moonEvents.filter((e) => e.date.getTime() > Date.now()).slice(0, 16).map((e, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
                   <span style={{ color: "var(--color-dark)" }}>
                     <MiniMoon phase={e.type} size={18} />{" "}
