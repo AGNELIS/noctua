@@ -253,12 +253,12 @@ export default function CycleWorkbookPage() {
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
             {pl
-              ? "Ten workbook czyta rytm twojego ciała. Żeby to zrobić, potrzebuje twoich danych. Minimum 5 wpisów cyklu."
-              : "This workbook reads your body's rhythm. To do that, it needs your data. Minimum 5 cycle entries."}
+              ? "Potrzebujesz minimum 5 nowych wpisów od ostatniej sesji (cykl + dziennik)."
+              : "You need at least 5 new entries since your last session (cycle + journal)."}
           </p>
           <div className="pt-2">
-            <p className="text-sm" style={{ color: cycleCount >= 5 ? "var(--color-plum)" : "var(--color-mauve)" }}>
-              {cycleCount >= 5 ? "✓" : "○"} {pl ? `Cykl: ${cycleCount}/5` : `Cycle: ${cycleCount}/5`}
+            <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
+              {pl ? "Wróć kiedy będziesz miała więcej materiału do pracy." : "Come back when you have more material to work with."}
             </p>
           </div>
         </main>
