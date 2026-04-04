@@ -151,13 +151,13 @@ export default function SymbolsPage() {
                     {s.meaning_shadow && (
                       <div className="space-y-1">
                         <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-mauve)" }}>{t("symbols_shadow")}</p>
-                        <p className="text-sm leading-relaxed italic" style={{ color: "var(--color-mauve)" }}>{language === "pl" && s.meaning_shadow_pl ? s.meaning_shadow_pl : s.meaning_shadow}</p>
+                        <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", opacity: 0.85 }}>{language === "pl" && s.meaning_shadow_pl ? s.meaning_shadow_pl : s.meaning_shadow}</p>
                       </div>
                     )}
                     {s.meaning_lunar && (
                       <div className="space-y-1">
                         <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--color-plum)" }}>{language === "pl" ? "Znaczenie ksiezycowe" : "Lunar Meaning"}</p>
-                        <p className="text-sm leading-relaxed italic" style={{ color: "var(--color-plum)" }}>{language === "pl" && s.meaning_lunar_pl ? s.meaning_lunar_pl : s.meaning_lunar}</p>
+                        <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", opacity: 0.85 }}>{language === "pl" && s.meaning_lunar_pl ? s.meaning_lunar_pl : s.meaning_lunar}</p>
                       </div>
                     )}
                     {s.related_archetypes?.length > 0 && (
