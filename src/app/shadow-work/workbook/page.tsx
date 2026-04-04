@@ -36,14 +36,14 @@ const STAGE_LABELS_EN = ["Awareness", "Pattern", "Emotional", "Integration"];
 const STAGE_LABELS_PL = ["Konfrontacja", "Wzorzec", "Głębiej", "Integracja"];
 
 const STAGE_INTROS_EN = [
-  "Before you begin — this is not journaling. This is confrontation. You're here because something keeps returning. Let's find it.",
-  "You've named what you avoid. Now let's trace it. Patterns don't hide — you've just learned not to look.",
+  "Before you begin. This is not journaling. This is confrontation. You're here because something keeps returning. Let's find it.",
+  "You've named what you avoid. Now let's trace it. Patterns don't hide. You've just learned not to look.",
   "This is the hardest part. You've seen the pattern. Now feel what's underneath it.",
-  "You've faced it. You've felt it. Now — what changes? Not in theory. In your actual life.",
+  "You've faced it. You've felt it. Now, what changes? Not in theory. In your actual life.",
 ];
 const STAGE_INTROS_PL = [
-  "Zanim zaczniesz — to nie jest journaling. To konfrontacja. Jesteś tu, bo coś ciągle wraca. Znajdźmy to.",
-  "Nazwałaś to, czego unikasz. Teraz prześledźmy to. Wzorce się nie chowają — po prostu nauczyłaś się nie patrzeć.",
+  "Zanim zaczniesz. To nie jest journaling. To konfrontacja. Jesteś tu, bo coś ciągle wraca. Znajdźmy to.",
+  "Nazwałaś to, czego unikasz. Teraz prześledźmy to. Wzorce się nie chowają. Po prostu nauczyłaś się nie patrzeć.",
   "To najtrudniejsza część. Zobaczyłaś wzorzec. Teraz poczuj, co jest pod spodem.",
   "Zmierzyłaś się z tym. Poczułaś to. I co teraz? Nie w teorii. W twoim prawdziwym życiu.",
 ];
@@ -57,27 +57,27 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
     return [
       topEmo
         ? `W twoich wpisach powtarza się "${topEmo}". Czego unikasz, kiedy to czujesz?`
-        : "Czego unikasz w tej chwili? Nie tego, co mówisz sobie — tego, co naprawdę omijasz.",
+        : "Czego unikasz w tej chwili? Nie tego, co mówisz sobie. Tego, co naprawdę omijasz.",
       theme
-        ? `"${theme}" — ten temat wraca w twoich wpisach. Gdzie jeszcze w życiu to widzisz?`
+        ? `"${theme}": ten temat wraca w twoich wpisach. Gdzie jeszcze w życiu to widzisz?`
         : "Gdzie ten wzorzec się powtarza? W jakich sytuacjach reagujesz tak samo?",
       symbol
         ? `W twoich snach pojawia się "${symbol}". Jakie emocje blokujesz na jawie?`
         : "Czego nie pozwalasz sobie czuć? Co tłumisz, zanim zdążysz to poczuć?",
-      "Jak wyglądałaby twoja reakcja, gdybyś odpowiedziała inaczej? Konkretnie — nie idealnie.",
+      "Jak wyglądałaby twoja reakcja, gdybyś odpowiedziała inaczej? Konkretnie, nie idealnie.",
     ];
   }
   return [
     topEmo
       ? `Your entries keep returning to "${topEmo}". What are you avoiding when you feel this?`
-      : "What are you avoiding right now? Not what you tell yourself — what you're actually sidestepping.",
+      : "What are you avoiding right now? Not what you tell yourself. What you're actually sidestepping.",
     theme
-      ? `"${theme}" — this theme keeps surfacing in your writing. Where else in your life do you see it?`
+      ? `"${theme}": this theme keeps surfacing in your writing. Where else in your life do you see it?`
       : "Where does this pattern keep happening? In what situations do you react the same way?",
     symbol
       ? `Your dreams keep showing "${symbol}". What emotions are you blocking in waking life?`
       : "What are you not allowing yourself to feel? What do you suppress before it fully arrives?",
-    "What would it look like to respond differently? Specifically — not perfectly.",
+    "What would it look like to respond differently? Specifically, not perfectly.",
   ];
 }
 
