@@ -35,12 +35,16 @@ const COMMON_SYMPTOMS = [
   "cramps", "bloating", "headache", "fatigue",
   "mood swings", "tender breasts", "backache", "nausea",
   "cravings", "insomnia", "acne", "anxiety",
+  "high energy", "creative", "calm", "confident",
+  "sensual", "focused", "social", "intuitive",
 ];
 
 const SYMPTOMS_PL: Record<string, string> = {
   cramps: "skurcze", bloating: "wzdęcia", headache: "ból głowy", fatigue: "zmęczenie",
   "mood swings": "wahania nastroju", "tender breasts": "bolesność piersi", backache: "ból pleców", nausea: "nudności",
   cravings: "zachcianki", insomnia: "bezsenność", acne: "trądzik", anxiety: "niepokój",
+  "high energy": "dużo energii", creative: "kreatywność", calm: "spokój", confident: "pewność siebie",
+  sensual: "zmysłowość", focused: "skupienie", social: "towarzyskość", intuitive: "intuicja",
 };
 
 function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
