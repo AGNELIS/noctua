@@ -221,11 +221,15 @@ export default function CycleTrackerPage() {
           </div>
         </section>
 
-        {moonEvents.length > 0 && (
+        {(() => {
+          const monthEvents = moonEvents.filter((e) => e.date.getMonth() === currentMonth.getMonth() && e.date.getFullYear() === currentMonth.getFullYear());
+          return monthEvents.length > 0 && (
           <section className="rounded-2xl border p-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-            <p className="text-xs text-center uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{language === "pl" ? "Nadchodzące wydarzenia księżycowe" : "Upcoming lunar events"}</p>
+            <p className="text-xs text-center uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+              {language === "pl" ? "Wydarzenia księżycowe" : "Lunar events"} · {currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long" })}
+            </p>
             <div className="space-y-2">
-              {moonEvents.filter((e) => e.date.getTime() > Date.now()).slice(0, 16).map((e, i) => (
+              {monthEvents.map((e, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
                   <span style={{ color: "var(--color-dark)" }}>
                     <MiniMoon phase={e.type} size={18} />{" "}
@@ -238,7 +242,8 @@ export default function CycleTrackerPage() {
               ))}
             </div>
           </section>
-        )}
+          );
+        })()}
 
         <section className="space-y-5">
           <p className="text-sm text-center tracking-wide" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
