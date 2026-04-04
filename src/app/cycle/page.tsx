@@ -81,7 +81,11 @@ export default function CycleTrackerPage() {
 
   const getMoonForDay = (day: number) => {
     const dateStr = getDateStr(day);
-    const event = moonEvents.find((e) => e.date.toISOString().split("T")[0] === dateStr);
+    const event = moonEvents.find((e) => {
+      const d = e.date;
+      const eventStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      return eventStr === dateStr;
+    });
     if (event) return <MiniMoon phase={event.type} size={10} />;
     return null;
   };
