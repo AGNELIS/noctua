@@ -19,7 +19,7 @@ type Product = {
 const CATEGORY_LABELS: Record<string, { en: string; pl: string }> = {
   theme: { en: "Themes", pl: "Motywy" },
   symbol_pack: { en: "Knowledge packs", pl: "Paczki wiedzy" },
-  report: { en: "Reports", pl: "Raporty" },
+  report: { en: "Readings", pl: "Odczyty" },
   interpretation: { en: "Interpretations", pl: "Interpretacje" },
   workbook: { en: "Workbooks", pl: "Zeszyty pracy" },
 };
@@ -32,8 +32,8 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Dream AI Analysis": "Analiza snu AI",
   "Dream Integration Workbook": "Zeszyt integracji snów",
   "Cycle Alignment Workbook": "Zeszyt harmonii cyklu",
-  "Your Monthly Insight": "Twój miesięczny wgląd",
-  "Pattern Recognition Report": "Raport rozpoznawania wzorców",
+  "Monthly Reading": "Odczyt miesięczny",
+  "Pattern Reading": "Odczyt wzorców",
 };
 
 const MIN_ENTRIES_REQUIRED: Record<string, number> = {
