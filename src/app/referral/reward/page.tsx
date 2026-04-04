@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 type SavedContent = {
   id: string;
   content_text: string;
+  reflection_response: string | null;
   created_at: string;
 };
 
@@ -153,6 +154,44 @@ function RewardContent() {
             <div className="rounded-2xl border p-6" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
               {renderText(text)}
             </div>
+            {/* Reflection */}
+            <div className="rounded-xl border p-5" style={{ background: "var(--color-cream)", borderColor: "var(--color-dusty-rose)" }}>
+              <p className="text-base mb-3" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.1rem" }}>
+                {pl ? "Co rezonuje po przeczytaniu?" : "What resonates after reading this?"}
+              </p>
+              <textarea
+                id="new-reflection"
+                rows={4}
+                placeholder={pl ? "Pisz tutaj..." : "Write here..."}
+                className="w-full rounded-xl border p-3 text-sm resize-none transition-colors duration-500"
+                style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif", lineHeight: "1.7" }}
+              />
+              <button
+                onClick={async () => {
+                  const textarea = document.getElementById("new-reflection") as HTMLTextAreaElement;
+                  const value = textarea?.value?.trim();
+                  if (!value) return;
+                  const supabase = createClient();
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (!user) return;
+                  const { data: latest } = await supabase.from("referral_content")
+                    .select("id").eq("user_id", user.id).eq("content_type", type)
+                    .order("created_at", { ascending: false }).limit(1);
+                  if (latest && latest.length > 0) {
+                    await supabase.from("referral_content")
+                      .update({ reflection_response: value })
+                      .eq("id", latest[0].id);
+                  }
+                  textarea.value = "";
+                  textarea.placeholder = pl ? "Zapisano" : "Saved";
+                }}
+                className="mt-3 px-5 py-2 rounded-xl text-xs tracking-widest uppercase"
+                style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
+              >
+                {pl ? "Zapisz" : "Save"}
+              </button>
+            </div>
+
             <div className="text-center">
               <button onClick={() => setText(null)} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)" }}>
                 {pl ? "Zamknij" : "Close"}
@@ -224,6 +263,16 @@ function RewardContent() {
                       <div className="pt-4">
                         {renderText(item.content_text)}
                       </div>
+                      {item.reflection_response && (
+                        <div className="rounded-xl border p-4 mt-4" style={{ background: "var(--color-cream)", borderColor: "var(--color-dusty-rose)" }}>
+                          <p className="text-xs uppercase tracking-widest mb-2" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+                            {pl ? "Moja refleksja" : "My reflection"}
+                          </p>
+                          <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>
+                            {item.reflection_response}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
