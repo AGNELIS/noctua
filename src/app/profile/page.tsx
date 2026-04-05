@@ -30,6 +30,7 @@ export default function ProfilePage() {
   const [nameInput, setNameInput] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
   const [createdAt, setCreatedAt] = useState("");
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => { loadProfile(); }, []);
 
@@ -41,7 +42,8 @@ export default function ProfilePage() {
     setEmail(user.email || "");
     setCreatedAt(user.created_at);
 
-    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium").eq("id", user.id).single();
+    setIsPremium(profile?.is_premium || false);
     setDisplayName(profile?.display_name || "");
     setAvatarUrl(profile?.avatar_url || null);
 
@@ -257,11 +259,18 @@ const saveName = async () => {
         </section>
 {/* Premium */}
         <section>
-          <button onClick={() => router.push("/premium")}
-            className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
-            style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
-            {language === "pl" ? "Noctua Premium ♡" : "Noctua Premium ♡"}
-          </button>
+          {isPremium ? (
+            <div className="w-full py-3 rounded-xl text-sm tracking-wide text-center"
+              style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
+              {language === "pl" ? "Premium aktywne ♡" : "Premium active ♡"}
+            </div>
+          ) : (
+            <button onClick={() => router.push("/premium")}
+              className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
+              style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
+              {language === "pl" ? "Noctua Premium ♡" : "Noctua Premium ♡"}
+            </button>
+          )}
         </section>
 
         {/* Referral */}

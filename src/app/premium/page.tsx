@@ -31,12 +31,13 @@ export default function PremiumPage() {
   };
 
   const features = [
-    { key: "pf_ai_dreams" as const, icon: "✦" },
-    { key: "pf_themes" as const, icon: "◐" },
-    { key: "pf_symbols" as const, icon: "⟡" },
-    { key: "pf_stats" as const, icon: "◈" },
-    { key: "pf_reports" as const, icon: "❋" },
-    { key: "pf_priority" as const, icon: "♡" },
+    { key: "pf_ai_dreams" as const },
+    { key: "pf_symbols" as const },
+    { key: "pf_weekly" as const },
+    { key: "pf_monthly" as const },
+    { key: "pf_seasonal" as const },
+    { key: "pf_cycle_moon" as const },
+    { key: "pf_patterns" as const },
   ];
 
   return (
@@ -148,7 +149,7 @@ export default function PremiumPage() {
           <div className="space-y-3 text-left pt-2">
             {features.map((f) => (
               <div key={f.key} className="flex items-center gap-3">
-                <span className="text-lg" style={{ color: "var(--color-plum)" }}>{f.icon}</span>
+                <span className="text-sm" style={{ color: "var(--color-plum)" }}>◇</span>
                 <span className="text-sm" style={{ color: "var(--color-dark)" }}>
                   {t(f.key)}
                 </span>
