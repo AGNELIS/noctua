@@ -34,8 +34,6 @@ export async function POST(req: NextRequest) {
   const isAdmin = adminProfile?.is_admin || false;
   const reportType = totalSinceLastReading >= 15 ? "full" : "mid";
   if (!isAdmin && totalSinceLastReading < 8) {
-
-  if (totalSinceLastReading < 8) {
     return NextResponse.json({
       error: "not_enough_entries",
       message: lang === "pl"
@@ -218,4 +216,4 @@ Keep the response under 600 words. Do NOT use any markdown formatting. No asteri
     console.error("Report error:", err);
     return NextResponse.json({ error: "Report generation failed" }, { status: 500 });
   }
-}}
+}
