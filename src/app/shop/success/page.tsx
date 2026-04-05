@@ -41,7 +41,7 @@ function SuccessContent() {
   }, [searchParams]);
 
   return (
-    <div className="max-w-md mx-auto px-6 text-center space-y-6">
+    <div className="max-w-md mx-auto px-6 text-center space-y-6 flex flex-col items-center justify-center">
       {status === "verifying" && (
         <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
           {pl ? "Weryfikuję płatność..." : "Verifying payment..."}
@@ -49,7 +49,7 @@ function SuccessContent() {
       )}
       {status === "success" && (
         <>
-          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.4 }}>◇</div>
+          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.4 }}>♡</div>
           <h1 className="text-2xl tracking-wide" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {pl ? "Zakup udany!" : "Purchase complete!"}
           </h1>
