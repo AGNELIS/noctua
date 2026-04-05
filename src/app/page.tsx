@@ -44,12 +44,11 @@ export default async function Home() {
 
         <p className="text-plum text-2xl leading-relaxed mb-4 italic"
           style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300 }}>
-          You are here because something brought you.
+          You journal. You track. You forget.
         </p>
         <p className="text-plum/70 text-lg leading-relaxed mb-12"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          A pattern you cannot break. A wound that will not close.<br />
-          A question you keep asking.
+          Noctua remembers. And connects what you don't.
         </p>
 
         <div className="flex flex-col gap-3 w-full max-w-xs mx-auto mb-16">
@@ -65,8 +64,8 @@ export default async function Home() {
 
         <p className="text-plum/70 text-sm tracking-wider leading-relaxed"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Dreams speak in symbols.<br />
-          Your unconscious knows what your conscious mind avoids.
+          Not another wellness app.<br />
+          A pattern engine for women who want to understand themselves.
         </p>
 
       </div>
