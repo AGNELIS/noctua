@@ -128,7 +128,7 @@ export default function ProductPage() {
                   "Dream AI Analysis": "/dreams",
                 };
                 const route = routes[product.name];
-                if (route) router.push(route);
+                if (route) router.push(route + "?from=shop");
               }}
               className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
               style={{

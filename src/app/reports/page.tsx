@@ -37,6 +37,7 @@ function getReportLabel(reportMonth: string, pl: boolean): { month: string; type
 
 export default function ReportsPage() {
   const router = useRouter();
+  const [fromShop, setFromShop] = useState(false);
   const { language } = useLanguage();
   const pl = language === "pl";
 
@@ -46,7 +47,10 @@ export default function ReportsPage() {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { loadReports(); }, []);
+  useEffect(() => {
+    loadReports();
+    if (typeof window !== "undefined" && window.location.search.includes("from=shop")) setFromShop(true);
+  }, []);
 
   const loadReports = async () => {
     const supabase = createClient();
@@ -128,6 +132,11 @@ export default function ReportsPage() {
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
             ← {pl ? "Wróć" : "Back"}
           </button>
+          {fromShop && (
+            <button onClick={() => router.push("/shop")} className="text-sm tracking-wide" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
+              {pl ? "Wróć do sklepu" : "Back to shop"}
+            </button>
+          )}
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
           style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>

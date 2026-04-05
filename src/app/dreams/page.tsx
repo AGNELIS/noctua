@@ -50,7 +50,11 @@ export default function DreamsPage() {
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  useEffect(() => { loadEntries(); }, []);
+  const [fromShop, setFromShop] = useState(false);
+  useEffect(() => {
+    loadEntries();
+    if (typeof window !== "undefined" && window.location.search.includes("from=shop")) setFromShop(true);
+  }, []);
 
   const loadEntries = async () => {
     const supabase = createClient();
@@ -81,7 +85,14 @@ export default function DreamsPage() {
 
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
+            {fromShop && (
+              <button onClick={() => router.push("/shop")} className="text-sm tracking-wide" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
+                {language === "pl" ? "Wróć do sklepu" : "Back to shop"}
+              </button>
+            )}
+          </div>
           <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("dreams_new")}</button>
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
