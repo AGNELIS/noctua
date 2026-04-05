@@ -13,16 +13,21 @@ export default function PremiumPage() {
 
   const handleSubscribe = async () => {
     setLoadingSubscribe(true);
-    // TODO: integrate Stripe Checkout
-    alert("Stripe integration coming soon! Plan: " + billingCycle);
-    setLoadingSubscribe(false);
-  };
-
-  const handleBuyPack = async () => {
-    setLoadingPack(true);
-    // TODO: integrate Stripe one-time payment
-    alert("Stripe integration coming soon! Pack: 5 analyses for £2.99");
-    setLoadingPack(false);
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: billingCycle }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setLoadingSubscribe(false);
+      }
+    } catch {
+      setLoadingSubscribe(false);
+    }
   };
 
   const features = [
