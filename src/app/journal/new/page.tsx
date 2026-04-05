@@ -20,6 +20,7 @@ export default function NewJournalEntry() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [moods, setMoods] = useState<string[]>([]);
+  const [patternTag, setPatternTag] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +51,7 @@ export default function NewJournalEntry() {
     if (!user) { router.push("/login"); return; }
     const { error: insertError } = await supabase.from("journal_entries").insert({
       user_id: user.id, title: title.trim() || null, content: content.trim(),
-      mood: moods, entry_date: new Date().toISOString().split("T")[0],
+      mood: moods, pattern_tag: patternTag?.trim() || null, entry_date: new Date().toISOString().split("T")[0],
     });
     if (insertError) { setError(insertError.message); setSaving(false); }
     else { router.push("/journal"); }
@@ -90,6 +91,24 @@ export default function NewJournalEntry() {
                 color: moods.includes(m.value) ? "var(--color-plum)" : "var(--color-mauve)",
               }}><span className="inline-flex items-center gap-1.5">{m.icon}{language === "pl" ? m.pl : m.label}</span></button>
           ))}
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <button onClick={() => setPatternTag(patternTag === null ? "" : null)}
+            className="px-3 py-1.5 rounded-full text-xs transition-all border"
+            style={{
+              background: patternTag !== null ? "var(--color-blush)" : "transparent",
+              borderColor: patternTag !== null ? "var(--color-mauve)" : "var(--color-dusty-rose)",
+              color: patternTag !== null ? "var(--color-plum)" : "var(--color-mauve)",
+            }}>
+            <span className="inline-flex items-center gap-1.5">◎ {language === "pl" ? "Wzorzec / nawyk" : "Pattern / habit"}</span>
+          </button>
+          {patternTag !== null && (
+            <input type="text" value={patternTag} onChange={(e) => setPatternTag(e.target.value)}
+              placeholder={language === "pl" ? "np. kawa, doomscrolling..." : "e.g. coffee, doomscrolling..."}
+              className="text-xs text-center outline-none transition-colors duration-500 w-48"
+              style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "8px", padding: "6px 10px", borderBottom: "1px solid var(--color-dusty-rose)" }} />
+          )}
         </div>
 
         <input type="text" placeholder={language === "pl" ? "Tytuł (opcjonalnie)" : "Title (optional)"} value={title} onChange={(e) => setTitle(e.target.value)}
