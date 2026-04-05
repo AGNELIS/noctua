@@ -42,7 +42,7 @@ export default function PremiumPage() {
       {/* Header */}
       <header className="px-6 py-5 space-y-4">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/dashboard")}
           className="text-sm tracking-wide transition-colors"
           style={{ color: "var(--color-mauve)" }}
         >

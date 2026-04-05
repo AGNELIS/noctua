@@ -47,7 +47,7 @@ function RegisterForm() {
       }
     }
 
-    router.push("/dashboard");
+    router.replace("/dashboard");
   };
 
   return (
