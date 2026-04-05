@@ -205,7 +205,7 @@ const saveName = async () => {
             </button>
           )}
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
-          <p className="text-base italic" style={{ color: "var(--color-dusty-rose)" }}>{createdAt ? (language === "pl" ? `W Noctui od ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} dni` : `In Noctua for ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} days`) : ""}</p>
+          <p className="text-base italic" style={{ color: "var(--color-mauve)" }}>{createdAt ? (language === "pl" ? `W Noctui od ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} dni` : `In Noctua for ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} days`) : ""}</p>
         </section>
 
         {/* Divider */}
