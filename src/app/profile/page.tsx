@@ -302,6 +302,16 @@ const saveName = async () => {
           </button>
         </section>
 
+        {/* Legal */}
+        <section className="flex justify-center gap-4">
+          <a href="/privacy" className="text-xs underline" style={{ color: "var(--color-mauve)" }}>
+            {language === "pl" ? "Polityka prywatności" : "Privacy Policy"}
+          </a>
+          <a href="/terms" className="text-xs underline" style={{ color: "var(--color-mauve)" }}>
+            {language === "pl" ? "Regulamin" : "Terms of Service"}
+          </a>
+        </section>
+
         {/* Sign out */}
         <section className="pt-4">
           <button onClick={handleLogout} disabled={loggingOut}
