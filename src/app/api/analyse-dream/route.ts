@@ -29,11 +29,11 @@ export async function POST(req: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_premium")
+    .select("is_premium, is_admin")
     .eq("id", user.id)
     .single();
-
   const isPremium = profile?.is_premium || false;
+  const isAdmin = profile?.is_admin || false;
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   const usedThisMonth = count || 0;
 
-  if (isPremium && usedThisMonth >= PREMIUM_MONTHLY_LIMIT) {
+  if (!isAdmin && isPremium && usedThisMonth >= PREMIUM_MONTHLY_LIMIT) {
     const { data: credits } = await supabase
       .from("user_purchases")
       .select("id")
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         buyPrice: 1.49,
       }, { status: 403 });
     }
-  } else if (!isPremium) {
+  } else if (!isAdmin && !isPremium) {
     const { data: credits } = await supabase
       .from("user_purchases")
       .select("id")

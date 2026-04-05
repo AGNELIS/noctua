@@ -156,7 +156,8 @@ export default function WorkbookPage() {
     const { count: newS } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
     const { count: newD } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
     const totalNewEntries = (newJ || 0) + (newS || 0) + (newD || 0);
-    if (totalNewEntries < 5) {
+    const { data: adminCheck } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+    if (totalNewEntries < 5 && !adminCheck?.is_admin) {
       setGateBlocked(true);
       setLoading(false);
       return;

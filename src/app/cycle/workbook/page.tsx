@@ -178,7 +178,8 @@ export default function CycleWorkbookPage() {
     const { count: newCycleEntries } = await supabase.from("cycle_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceCycle);
     const { count: newJournalCycle } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceCycle);
     const totalNewCycle = (newCycleEntries || 0) + (newJournalCycle || 0);
-    if (totalNewCycle < 5) {
+    const { data: adminCheck } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+    if (totalNewCycle < 5 && !adminCheck?.is_admin) {
       setGateBlocked(true);
       setLoading(false);
       return;

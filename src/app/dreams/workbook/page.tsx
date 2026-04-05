@@ -195,7 +195,8 @@ export default function DreamWorkbookPage() {
     const { count: newDreams } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDream);
     const { count: newJournal } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDream);
     const totalNewDream = (newDreams || 0) + (newJournal || 0);
-    if (totalNewDream < 5) {
+    const { data: adminCheck } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+    if (totalNewDream < 5 && !adminCheck?.is_admin) {
       setGateBlocked(true);
       setLoading(false);
       return;
