@@ -13,13 +13,24 @@ type Patterns = {
   phaseDistribution: Record<string, number>;
 };
 
+type StagePhase = "question" | "responding" | "ai_reacting" | "ai_shown" | "followup" | "saving_followup";
+
 type Session = {
   id: string;
   current_stage: number;
   stage_1_response: string | null;
+  stage_1_ai_reaction: string | null;
+  stage_1_followup: string | null;
   stage_2_response: string | null;
+  stage_2_ai_reaction: string | null;
+  stage_2_followup: string | null;
   stage_3_response: string | null;
+  stage_3_ai_reaction: string | null;
+  stage_3_followup: string | null;
   stage_4_response: string | null;
+  stage_4_ai_reaction: string | null;
+  stage_4_followup: string | null;
+  summary: string | null;
   user_patterns: Patterns | null;
   completed: boolean;
 };
@@ -137,6 +148,10 @@ export default function CycleWorkbookPage() {
   const [response, setResponse] = useState("");
   const [saving, setSaving] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [uiPhase, setUiPhase] = useState<StagePhase>("question");
+  const [aiReaction, setAiReaction] = useState("");
+  const [followup, setFollowup] = useState("");
+  const [summary, setSummary] = useState("");
 
   const stageLabels = pl ? STAGE_LABELS_PL : STAGE_LABELS_EN;
   const stageIntros = pl ? STAGE_INTROS_PL : STAGE_INTROS_EN;
@@ -185,8 +200,18 @@ export default function CycleWorkbookPage() {
       const s = existing[0] as Session;
       setSession(s);
       setPatterns(s.user_patterns || p);
-      const stageKey = `stage_${s.current_stage}_response` as keyof Session;
-      if (s[stageKey]) setResponse(s[stageKey] as string);
+      const stageC = s.current_stage;
+      const stageResponse = s[`stage_${stageC}_response` as keyof Session] as string | null;
+      const stageReaction = s[`stage_${stageC}_ai_reaction` as keyof Session] as string | null;
+      if (stageResponse) {
+        setResponse(stageResponse);
+        if (stageReaction) {
+          setAiReaction(stageReaction);
+          setUiPhase("ai_shown");
+        } else {
+          setUiPhase("ai_reacting");
+        }
+      }
     } else {
       const { data: newSession } = await supabase
         .from("workbook_sessions")
@@ -199,27 +224,76 @@ export default function CycleWorkbookPage() {
     setLoading(false);
   };
 
+  const getPreviousResponses = () => {
+    if (!session) return [];
+    const prev: { stage: number; response: string; followup?: string }[] = [];
+    for (let i = 1; i <= 4; i++) {
+      const r = session[`stage_${i}_response` as keyof Session] as string | null;
+      const f = session[`stage_${i}_followup` as keyof Session] as string | null;
+      if (r) prev.push({ stage: i, response: r, followup: f || undefined });
+    }
+    return prev;
+  };
+
   const handleNext = async () => {
     if (!session || !response.trim()) return;
-    setSaving(true);
+    setUiPhase("ai_reacting");
     const supabase = createClient();
     const stage = session.current_stage;
-    const stageField = `stage_${stage}_response`;
+    await supabase.from("workbook_sessions")
+      .update({ [`stage_${stage}_response`]: response.trim(), updated_at: new Date().toISOString() })
+      .eq("id", session.id);
+    try {
+      const res = await fetch("/api/workbook-react", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: session.id, stage, response: response.trim(),
+          previousResponses: getPreviousResponses(), patterns, language,
+          workbookType: "cycle_alignment",
+        }),
+      });
+      const data = await res.json();
+      if (data.reaction) {
+        setAiReaction(data.reaction);
+        setSession({ ...session, [`stage_${stage}_response`]: response.trim(), [`stage_${stage}_ai_reaction`]: data.reaction } as Session);
+        setUiPhase("ai_shown");
+      } else { setUiPhase("question"); }
+    } catch { setUiPhase("question"); }
+  };
 
+  const handleFollowup = async () => {
+    if (!session) return;
+    setUiPhase("saving_followup");
+    const supabase = createClient();
+    const stage = session.current_stage;
+    await supabase.from("workbook_sessions")
+      .update({ [`stage_${stage}_followup`]: followup.trim(), updated_at: new Date().toISOString() })
+      .eq("id", session.id);
     if (stage < 4) {
       await supabase.from("workbook_sessions")
-        .update({ [stageField]: response.trim(), current_stage: stage + 1, updated_at: new Date().toISOString() })
+        .update({ current_stage: stage + 1, updated_at: new Date().toISOString() })
         .eq("id", session.id);
-      setSession({ ...session, current_stage: stage + 1, [stageField]: response.trim() } as Session);
-      setResponse("");
+      setSession({ ...session, current_stage: stage + 1, [`stage_${stage}_followup`]: followup.trim() } as Session);
+      setResponse(""); setAiReaction(""); setFollowup(""); setUiPhase("question");
     } else {
-      await supabase.from("workbook_sessions")
-        .update({ [stageField]: response.trim(), completed: true, updated_at: new Date().toISOString() })
-        .eq("id", session.id);
+      try {
+        const res = await fetch("/api/workbook-react", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: session.id, stage: 4, response: "",
+            previousResponses: [...getPreviousResponses(), { stage: 4, response: session.stage_4_response || response.trim(), followup: followup.trim() }],
+            patterns, language, workbookType: "cycle_alignment", isSummary: true,
+          }),
+        });
+        const data = await res.json();
+        if (data.reaction) { setSummary(data.reaction); }
+      } catch { /* ignore */ }
       setCompleted(true);
     }
-    setSaving(false);
   };
+
 
   const handleStartNew = async () => {
     setCompleted(false); setResponse(""); setSession(null); setLoading(true);
@@ -289,11 +363,15 @@ export default function CycleWorkbookPage() {
           <h1 className="text-2xl tracking-wide" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {pl ? "Twoje ciało pamięta." : "Your body remembers."}
           </h1>
-          <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {pl
-              ? "Nie próbuj teraz wszystkiego zmienić. Obserwuj jeden cykl świadomie. To wystarczy na początek."
-              : "Don't try to change everything now. Observe one cycle consciously. That's enough to start."}
-          </p>
+          {summary ? (
+            <div className="text-left mt-4 p-5 rounded-2xl" style={{ backgroundColor: "var(--color-blush)" }}>
+              <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--color-dark)", textAlign: "justify" }}>{summary}</p>
+            </div>
+          ) : (
+            <p className="text-sm animate-pulse" style={{ color: "var(--color-mauve)" }}>
+              {pl ? "Piszę podsumowanie..." : "Writing your summary..."}
+            </p>
+          )}
           <div className="flex flex-col gap-3 pt-4">
             <button onClick={handleStartNew} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
               style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
@@ -344,27 +422,66 @@ export default function CycleWorkbookPage() {
           {questions[stage - 1]}
         </h2>
 
-        <textarea
-          value={response}
-          onChange={(e) => setResponse(e.target.value)}
-          rows={8}
-          placeholder={pl ? "Pisz tutaj... bądź szczera." : "Write here... be honest."}
-          className="w-full rounded-2xl border p-4 text-base resize-none transition-colors duration-500 mb-6"
-          style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
-        />
+        {/* Phase: Question */}
+        {(uiPhase === "question" || uiPhase === "responding") && (
+          <>
+            <textarea
+              value={response}
+              onChange={(e) => setResponse(e.target.value)}
+              rows={8}
+              placeholder={pl ? "Pisz tutaj... bądź szczera." : "Write here... be honest."}
+              className="w-full rounded-2xl border p-4 text-base resize-none transition-colors duration-500 mb-6"
+              style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
+            />
+            <button
+              onClick={handleNext}
+              disabled={!response.trim()}
+              className="w-full py-3.5 rounded-xl text-sm tracking-widest uppercase transition-all"
+              style={{
+                backgroundColor: response.trim() ? "var(--color-plum)" : "var(--color-dusty-rose)",
+                color: response.trim() ? "var(--color-cream)" : "var(--color-mauve)",
+                fontWeight: 600, opacity: response.trim() ? 1 : 0.5,
+              }}>
+              {pl ? "Wyślij" : "Submit"}
+            </button>
+          </>
+        )}
 
-        <button
-          onClick={handleNext}
-          disabled={saving || !response.trim()}
-          className="w-full py-3.5 rounded-xl text-sm tracking-widest uppercase transition-all"
-          style={{
-            backgroundColor: response.trim() ? "var(--color-plum)" : "var(--color-dusty-rose)",
-            color: response.trim() ? "var(--color-cream)" : "var(--color-mauve)",
-            fontWeight: 600,
-            opacity: response.trim() ? 1 : 0.5,
-          }}>
-          {saving ? "..." : stage < 4 ? (pl ? "Dalej →" : "Next →") : (pl ? "Zakończ" : "Complete")}
-        </button>
+        {/* Phase: AI reacting */}
+        {uiPhase === "ai_reacting" && (
+          <div className="text-center py-12">
+            <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
+              {pl ? "Wsłuchuję się w twój rytm..." : "Listening to your rhythm..."}
+            </p>
+          </div>
+        )}
+
+        {/* Phase: AI shown + followup */}
+        {(uiPhase === "ai_shown" || uiPhase === "saving_followup") && (
+          <>
+            <div className="mb-4 p-4 rounded-2xl" style={{ backgroundColor: "var(--color-blush)", opacity: 0.7 }}>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>{response}</p>
+            </div>
+            <div className="mb-6 p-4 rounded-2xl border" style={{ borderColor: "var(--color-dusty-rose)", backgroundColor: "var(--color-cream)" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", textAlign: "justify" }}>{aiReaction}</p>
+            </div>
+            <textarea
+              value={followup}
+              onChange={(e) => setFollowup(e.target.value)}
+              rows={4}
+              placeholder={pl ? "Twoja odpowiedź..." : "Your response..."}
+              className="w-full rounded-2xl border p-4 text-base resize-none transition-colors duration-500 mb-6"
+              style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)", color: "var(--color-dark)", fontFamily: "Georgia, serif" }}
+            />
+            <button
+              onClick={handleFollowup}
+              disabled={uiPhase === "saving_followup"}
+              className="w-full py-3.5 rounded-xl text-sm tracking-widest uppercase transition-all"
+              style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+              {uiPhase === "saving_followup" ? "..." : stage < 4 ? (pl ? "Dalej →" : "Next →") : (pl ? "Zakończ" : "Complete")}
+            </button>
+          </>
+        )}
       </main>
     </div>
   );
