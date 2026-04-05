@@ -255,7 +255,16 @@ const saveName = async () => {
             )}
           </div>
         </section>
-{/* Referral */}
+{/* Premium */}
+        <section>
+          <button onClick={() => router.push("/premium")}
+            className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
+            style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
+            {language === "pl" ? "Noctua Premium ♡" : "Noctua Premium ♡"}
+          </button>
+        </section>
+
+        {/* Referral */}
         <section>
           <button onClick={() => router.push("/referral")}
             className="w-full py-3 rounded-xl text-sm tracking-wide transition-all border"
