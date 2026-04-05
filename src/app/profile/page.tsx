@@ -31,6 +31,8 @@ export default function ProfilePage() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [createdAt, setCreatedAt] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [refTotal, setRefTotal] = useState(0);
+  const [refActive, setRefActive] = useState(0);
 
   useEffect(() => { loadProfile(); }, []);
 
@@ -44,6 +46,11 @@ export default function ProfilePage() {
 
     const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium").eq("id", user.id).single();
     setIsPremium(profile?.is_premium || false);
+    const { data: refs } = await supabase.from("referrals").select("status").eq("referrer_id", user.id);
+    if (refs) {
+      setRefTotal(refs.length);
+      setRefActive(refs.filter((r) => r.status === "completed").length);
+    }
     setDisplayName(profile?.display_name || "");
     setAvatarUrl(profile?.avatar_url || null);
 
@@ -278,7 +285,11 @@ const saveName = async () => {
           <button onClick={() => router.push("/referral")}
             className="w-full py-3 rounded-xl text-sm tracking-wide transition-all border"
             style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-plum)", fontWeight: 500 }}>
-            {language === "pl" ? "Zaproś i odblokuj nagrody" : "Invite & unlock rewards"}
+            {refTotal > 0 ? (
+              <span>{language === "pl" ? `♡ ${refTotal} zaproszone / ${refActive} aktywne` : `♡ ${refTotal} invited / ${refActive} active`}</span>
+            ) : (
+              <span>{language === "pl" ? "Zaproś i odblokuj nagrody" : "Invite & unlock rewards"}</span>
+            )}
           </button>
         </section>
 
