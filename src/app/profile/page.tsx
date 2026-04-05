@@ -268,7 +268,7 @@ const saveName = async () => {
         <section>
           <button onClick={() => router.push("/letter")}
             className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
-            style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: "0.95rem" }}>
+            style={{ background: "var(--color-blush)", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, fontSize: "0.95rem" }}>
             {language === "pl" ? "Kilka słów ode mnie..." : "A few words from me..."}
           </button>
         </section>
