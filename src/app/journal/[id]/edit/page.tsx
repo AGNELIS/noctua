@@ -107,10 +107,17 @@ export default function EditJournalEntry() {
             <span className="inline-flex items-center gap-1.5">◎ {language === "pl" ? "Wzorzec / nawyk" : "Pattern / habit"}</span>
           </button>
           {patternTag !== null && (
-            <input type="text" value={patternTag} onChange={(e) => setPatternTag(e.target.value)}
-              placeholder={language === "pl" ? "np. kawa, doomscrolling..." : "e.g. coffee, doomscrolling..."}
-              className="text-xs text-center outline-none transition-colors duration-500 w-48"
-              style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "8px", padding: "6px 10px", borderBottom: "1px solid var(--color-dusty-rose)" }} />
+            <>
+              <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--color-mauve)", textAlign: "center" }}>
+                {language === "pl"
+                  ? "Nazwij nawyk lub wzorzec, który obserwujesz. Noctua będzie szukać powiązań z twoimi emocjami i snami."
+                  : "Name a habit or pattern you're tracking. Noctua will look for connections with your emotions and dreams."}
+              </p>
+              <input type="text" value={patternTag} onChange={(e) => setPatternTag(e.target.value)}
+                placeholder={language === "pl" ? "np. kawa, doomscrolling..." : "e.g. coffee, doomscrolling..."}
+                className="text-xs text-center outline-none transition-colors duration-500 w-48"
+                style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "8px", padding: "6px 10px", borderBottom: "1px solid var(--color-dusty-rose)" }} />
+            </>
           )}
         </div>
 
