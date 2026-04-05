@@ -53,9 +53,25 @@ export default function ProductPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
-    const { error } = await supabase.from("user_purchases").insert({ user_id: user.id, product_id: id });
-    if (!error) setOwned(true);
-    setBuying(false);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: id,
+          productName: product?.name,
+          priceGbp: product?.price_gbp,
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setBuying(false);
+      }
+    } catch {
+      setBuying(false);
+    }
   };
 
   if (loading || !product) {
