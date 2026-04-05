@@ -24,23 +24,65 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.client_reference_id;
-    const productId = session.metadata?.product_id;
-    const sessionId = session.id;
+  switch (event.type) {
+    case "checkout.session.completed": {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const userId = session.client_reference_id;
+      const productId = session.metadata?.product_id;
+      const sessionId = session.id;
 
-    if (userId && productId) {
-      const { data: existing } = await supabase.from("user_purchases")
-        .select("id").eq("user_id", userId).eq("product_id", productId).limit(1);
+      if (userId && productId) {
+        const { data: existing } = await supabase.from("user_purchases")
+          .select("id").eq("user_id", userId).eq("product_id", productId).limit(1);
 
-      if (!existing || existing.length === 0) {
-        await supabase.from("user_purchases").insert({
-          user_id: userId,
-          product_id: productId,
-          stripe_session_id: sessionId,
-        });
+        if (!existing || existing.length === 0) {
+          await supabase.from("user_purchases").insert({
+            user_id: userId,
+            product_id: productId,
+            stripe_session_id: sessionId,
+          });
+        }
       }
+
+      // If subscription, save to profiles
+      if (session.mode === "subscription" && userId) {
+        await supabase.from("profiles")
+          .update({ is_premium: true, stripe_customer_id: session.customer as string })
+          .eq("id", userId);
+      }
+      break;
+    }
+
+    case "customer.subscription.deleted": {
+      const sub = event.data.object as Stripe.Subscription;
+      const customerId = sub.customer as string;
+      await supabase.from("profiles")
+        .update({ is_premium: false })
+        .eq("stripe_customer_id", customerId);
+      break;
+    }
+
+    case "customer.subscription.updated": {
+      const sub = event.data.object as Stripe.Subscription;
+      const customerId = sub.customer as string;
+      const isActive = sub.status === "active" || sub.status === "trialing";
+      await supabase.from("profiles")
+        .update({ is_premium: isActive })
+        .eq("stripe_customer_id", customerId);
+      break;
+    }
+
+    case "invoice.payment_failed": {
+      const invoice = event.data.object as Stripe.Invoice;
+      const customerId = invoice.customer as string;
+      console.log(`Payment failed for customer: ${customerId}`);
+      // Could send notification or flag account
+      break;
+    }
+
+    case "checkout.session.expired": {
+      console.log("Checkout session expired:", event.data.object);
+      break;
     }
   }
 
