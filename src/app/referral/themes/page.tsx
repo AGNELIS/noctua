@@ -27,6 +27,12 @@ const EXCLUSIVE_THEMES = [
   },
 ];
 
+const ANIM_STYLES = `
+@keyframes noctuaAuroraFlow { 0%,100% { transform: translateX(-10%) scaleY(1); } 50% { transform: translateX(15%) scaleY(1.3); } }
+@keyframes noctuaNebulaPulse { 0%,100% { transform: scale(1) rotate(0deg); opacity: 0.6; } 50% { transform: scale(1.2) rotate(10deg); opacity: 1; } }
+@keyframes noctuaVolcanicPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+`;
+
 export default function ExclusiveThemesPage() {
   const router = useRouter();
   const { language } = useLanguage();
@@ -75,6 +81,7 @@ export default function ExclusiveThemesPage() {
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
+      <style dangerouslySetInnerHTML={{ __html: ANIM_STYLES }} />
       <header className="px-6 pt-5 pb-2">
         <button onClick={() => router.push("/referral")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
           ← {pl ? "Wroc" : "Back"}
@@ -96,15 +103,30 @@ export default function ExclusiveThemesPage() {
               background: "var(--color-blush)",
               borderColor: isActivated ? "var(--color-plum)" : "var(--color-dusty-rose)",
             }}>
-              {/* Color preview */}
-              <div className="flex gap-2 mb-4">
-                {theme.colors.map((color, i) => (
-                  <div key={i} className="flex-1 h-12 rounded-lg" style={{
-                    background: i < 2
-                      ? `linear-gradient(135deg, ${theme.colors[0]}, ${theme.colors[1]})`
-                      : `linear-gradient(135deg, ${theme.colors[2]}, ${theme.colors[3]})`,
-                  }} />
-                ))}
+              {/* Animated preview */}
+              <div className="rounded-xl overflow-hidden mb-4 relative" style={{ height: "100px", background: theme.name === "Velvet Night" ? "linear-gradient(180deg, #140c1e, #241440)" : theme.name === "Obsidian Rose" ? "linear-gradient(180deg, #faf5f5, #ecd4d8)" : "linear-gradient(180deg, #f5f2fa, #ddd4ec)" }}>
+                {theme.name === "Moonstone" && (
+                  <>
+                    <div style={{ position: "absolute", width: "200%", height: "50px", opacity: 0.12, borderRadius: "50%", filter: "blur(20px)", background: "#9B6BCD", top: "20%", left: "-50%", animation: "noctuaAuroraFlow 8s ease-in-out infinite" }} />
+                    <div style={{ position: "absolute", width: "200%", height: "40px", opacity: 0.1, borderRadius: "50%", filter: "blur(20px)", background: "#b498c8", top: "60%", left: "-30%", animation: "noctuaAuroraFlow 10s ease-in-out infinite reverse" }} />
+                  </>
+                )}
+                {theme.name === "Velvet Night" && (
+                  <>
+                    <div style={{ position: "absolute", width: "80px", height: "80px", borderRadius: "50%", filter: "blur(25px)", background: "rgba(152,88,160,0.2)", top: "10%", right: "10%", animation: "noctuaNebulaPulse 12s ease-in-out infinite" }} />
+                    {Array.from({ length: 20 }).map((_, i) => (
+                      <div key={i} style={{ position: "absolute", width: (1 + Math.random() * 2) + "px", height: (1 + Math.random() * 2) + "px", background: "#fff", borderRadius: "50%", left: (Math.random() * 100) + "%", top: (Math.random() * 100) + "%", opacity: 0.3 + Math.random() * 0.5 }} />
+                    ))}
+                  </>
+                )}
+                {theme.name === "Obsidian Rose" && (
+                  <div style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "50%", background: "radial-gradient(ellipse at bottom center, rgba(180,60,80,0.1) 0%, transparent 70%)", animation: "noctuaVolcanicPulse 6s ease-in-out infinite" }} />
+                )}
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase" as const, color: theme.name === "Velvet Night" ? "#d090c0" : theme.name === "Obsidian Rose" ? "#6a2838" : "#4a3870", fontWeight: 600, opacity: 0.7 }}>
+                    {pl ? "Animowane tlo" : "Animated background"}
+                  </span>
+                </div>
               </div>
 
               <p className="text-lg mb-1" style={{ color: "var(--color-dark)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>

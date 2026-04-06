@@ -137,3 +137,9 @@ input:focus, textarea:focus, select:focus {
   background: rgba(155, 107, 141, 0.25);
   border-radius: 3px;
 }
+
+/* Animated background layer support */
+main, header, footer, nav {
+  position: relative;
+  z-index: 1;
+}

@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 import CookieConsent from "@/components/CookieConsent";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 const anticDidone = Antic_Didone({
   weight: "400",
@@ -32,7 +33,11 @@ export default function RootLayout({
     <html lang="en" className={`${anticDidone.variable} ${cormorant.variable}`}>
       <body>
         <ThemeProvider>
-          <LanguageProvider>{children}<CookieConsent /></LanguageProvider>
+          <LanguageProvider>
+            <AnimatedBackground />
+            {children}
+            <CookieConsent />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
