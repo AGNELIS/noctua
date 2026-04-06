@@ -184,7 +184,7 @@ export default function ShopPage() {
                             if (owned) {
                               handleActivateTheme(product.id, product.name);
                             } else {
-                              handlePurchase(product.id);
+                              router.push(`/shop/${product.id}`);
                             }
                           }}
                           disabled={buying === product.id}
