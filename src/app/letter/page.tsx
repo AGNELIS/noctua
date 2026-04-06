@@ -19,7 +19,7 @@ const LETTER_EN = [
 ];
 
 const LETTER_PL = [
-  "Witaj,",
+  "Cześć,",
   "Jesteś tu, bo coś Cię przyciągnęło. Wzorzec, którego nie umiesz nazwać. Sen, który nie daje Ci spokoju. Uczucie, które wraca co miesiąc o tej samej porze. Pytanie, do którego ciągle wracasz.",
   "Noctua powstała wokół jednej idei: wiesz o sobie więcej, niż myślisz. Po prostu nie miałaś miejsca, żeby to zobaczyć wyraźnie.",
   "Twoje sny niosą przesłania. Nie metafory z podręcznika, prawdziwe, konkretne sygnały z tych części Ciebie, które nie dostają głosu za dnia. Symbole, które się powtarzają, emocje, które wypływają o trzeciej w nocy, scenariusze, których nie możesz się pozbyć. To nie przypadek. To język. Ta aplikacja pomaga Ci się go nauczyć.",
@@ -59,6 +59,7 @@ export default function LetterPage() {
                 fontWeight: i === 0 ? 600 : 400,
                 fontStyle: i === 0 ? "normal" : "normal",
                 opacity: i === 0 ? 1 : 0.85,
+                textAlign: i === 0 || i === paragraphs.length - 1 ? "left" : "justify",
               }}
             >
               {p}
