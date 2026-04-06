@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { THEME_MAP, applyTheme } from "@/lib/themes";
+import { getMoonPhase, getDailyInsight, getSeasonalShadowPrompt, getSeason, type Season } from "@/lib/moon";
+import { useTheme } from "@/context/ThemeContext";
 
 type UserRow = {
   id: string;
@@ -16,6 +19,8 @@ type UserRow = {
 export default function OwlPanelPage() {
   const router = useRouter();
   const { language } = useLanguage();
+  const { switchTheme, activeThemeId, resetTheme } = useTheme();
+  const [seasonPreview, setSeasonPreview] = useState<Season | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [myId, setMyId] = useState("");
@@ -377,6 +382,139 @@ export default function OwlPanelPage() {
           ) : (
             <p style={{ ...valueStyle, opacity: 0.5 }}>None generated yet</p>
           )}
+        </div>
+
+        {/* Theme Preview + Activate */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Themes — Preview & Activate</p>
+          <div className="space-y-2 mt-3">
+            <button onClick={async () => { await resetTheme(); showMsg("Reset to default"); }}
+              className="w-full flex items-center justify-between py-2 px-3 rounded-xl transition-all"
+              style={{ background: !activeThemeId ? "var(--color-plum)" : "transparent", color: !activeThemeId ? "var(--color-cream)" : "var(--color-dark)", border: "1px solid var(--color-dusty-rose)" }}>
+              <span style={{ fontSize: "13px" }}>Default Noctua</span>
+              {!activeThemeId && <span style={{ fontSize: "10px" }}>● Active</span>}
+            </button>
+            {Object.entries(THEME_MAP).map(([name, colors]) => (
+              <button key={name} onClick={async () => {
+                const supabase = createClient();
+                const { data: prod } = await supabase.from("shop_products").select("id").eq("name", name).single();
+                if (prod) {
+                  await switchTheme(prod.id, name);
+                  showMsg(`Theme: ${name}`);
+                }
+              }}
+                className="w-full flex items-center justify-between py-2 px-3 rounded-xl transition-all"
+                style={{ background: activeThemeId && activeThemeId === name ? "var(--color-plum)" : "transparent", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)" }}>
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1">
+                    {[colors.plum, colors.mauve, colors["dusty-rose"], colors.gold].map((c, i) => (
+                      <div key={i} style={{ width: "14px", height: "14px", borderRadius: "50%", background: c, border: "1px solid rgba(0,0,0,0.1)" }} />
+                    ))}
+                  </div>
+                  <span style={{ fontSize: "13px" }}>{name}</span>
+                </div>
+                <span style={{ fontSize: "10px", color: "var(--color-mauve)" }}>
+                  {purchases.some(p => (p.shop_products as any)?.name === name) ? "Owned" : "Not owned"}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Seasonal Shadow Work Preview */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Seasonal Shadow Work Preview</p>
+          <p style={{ ...valueStyle, marginTop: "4px" }}>Current season: <span style={{ fontWeight: 600 }}>{getSeason()}</span> — Moon: <span style={{ fontWeight: 600 }}>{getMoonPhase().phase}</span></p>
+          <div className="flex gap-2 mt-3 flex-wrap">
+            {(["spring", "summer", "autumn", "winter"] as Season[]).map(s => (
+              <button key={s} onClick={() => setSeasonPreview(seasonPreview === s ? null : s)}
+                className="px-3 py-1.5 rounded-full text-xs transition-all"
+                style={{
+                  background: seasonPreview === s ? "var(--color-plum)" : "transparent",
+                  color: seasonPreview === s ? "var(--color-cream)" : "var(--color-mauve)",
+                  border: `1px solid ${seasonPreview === s ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
+                  fontWeight: seasonPreview === s ? 600 : 400,
+                }}>
+                {s === "spring" ? "🌱 Spring" : s === "summer" ? "☀️ Summer" : s === "autumn" ? "🍂 Autumn" : "❄️ Winter"}
+              </button>
+            ))}
+          </div>
+          {seasonPreview && (
+            <div className="mt-3 space-y-3">
+              {["New Moon", "Full Moon", "First Quarter", "Waning Crescent"].map(phase => {
+                const fakeDate = seasonPreview === "spring" ? new Date(2026, 3, 1) : seasonPreview === "summer" ? new Date(2026, 6, 1) : seasonPreview === "autumn" ? new Date(2026, 9, 1) : new Date(2026, 0, 1);
+                return (
+                  <div key={phase} className="rounded-xl p-3" style={{ background: "var(--color-cream)", border: "1px solid color-mix(in srgb, var(--color-dusty-rose) 30%, transparent)" }}>
+                    <p style={{ fontSize: "10px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>{phase}</p>
+                    <p style={{ fontSize: "13px", color: "var(--color-dark)", marginTop: "4px", lineHeight: "1.5", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                      EN: {getSeasonalShadowPrompt(phase, "en", fakeDate)}
+                    </p>
+                    <p style={{ fontSize: "13px", color: "var(--color-dark)", marginTop: "4px", lineHeight: "1.5", fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>
+                      PL: {getSeasonalShadowPrompt(phase, "pl", fakeDate)}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Nav — Test Features */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Test Features</p>
+          <div className="grid grid-cols-2 gap-2 mt-3">
+            {[
+              { label: "Journal", href: "/journal" },
+              { label: "Dreams", href: "/dreams" },
+              { label: "Shadow Work", href: "/shadow-work" },
+              { label: "Symbols", href: "/symbols" },
+              { label: "Cycle Tracker", href: "/cycle" },
+              { label: "Grounding", href: "/grounding" },
+              { label: "Reading", href: "/reports" },
+              { label: "Shop", href: "/shop" },
+              { label: "Premium Page", href: "/premium" },
+              { label: "Referral", href: "/referral" },
+              { label: "Letter", href: "/letter" },
+              { label: "Profile", href: "/profile" },
+            ].map(item => (
+              <button key={item.href} onClick={() => router.push(item.href)}
+                className="py-2.5 rounded-xl text-xs tracking-wide transition-all hover:opacity-80"
+                style={{ background: "var(--color-cream)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontWeight: 500 }}>
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Referral Reward Tiers Info */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Referral Reward Tiers</p>
+          <div className="space-y-2 mt-2">
+            {[
+              { tier: 3, reward: "Free dream analysis", icon: "🌙" },
+              { tier: 10, reward: "Free monthly report", icon: "📊" },
+              { tier: 20, reward: "30% discount code", icon: "💎" },
+            ].map(t => {
+              const completed = referrals.filter(r => r.status === "completed").length;
+              const unlocked = completed >= t.tier;
+              const claimed = rewards.some(r => r.reward_type === t.reward && r.claimed);
+              return (
+                <div key={t.tier} className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-2">
+                    <span>{t.icon}</span>
+                    <div>
+                      <p style={{ fontSize: "13px", color: unlocked ? "var(--color-plum)" : "var(--color-mauve)", fontWeight: unlocked ? 600 : 400 }}>
+                        {t.tier} referrals — {t.reward}
+                      </p>
+                      <p style={{ fontSize: "10px", color: "var(--color-dusty-rose)" }}>
+                        {completed}/{t.tier} {claimed ? "· Claimed" : unlocked ? "· Ready to claim" : ""}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
       </main>
