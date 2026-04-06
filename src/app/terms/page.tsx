@@ -93,8 +93,8 @@ export default function TermsPage() {
               : "Noctua offers a referral programme where you can invite others and unlock rewards. The invited person must create an account and make at least 3 entries (journal, dreams, or shadow work) for the invitation to count as active."
             }</p>
             <p className="mt-2">{pl
-              ? "Progi nagród: 3 aktywne zaproszenia: 1 darmowa analiza snu AI. 5 aktywnych zaproszeń: osobisty list od AGNÉLIS. 10 aktywnych zaproszeń: 1 darmowy odczyt miesięczny + ekskluzywny motyw. 15 aktywnych zaproszeń: głęboki odczyt (panorama wielu miesięcy). 20 aktywnych zaproszeń: odznaka Ambasadorki + Lustro Cienia (pełna Twoja podróż)."
-              : "Reward thresholds: 3 active invites: 1 free AI dream analysis. 5 active invites: personal letter from AGNÉLIS. 10 active invites: 1 free monthly reading + exclusive theme. 15 active invites: deep reading (multi-month panorama). 20 active invites: Ambassador badge + Shadow Mirror (your full journey)."
+              ? "Progi nagród (etap 1): 3 aktywne zaproszenia: 1 darmowa analiza snu AI. 10 aktywnych zaproszeń: 1 darmowy odczyt miesięczny. 20 aktywnych zaproszeń: odznaka Ambasadorki + 30% zniżki na subskrypcję Premium. Po osiągnięciu 20 zaproszeń odblokowuje się etap 2 z nowymi nagrodami."
+              : "Reward thresholds (cycle 1): 3 active invites: 1 free AI dream analysis. 10 active invites: 1 free monthly reading. 20 active invites: Ambassador badge + 30% off Premium subscription. After reaching 20 invites, cycle 2 unlocks with new rewards."
             }</p>
             <p className="mt-2">{pl
               ? "Nagrody są przyznawane automatycznie po osiągnięciu progu. AGNÉLIS zastrzega sobie prawo do zmiany progów i nagród w dowolnym momencie."
@@ -111,8 +111,8 @@ export default function TermsPage() {
               : "The free tier includes: journal, dream journal, cycle tracker, grounding, shadow work (basic prompts), and 8 dream symbols. The free tier does not include AI features, reports, or advanced tools."
             }</p>
             <p className="mt-2">{pl
-              ? "Subskrypcja Premium (9.99 GBP/miesiąc lub 79.99 GBP/rok) obejmuje: 5 analiz snów AI miesięcznie (po limicie: 1.49 GBP za dodatkową), wszystkie 50 symboli snów, tygodniowy wgląd, miesięczny raport osobisty, sezonowe prompty pracy z cieniem, mapę emocjonalną cyklu i księżyca oraz rozpoznawanie wzorców."
-              : "Premium subscription (GBP 9.99/month or GBP 79.99/year) includes: 5 AI dream analyses per month (after limit: GBP 1.49 per additional), all 50 dream symbols, weekly insight, monthly personal report, seasonal shadow work prompts, cycle and moon emotional map, and pattern recognition."
+              ? "Subskrypcja Premium (9.99 GBP/miesiąc lub 79.99 GBP/rok) obejmuje: rozpoznawanie wzorców, miesięczny raport osobisty, 5 analiz snów AI miesięcznie (po limicie: 1.49 GBP za dodatkową), mapę emocjonalną cyklu i księżyca, sezonowe prompty pracy z cieniem, wszystkie 50 symboli snów oraz tygodniowy wgląd."
+              : "Premium subscription (GBP 9.99/month or GBP 79.99/year) includes: pattern recognition, monthly personal report, 5 AI dream analyses per month (after limit: GBP 1.49 per additional), cycle and moon emotional map, seasonal shadow work prompts, all 50 dream symbols, and weekly insight."
             }</p>
             <p className="mt-2">{pl
               ? "Workbooki (Praca z cieniem, Integracja snów, Harmonizacja cyklu) są dostępne jako osobne zakupy w sklepie, niezależnie od subskrypcji. Motywy kolorystyczne są również osobnymi zakupami."

@@ -8,7 +8,7 @@ import { useLanguage } from "@/lib/i18n";
 const CYCLE_1_REWARDS = [
   { threshold: 3, type: "dream_analysis", en: "1 free AI dream analysis", pl: "1 darmowa analiza snu AI" },
   { threshold: 10, type: "monthly_report", en: "1 free monthly reading", pl: "1 darmowy odczyt miesięczny" },
-  { threshold: 20, type: "badge", en: "Ambassador badge", pl: "Odznaka Ambasadorki" },
+  { threshold: 20, type: "badge", en: "Ambassador badge + 30% off Premium", pl: "Odznaka Ambasadorki + 30% zniżki na Premium" },
 ];
 
 const CYCLE_2_REWARDS = [
