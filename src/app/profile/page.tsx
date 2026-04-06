@@ -316,6 +316,17 @@ const saveName = async () => {
           </button>
         </section>
 
+        {/* Admin */}
+        {isPremium && (
+          <section>
+            <button onClick={() => router.push("/owl-panel")}
+              className="text-xs tracking-wide"
+              style={{ color: "var(--color-dusty-rose)", opacity: 0.4 }}>
+              ◇
+            </button>
+          </section>
+        )}
+
         {/* Legal */}
         <section className="flex justify-center gap-4">
           <a href="/privacy" className="text-xs underline" style={{ color: "var(--color-mauve)" }}>
