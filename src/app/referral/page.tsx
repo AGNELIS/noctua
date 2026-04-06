@@ -149,6 +149,9 @@ export default function ReferralPage() {
                 ? "Zaproszona osoba musi założyć konto i zrobić min. 3 wpisy żeby zaproszenie się zaliczyło."
                 : "The invited person must create an account and make at least 3 entries for the invitation to count."}
             </p>
+            <a href="/terms" className="text-xs underline mt-1 inline-block" style={{ color: "var(--color-mauve)", opacity: 0.7 }}>
+              {pl ? "Jak działa program poleceń?" : "How does the referral programme work?"}
+            </a>
           </section>
         )}
 
