@@ -363,11 +363,19 @@ export default function OwlPanelPage() {
           ) : (
             <div className="space-y-2 mt-2">
               {purchases.map(p => (
-                <div key={p.id} className="flex justify-between items-center">
-                  <p style={{ fontSize: "13px", color: "var(--color-dark)" }}>{(p.shop_products as any)?.name || p.product_id}</p>
-                  <p style={{ fontSize: "10px", color: p.used_at ? "var(--color-dusty-rose)" : "var(--color-plum)" }}>
-                    {p.used_at ? "Used" : "Active"}
-                  </p>
+                <div key={p.id} className="flex justify-between items-center py-1">
+                  <div>
+                    <p style={{ fontSize: "13px", color: "var(--color-dark)" }}>{(p.shop_products as any)?.name || p.product_id}</p>
+                    <p style={{ fontSize: "10px", color: "var(--color-dusty-rose)" }}>{(p.shop_products as any)?.category} · {p.used_at ? "Used" : "Active"}</p>
+                  </div>
+                  <button onClick={async () => {
+                    const supabase = createClient();
+                    await supabase.from("user_purchases").delete().eq("id", p.id);
+                    showMsg(`Removed: ${(p.shop_products as any)?.name}`);
+                    load();
+                  }} style={{ ...btnOutline, padding: "4px 10px", fontSize: "10px", color: "var(--color-dusty-rose)" }}>
+                    Remove
+                  </button>
                 </div>
               ))}
             </div>
@@ -378,7 +386,7 @@ export default function OwlPanelPage() {
         <div style={sectionStyle}>
           <p style={labelStyle}>Latest Weekly Insight</p>
           {weeklyInsight ? (
-            <p style={{ ...valueStyle, lineHeight: "1.6", marginTop: "8px" }}>{weeklyInsight}</p>
+            <p style={{ ...valueStyle, lineHeight: "1.6", marginTop: "8px", textAlign: "justify" }}>{weeklyInsight}</p>
           ) : (
             <p style={{ ...valueStyle, opacity: 0.5 }}>None generated yet</p>
           )}
@@ -394,30 +402,44 @@ export default function OwlPanelPage() {
               <span style={{ fontSize: "13px" }}>Default Noctua</span>
               {!activeThemeId && <span style={{ fontSize: "10px" }}>● Active</span>}
             </button>
-            {Object.entries(THEME_MAP).map(([name, colors]) => (
-              <button key={name} onClick={async () => {
-                const supabase = createClient();
-                const { data: prod } = await supabase.from("shop_products").select("id").eq("name", name).single();
-                if (prod) {
-                  await switchTheme(prod.id, name);
-                  showMsg(`Theme: ${name}`);
-                }
-              }}
-                className="w-full flex items-center justify-between py-2 px-3 rounded-xl transition-all"
-                style={{ background: activeThemeId && activeThemeId === name ? "var(--color-plum)" : "transparent", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)" }}>
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1">
-                    {[colors.plum, colors.mauve, colors["dusty-rose"], colors.gold].map((c, i) => (
-                      <div key={i} style={{ width: "14px", height: "14px", borderRadius: "50%", background: c, border: "1px solid rgba(0,0,0,0.1)" }} />
-                    ))}
-                  </div>
-                  <span style={{ fontSize: "13px" }}>{name}</span>
+            {Object.entries(THEME_MAP).map(([name, colors]) => {
+              const owned = purchases.some(p => (p.shop_products as any)?.name === name);
+              return (
+                <div key={name} className="flex items-center gap-2">
+                  <button onClick={() => {
+                    applyTheme(name);
+                    showMsg(`Preview: ${name}`);
+                  }}
+                    className="flex-1 flex items-center justify-between py-2 px-3 rounded-xl transition-all"
+                    style={{ background: "transparent", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)" }}>
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1">
+                        {[colors.plum, colors.mauve, colors["dusty-rose"], colors.gold, colors.cream].map((c, i) => (
+                          <div key={i} style={{ width: "14px", height: "14px", borderRadius: "50%", background: c, border: "1px solid rgba(0,0,0,0.1)" }} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: "13px" }}>{name}</span>
+                    </div>
+                    <span style={{ fontSize: "10px", color: owned ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>
+                      {owned ? "Owned" : "Preview"}
+                    </span>
+                  </button>
+                  {!owned && (
+                    <button onClick={async () => {
+                      const supabase = createClient();
+                      const { data: prod } = await supabase.from("shop_products").select("id").eq("name", name).single();
+                      if (prod) {
+                        await supabase.from("user_purchases").insert({ user_id: myId, product_id: prod.id });
+                        showMsg(`Unlocked: ${name}`);
+                        load();
+                      }
+                    }} style={{ ...btnOutline, padding: "6px 10px", fontSize: "10px", whiteSpace: "nowrap" as const }}>
+                      Unlock
+                    </button>
+                  )}
                 </div>
-                <span style={{ fontSize: "10px", color: "var(--color-mauve)" }}>
-                  {purchases.some(p => (p.shop_products as any)?.name === name) ? "Owned" : "Not owned"}
-                </span>
-              </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -459,30 +481,64 @@ export default function OwlPanelPage() {
           )}
         </div>
 
-        {/* Quick Nav — Test Features */}
+        {/* Test Referral Rewards */}
         <div style={sectionStyle}>
-          <p style={labelStyle}>Test Features</p>
-          <div className="grid grid-cols-2 gap-2 mt-3">
+          <p style={labelStyle}>Test Referral Rewards</p>
+          <p style={{ ...valueStyle, marginTop: "4px", opacity: 0.6 }}>Simulate referral milestones and test what unlocks at each tier.</p>
+          <div className="space-y-3 mt-3">
             {[
-              { label: "Journal", href: "/journal" },
-              { label: "Dreams", href: "/dreams" },
-              { label: "Shadow Work", href: "/shadow-work" },
-              { label: "Symbols", href: "/symbols" },
-              { label: "Cycle Tracker", href: "/cycle" },
-              { label: "Grounding", href: "/grounding" },
-              { label: "Reading", href: "/reports" },
-              { label: "Shop", href: "/shop" },
-              { label: "Premium Page", href: "/premium" },
-              { label: "Referral", href: "/referral" },
-              { label: "Letter", href: "/letter" },
-              { label: "Profile", href: "/profile" },
-            ].map(item => (
-              <button key={item.href} onClick={() => router.push(item.href)}
-                className="py-2.5 rounded-xl text-xs tracking-wide transition-all hover:opacity-80"
-                style={{ background: "var(--color-cream)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontWeight: 500 }}>
-                {item.label}
-              </button>
-            ))}
+              { tier: 3, reward: "free_dream_analysis", label: "3 referrals — Free dream analysis", desc: "Adds 1 dream analysis credit" },
+              { tier: 10, reward: "free_monthly_report", label: "10 referrals — Free monthly report", desc: "Unlocks 1 monthly report" },
+              { tier: 20, reward: "discount_30", label: "20 referrals — 30% discount", desc: "Generates a 30% promo code" },
+            ].map(t => {
+              const completed = referrals.filter(r => r.status === "completed").length;
+              const unlocked = completed >= t.tier;
+              const reward = rewards.find(r => r.reward_type === t.reward);
+              return (
+                <div key={t.tier} className="rounded-xl p-3" style={{ background: "var(--color-cream)", border: "1px solid color-mix(in srgb, var(--color-dusty-rose) 30%, transparent)" }}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p style={{ fontSize: "13px", color: unlocked ? "var(--color-plum)" : "var(--color-mauve)", fontWeight: 600 }}>{t.label}</p>
+                      <p style={{ fontSize: "10px", color: "var(--color-dusty-rose)", marginTop: "2px" }}>{t.desc}</p>
+                      <p style={{ fontSize: "10px", color: "var(--color-mauve)", marginTop: "2px" }}>
+                        Status: {!unlocked ? `${completed}/${t.tier} referrals` : reward?.claimed ? "Claimed" : "Unlocked, not claimed"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {!unlocked && (
+                        <button onClick={() => simulateReferrals(t.tier - completed)} style={{ ...btnOutline, padding: "4px 8px", fontSize: "10px" }}>
+                          Simulate to {t.tier}
+                        </button>
+                      )}
+                      {unlocked && !reward?.claimed && (
+                        <button onClick={async () => {
+                          const supabase = createClient();
+                          if (reward) {
+                            await supabase.from("referral_rewards").update({ claimed: true }).eq("id", reward.id);
+                          } else {
+                            await supabase.from("referral_rewards").insert({ user_id: myId, reward_type: t.reward, claimed: true });
+                          }
+                          showMsg(`Claimed: ${t.label}`);
+                          load();
+                        }} style={{ ...btnStyle, padding: "4px 8px", fontSize: "10px" }}>
+                          Claim
+                        </button>
+                      )}
+                      {reward?.claimed && (
+                        <button onClick={async () => {
+                          const supabase = createClient();
+                          await supabase.from("referral_rewards").delete().eq("id", reward.id);
+                          showMsg("Unclaimed");
+                          load();
+                        }} style={{ ...btnOutline, padding: "4px 8px", fontSize: "10px" }}>
+                          Unclaim
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
