@@ -76,7 +76,7 @@ Rules for your reaction:
 - If she is being vague, call it out: "You're describing, not feeling."
 - If she repeats a word, notice it: "You used the word 'should' three times."
 - If there's a contradiction with her data patterns, name it.
-- End with ONE follow-up question. Make it specific to what she wrote. Not generic.
+- End with ONE follow-up question. Make it specific to what she wrote. Not generic. Never ask vague or abstract questions like "are you ready to admit it" or "what worked". Always reference something concrete from her response.
 - Stage ${stage} focus: ${isDream ? (
   stage === 1 ? "What feeling is the dream carrying? Name the emotional undercurrent, not the plot." :
   stage === 2 ? "Where does this dream symbol or theme appear in her waking life? Connect dream to reality." :
