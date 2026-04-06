@@ -45,7 +45,7 @@ const STAGE_INTROS_PL = [
   "Zanim zaczniesz. To nie jest journaling. To konfrontacja. Jesteś tu, bo coś ciągle wraca. Znajdźmy to.",
   "Nazwałaś to, czego unikasz. Teraz prześledźmy to. Wzorce się nie chowają. Po prostu nauczyłaś się nie patrzeć.",
   "To najtrudniejsza część. Zobaczyłaś wzorzec. Teraz poczuj, co jest pod spodem.",
-  "Zmierzyłaś się z tym. Poczułaś to. I co teraz? Nie w teorii. W twoim prawdziwym życiu.",
+  "Zmierzyłaś się z tym. Poczułaś to. I co teraz? Nie w teorii. W Twoim prawdziwym życiu.",
 ];
 
 function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] {
@@ -56,15 +56,15 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
   if (lang === "pl") {
     return [
       topEmo
-        ? `W twoich wpisach powtarza się "${topEmo}". Czego unikasz, kiedy to czujesz?`
+        ? `W Twoich wpisach powtarza się "${topEmo}". Czego unikasz, kiedy to czujesz?`
         : "Czego unikasz w tej chwili? Nie tego, co mówisz sobie. Tego, co naprawdę omijasz.",
       theme
-        ? `"${theme}": ten temat wraca w twoich wpisach. Gdzie jeszcze w życiu to widzisz?`
+        ? `"${theme}": ten temat wraca w Twoich wpisach. Gdzie jeszcze w życiu to widzisz?`
         : "Gdzie ten wzorzec się powtarza? W jakich sytuacjach reagujesz tak samo?",
       symbol
-        ? `W twoich snach pojawia się "${symbol}". Jakie emocje blokujesz na jawie?`
+        ? `W Twoich snach pojawia się "${symbol}". Jakie emocje blokujesz na jawie?`
         : "Czego nie pozwalasz sobie czuć? Co tłumisz, zanim zdążysz to poczuć?",
-      "Jak wyglądałaby twoja reakcja, gdybyś odpowiedziała inaczej? Konkretnie, nie idealnie.",
+      "Jak wyglądałaby Twoja reakcja, gdybyś odpowiedziała inaczej? Konkretnie, nie idealnie.",
     ];
   }
   return [
@@ -341,7 +341,7 @@ export default function WorkbookPage() {
             {pl ? "Jeszcze nie teraz" : "Not yet"}
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {pl ? "Ten workbook czyta twoje wzorce. Żeby to zrobić, potrzebuje twoich danych. Minimum 3 wpisy w dzienniku i 3 wpisy w pracy z cieniem."
+            {pl ? "Ten workbook czyta Twoje wzorce. Żeby to zrobić, potrzebuje Twoich danych. Minimum 3 wpisy w dzienniku i 3 wpisy w pracy z cieniem."
               : "This workbook reads your patterns. To do that, it needs your data. Minimum 3 journal entries and 3 shadow work entries."}
           </p>
           <div className="space-y-2 pt-2">
@@ -359,7 +359,7 @@ export default function WorkbookPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
         <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-          {pl ? "Czytam twoje wzorce..." : "Reading your patterns..."}
+          {pl ? "Czytam Twoje wzorce..." : "Reading your patterns..."}
         </p>
       </div>
     );
@@ -423,7 +423,7 @@ export default function WorkbookPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
         <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-          {pl ? "Analizuję twoją sesję..." : "Analysing your session..."}
+          {pl ? "Analizuję Twoją sesję..." : "Analysing your session..."}
         </p>
       </div>
     );

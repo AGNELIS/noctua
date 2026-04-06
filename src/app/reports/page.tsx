@@ -154,7 +154,7 @@ export default function ReportsPage() {
             style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
           >
             {generating
-              ? (pl ? "Czytam twoje wzorce..." : "Reading your patterns...")
+              ? (pl ? "Czytam Twoje wzorce..." : "Reading your patterns...")
               : (pl ? "Nowy odczyt" : "New reading")}
           </button>
           {error && (

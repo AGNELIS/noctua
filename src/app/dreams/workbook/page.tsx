@@ -44,10 +44,10 @@ const STAGE_INTROS_EN = [
   "Understanding means nothing without action. What does your dream life demand from your waking life?",
 ];
 const STAGE_INTROS_PL = [
-  "Twoje sny nie są przypadkowe. Mówią do ciebie językiem, którego jeszcze nie znasz. Zacznijmy słuchać.",
-  "Symbole powtarzają się nie bez powodu. To nie dekoracja. To wiadomości. Odczytajmy twoje.",
+  "Twoje sny nie są przypadkowe. Mówią do Ciebie językiem, którego jeszcze nie znasz. Zacznijmy słuchać.",
+  "Symbole powtarzają się nie bez powodu. To nie dekoracja. To wiadomości. Odczytajmy Twoje.",
   "Tu robi się niekomfortowo. Twoje sny pokazują to, na co nie chcesz patrzeć za dnia.",
-  "Zrozumienie bez działania nic nie znaczy. Czego twoje sny wymagają od twojego życia na jawie?",
+  "Zrozumienie bez działania nic nie znaczy. Czego Twoje sny wymagają od Twojego życia na jawie?",
 ];
 
 function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] {
@@ -62,11 +62,11 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
         ? `Twoje sny najczęściej niosą ton "${topEmo}". Co czujesz w ciele, kiedy się budzisz po takim śnie?`
         : "Przypomnij sobie ostatni sen, który został z tobą po przebudzeniu. Co czułaś? Nie co się działo, ale co czułaś?",
       topSymbol
-        ? `"${topSymbol}" pojawia się w twoich snach wielokrotnie.${secondSymbol ? ` Podobnie "${secondSymbol}".` : ""} Co ten symbol znaczy dla CIEBIE? Nie ze słownika, tylko z twojego życia.`
-        : "Jaki symbol lub obraz wraca w twoich snach? Co on dla ciebie znaczy? Osobiście, nie z interpretacji.",
+        ? `"${topSymbol}" pojawia się w Twoich snach wielokrotnie.${secondSymbol ? ` Podobnie "${secondSymbol}".` : ""} Co ten symbol znaczy dla CIEBIE? Nie ze słownika, tylko z Twojego życia.`
+        : "Jaki symbol lub obraz wraca w Twoich snach? Co on dla Ciebie znaczy? Osobiście, nie z interpretacji.",
       theme
-        ? `W twoich snach i wpisach przewija się temat "${theme}". Jakie emocje blokujesz na jawie, które twoje sny próbują ci pokazać?`
-        : "Czego twoje sny próbują ci powiedzieć, na co nie chcesz patrzeć za dnia?",
+        ? `W Twoich snach i wpisach przewija się temat "${theme}". Jakie emocje blokujesz na jawie, które Twoje sny próbują Ci pokazać?`
+        : "Czego Twoje sny próbują Ci powiedzieć, na co nie chcesz patrzeć za dnia?",
       "Gdybyś potraktowała swój ostatni sen jak list od siebie samej, co byś z nim zrobiła? Konkretnie.",
     ];
   }
@@ -398,7 +398,7 @@ export default function DreamWorkbookPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
         <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-          {pl ? "Czytam twoje sny..." : "Reading your dreams..."}
+          {pl ? "Czytam Twoje sny..." : "Reading your dreams..."}
         </p>
       </div>
     );

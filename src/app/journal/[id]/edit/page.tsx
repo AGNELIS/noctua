@@ -110,7 +110,7 @@ export default function EditJournalEntry() {
             <>
               <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--color-mauve)", textAlign: "center" }}>
                 {language === "pl"
-                  ? "Nazwij nawyk lub wzorzec, który obserwujesz. Noctua będzie szukać powiązań z twoimi emocjami i snami."
+                  ? "Nazwij nawyk lub wzorzec, który obserwujesz. Noctua będzie szukać powiązań z Twoimi emocjami i snami."
                   : "Name a habit or pattern you're tracking. Noctua will look for connections with your emotions and dreams."}
               </p>
               <input type="text" value={patternTag} onChange={(e) => setPatternTag(e.target.value)}

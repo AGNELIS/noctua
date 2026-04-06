@@ -15,7 +15,7 @@ const CYCLE_2_REWARDS = [
   { threshold: 5, type: "personal_letter", en: "Personal Letter from AGNÉLIS", pl: "Osobisty list od AGNÉLIS" },
   { threshold: 10, type: "exclusive_theme", en: "Exclusive theme (referral only)", pl: "Ekskluzywny motyw (tylko przez zaproszenia)" },
   { threshold: 15, type: "deep_reading", en: "Deep Reading (multi-month panorama)", pl: "Głęboki odczyt (panorama wielu miesięcy)" },
-  { threshold: 20, type: "shadow_mirror", en: "Shadow Mirror (your full journey)", pl: "Lustro cienia (cała twoja podróż)" },
+  { threshold: 20, type: "shadow_mirror", en: "Shadow Mirror (your full journey)", pl: "Lustro cienia (cała Twoja podróż)" },
 ];
 
 const BADGES = [
@@ -107,7 +107,7 @@ export default function ReferralPage() {
 
         <p className="text-center leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
           {pl
-            ? "Zaproś kogoś, kto potrzebuje tej pracy. A Noctua pokaże ci więcej o tobie samej."
+            ? "Zaproś kogoś, kto potrzebuje tej pracy. A Noctua pokaże Ci więcej o Tobie samej."
             : "Invite someone who needs this work. And Noctua will show you more about yourself."}
         </p>
 

@@ -60,7 +60,7 @@ const STAGE_INTROS_EN = [
 const STAGE_INTROS_PL = [
   "Twoje ciało ma rytm. Albo z nim współpracujesz, albo walczysz. Większość kobiet walczy, nawet nie wiedząc. Zobaczmy, gdzie jesteś.",
   "Twój cykl mówi ci, czego potrzebujesz. Nie tego, co chcesz usłyszeć. Sprawdźmy, co się powtarza.",
-  "Tu zaczyna się prawdziwa praca. Przepaść między tym, czego potrzebuje twoje ciało, a tym, co mu dajesz.",
+  "Tu zaczyna się prawdziwa praca. Przepaść między tym, czego potrzebuje Twoje ciało, a tym, co mu dajesz.",
   "Zobaczyłaś wzorzec. Poczułaś napięcie. I co teraz? Nie idealnie. Inaczej.",
 ];
 
@@ -74,11 +74,11 @@ function buildQuestions(patterns: Patterns | null, lang: "en" | "pl"): string[] 
   if (lang === "pl") {
     return [
       phase
-        ? `Większość twoich wpisów przypada na fazę: ${phasePL}. Jak się czujesz w tej fazie? Nie jak myślisz, że powinnaś się czuć. Jak naprawdę się czujesz?`
+        ? `Większość Twoich wpisów przypada na fazę: ${phasePL}. Jak się czujesz w tej fazie? Nie jak myślisz, że powinnaś się czuć. Jak naprawdę się czujesz?`
         : "W której fazie cyklu czujesz się najbardziej sobą? A w której udajesz, że wszystko jest ok?",
       topSymptom
-        ? `"${symptomPL}" pojawia się najczęściej w twoich wpisach. Gdzie w życiu wymuszasz coś, zamiast pozwolić sobie na to, czego potrzebujesz?`
-        : "Jaki objaw powtarza się co miesiąc? Co twoje ciało próbuje ci powiedzieć, a ty ignorujesz?",
+        ? `"${symptomPL}" pojawia się najczęściej w Twoich wpisach. Gdzie w życiu wymuszasz coś, zamiast pozwolić sobie na to, czego potrzebujesz?`
+        : "Jaki objaw powtarza się co miesiąc? Co Twoje ciało próbuje Ci powiedzieć, a Ty ignorujesz?",
       energy !== null
         ? `Twoja średnia energia to ${(energy ?? 0).toFixed(1)}/5. Gdzie tracisz energię, bo nie słuchasz swojego cyklu?`
         : "W których dniach cyklu zmuszasz się do rzeczy, na które nie masz siły? Co by się stało, gdybyś przestała?",
@@ -345,7 +345,7 @@ export default function CycleWorkbookPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
         <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-          {pl ? "Czytam rytm twojego ciała..." : "Reading your body's rhythm..."}
+          {pl ? "Czytam rytm Twojego ciała..." : "Reading your body's rhythm..."}
         </p>
       </div>
     );
@@ -452,7 +452,7 @@ export default function CycleWorkbookPage() {
         {uiPhase === "ai_reacting" && (
           <div className="text-center py-12">
             <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-              {pl ? "Wsłuchuję się w twój rytm..." : "Listening to your rhythm..."}
+              {pl ? "Wsłuchuję się w Twój rytm..." : "Listening to your rhythm..."}
             </p>
           </div>
         )}

@@ -35,15 +35,15 @@ function RewardContent() {
   const descriptions: Record<string, { en: string; pl: string }> = {
     personal_letter: {
       en: "A letter from AGNELIS based on your entire journey in Noctua. Not a report. A letter from someone who sees you.",
-      pl: "List od AGNELIS oparty na calej twojej podrozy w Noctui. Nie raport. List od kogos, kto cie widzi.",
+      pl: "List od AGNELIS oparty na całej Twojej podróży w Noctui. Nie raport. List od kogos, kto Cię widzi.",
     },
     deep_reading: {
       en: "An extended reading spanning your entire history. Patterns across months. What cycles, what stays, what is silent.",
-      pl: "Rozszerzony odczyt obejmujacy cala twoja historie. Wzorce z wielu miesiecy. Co sie powtarza, co zostaje, co milczy.",
+      pl: "Rozszerzony odczyt obejmujacy całą Twoją historię. Wzorce z wielu miesiecy. Co sie powtarza, co zostaje, co milczy.",
     },
     shadow_mirror: {
       en: "Your complete shadow work journey reflected back. Where you started, what shifted, what remains, and what you cannot see yourself.",
-      pl: "Cala twoja podroz z praca z cieniem odbita jak w lustrze. Skad przyszlas, co sie zmienilo, co zostaje, i czego sama nie widzisz.",
+      pl: "Cała Twoja podróż z praca z cieniem odbita jak w lustrze. Skad przyszlas, co sie zmienilo, co zostaje, i czego sama nie widzisz.",
     },
   };
 
@@ -219,7 +219,7 @@ function RewardContent() {
         {generating && (
           <div className="text-center pt-20">
             <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-              {pl ? "Pisze do ciebie..." : "Writing to you..."}
+              {pl ? "Piszę do Ciebie..." : "Writing to you..."}
             </p>
           </div>
         )}

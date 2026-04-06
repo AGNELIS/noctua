@@ -19,7 +19,7 @@ const translations = {
   nav_shadow: { en: "Shadow Work", pl: "Praca z cieniem" },
   nav_shadow_desc: { en: "Face what keeps returning", pl: "Zmierz się z tym co wraca" },
   nav_reports: { en: "Reading", pl: "Odczyt" },
-  nav_reports_desc: { en: "Your patterns, read back to you", pl: "Twoje wzorce, odczytane dla ciebie" },
+  nav_reports_desc: { en: "Your patterns, read back to you", pl: "Twoje wzorce, odczytane dla Ciebie" },
   nav_shop_desc: { en: "Themes, symbols & more", pl: "Motywy, symbole i więcej" },
   illuminated: { en: "illuminated", pl: "oświetlenia" },
   premium_title: { en: "Premium", pl: "Premium" },
