@@ -2,356 +2,383 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 
-type UserData = {
+type UserRow = {
   id: string;
   email: string;
-  displayName: string | null;
-  isPremium: boolean;
-  createdAt: string;
-  lastSignIn: string | null;
-  daysSinceCreation: number;
-  stats: {
-    journalCount: number;
-    dreamCount: number;
-    shadowCount: number;
-    cycleCount: number;
-    totalEntries: number;
-    completedWorkbooks: number;
-    analysisCount: number;
-    reportCount: number;
-    purchaseCount: number;
-    referralCount: number;
-    activeReferrals: number;
-  };
-  engagementScore: number;
+  is_premium: boolean;
+  is_admin: boolean;
+  display_name: string | null;
 };
 
-type Stats = {
-  users: { total: number; newToday: number; newThisWeek: number; activeThisWeek: number; premium: number };
-  entries: { journal: number; journalToday: number; dreams: number; dreamsToday: number; shadow: number; cycle: number };
-  ai: { analyses: number; reports: number; workbooks: number };
-  commerce: { purchases: number; referrals: number; activeReferrals: number };
-  activity: { type: string; user: string; at: string }[];
-};
-
-type Tab = "overview" | "users" | "activity";
-
-function ScoreBadge({ score }: { score: number }) {
-  const color = score >= 70 ? "#2d8a4e" : score >= 40 ? "#b8860b" : score >= 15 ? "#9B6B8D" : "#a0a0a0";
-  const label = score >= 70 ? "Soul match" : score >= 40 ? "Growing" : score >= 15 ? "Exploring" : "New";
-  return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs" style={{ backgroundColor: color + "20", color, fontWeight: 600 }}>
-      {score} {label}
-    </span>
-  );
-}
-
-function TimeAgo({ date }: { date: string }) {
-  const mins = Math.floor((Date.now() - new Date(date).getTime()) / 60000);
-  if (mins < 60) return <span>{mins}m ago</span>;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return <span>{hours}h ago</span>;
-  return <span>{Math.floor(hours / 24)}d ago</span>;
-}
-
-const activityLabels: Record<string, { en: string; pl: string; color: string }> = {
-  journal: { en: "Journal entry", pl: "Wpis dziennika", color: "#9B6B8D" },
-  dream: { en: "Dream entry", pl: "Wpis snu", color: "#6a7aad" },
-  shadow: { en: "Shadow work", pl: "Praca z cieniem", color: "#4a5568" },
-  workbook_start: { en: "Started workbook", pl: "Rozpoczęła workbook", color: "#b8860b" },
-  workbook_done: { en: "Completed workbook", pl: "Ukończyła workbook", color: "#2d8a4e" },
-  analysis: { en: "Dream analysis", pl: "Analiza snu", color: "#c45050" },
-};
-
-export default function OwlPanel() {
+export default function OwlPanelPage() {
   const router = useRouter();
   const { language } = useLanguage();
-  const pl = language === "pl";
-
-  const [tab, setTab] = useState<Tab>("overview");
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [users, setUsers] = useState<UserData[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const [myId, setMyId] = useState("");
 
-  useEffect(() => {
-    const load = async () => {
-      const [statsRes, usersRes] = await Promise.all([
-        fetch("/api/admin/stats"),
-        fetch("/api/admin/users"),
-      ]);
-      if (!statsRes.ok || !usersRes.ok) {
-        setError(pl ? "Brak dostępu" : "Access denied");
-        setLoading(false);
-        return;
+  // Stats
+  const [dreamAnalysesUsed, setDreamAnalysesUsed] = useState(0);
+  const [dreamAnalysesLimit] = useState(5);
+  const [weeklyInsight, setWeeklyInsight] = useState<string | null>(null);
+  const [journalCount, setJournalCount] = useState(0);
+  const [dreamCount, setDreamCount] = useState(0);
+  const [shadowCount, setShadowCount] = useState(0);
+
+  // Referrals
+  const [referralCode, setReferralCode] = useState("");
+  const [referrals, setReferrals] = useState<any[]>([]);
+  const [rewards, setRewards] = useState<any[]>([]);
+
+  // Purchases
+  const [purchases, setPurchases] = useState<any[]>([]);
+
+  // Toggles
+  const [premiumStatus, setPremiumStatus] = useState(false);
+  const [actionMsg, setActionMsg] = useState("");
+
+  useEffect(() => { load(); }, []);
+
+  const showMsg = (msg: string) => {
+    setActionMsg(msg);
+    setTimeout(() => setActionMsg(""), 2500);
+  };
+
+  const load = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push("/login"); return; }
+    setMyId(user.id);
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_admin, is_premium, referral_code")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.is_admin) { router.push("/dashboard"); return; }
+    setIsAdmin(true);
+    setPremiumStatus(profile.is_premium || false);
+    setReferralCode(profile.referral_code || "");
+
+    // Dream analyses this month
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const { count: analysisCount } = await supabase
+      .from("dream_analyses")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .gte("created_at", startOfMonth);
+    setDreamAnalysesUsed(analysisCount || 0);
+
+    // Entry counts
+    const { count: jc } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    const { count: dc } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    const { count: sc } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    setJournalCount(jc || 0);
+    setDreamCount(dc || 0);
+    setShadowCount(sc || 0);
+
+    // Referrals
+    const { data: refs } = await supabase
+      .from("referrals")
+      .select("id, status, created_at, completed_at, referred_id")
+      .eq("referrer_id", user.id);
+    setReferrals(refs || []);
+
+    const { data: rews } = await supabase
+      .from("referral_rewards")
+      .select("id, reward_type, claimed, created_at")
+      .eq("user_id", user.id);
+    setRewards(rews || []);
+
+    // Purchases
+    const { data: purch } = await supabase
+      .from("user_purchases")
+      .select("id, product_id, purchased_at, used_at, shop_products(name, category)")
+      .eq("user_id", user.id)
+      .order("purchased_at", { ascending: false });
+    setPurchases(purch || []);
+
+    // Weekly insight
+    const { data: insight } = await supabase
+      .from("weekly_insights")
+      .select("insight_text, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+    setWeeklyInsight(insight?.insight_text || null);
+
+    setLoading(false);
+  };
+
+  const togglePremium = async () => {
+    const supabase = createClient();
+    const newVal = !premiumStatus;
+    await supabase.from("profiles").update({ is_premium: newVal }).eq("id", myId);
+    setPremiumStatus(newVal);
+    showMsg(newVal ? "Premium ON" : "Premium OFF");
+  };
+
+  const resetDreamAnalyses = async () => {
+    const supabase = createClient();
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    await supabase
+      .from("dream_analyses")
+      .delete()
+      .eq("user_id", myId)
+      .gte("created_at", startOfMonth);
+    setDreamAnalysesUsed(0);
+    showMsg("Dream analyses reset");
+  };
+
+  const unlockAllThemes = async () => {
+    const supabase = createClient();
+    const { data: themes } = await supabase
+      .from("shop_products")
+      .select("id")
+      .eq("category", "theme");
+    if (!themes) return;
+    for (const theme of themes) {
+      const { data: exists } = await supabase
+        .from("user_purchases")
+        .select("id")
+        .eq("user_id", myId)
+        .eq("product_id", theme.id)
+        .limit(1);
+      if (!exists || exists.length === 0) {
+        await supabase.from("user_purchases").insert({ user_id: myId, product_id: theme.id });
       }
-      const statsData = await statsRes.json();
-      const usersData = await usersRes.json();
-      setStats(statsData);
-      setUsers(usersData.users);
-      setLoading(false);
-    };
+    }
+    showMsg("All themes unlocked");
     load();
-  }, []);
+  };
+
+  const unlockAllProducts = async () => {
+    const supabase = createClient();
+    const { data: products } = await supabase
+      .from("shop_products")
+      .select("id")
+      .eq("is_active", true);
+    if (!products) return;
+    for (const prod of products) {
+      const { data: exists } = await supabase
+        .from("user_purchases")
+        .select("id")
+        .eq("user_id", myId)
+        .eq("product_id", prod.id)
+        .limit(1);
+      if (!exists || exists.length === 0) {
+        await supabase.from("user_purchases").insert({ user_id: myId, product_id: prod.id });
+      }
+    }
+    showMsg("All products unlocked");
+    load();
+  };
+
+  const simulateReferrals = async (count: number) => {
+    const supabase = createClient();
+    for (let i = 0; i < count; i++) {
+      await supabase.from("referrals").insert({
+        referrer_id: myId,
+        referred_id: myId,
+        status: "completed",
+        completed_at: new Date().toISOString(),
+      });
+    }
+    showMsg(`+${count} referrals added`);
+    load();
+  };
+
+  const clearTestReferrals = async () => {
+    const supabase = createClient();
+    await supabase
+      .from("referrals")
+      .delete()
+      .eq("referrer_id", myId)
+      .eq("referred_id", myId);
+    showMsg("Test referrals cleared");
+    load();
+  };
+
+  const generateWeeklyInsight = async () => {
+    showMsg("Generating...");
+    try {
+      const res = await fetch("/api/weekly-insight");
+      if (res.ok) {
+        const data = await res.json();
+        setWeeklyInsight(data.insight);
+        showMsg("Weekly insight generated");
+      } else {
+        showMsg("Failed");
+      }
+    } catch {
+      showMsg("Error");
+    }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
-        <p className="text-sm tracking-widest uppercase animate-pulse" style={{ color: "var(--color-mauve)" }}>
-          {pl ? "Ładuję panel..." : "Loading panel..."}
-        </p>
+        <p style={{ color: "var(--color-dusty-rose)" }}>Loading...</p>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-gradient)" }}>
-        <p className="text-sm" style={{ color: "#c45050" }}>{error}</p>
-      </div>
-    );
-  }
+  if (!isAdmin) return null;
+
+  const sectionStyle = {
+    background: "var(--color-blush)",
+    border: "1px solid var(--color-dusty-rose)",
+    borderRadius: "16px",
+    padding: "16px",
+  };
+  const labelStyle = { fontSize: "10px", color: "var(--color-mauve)", textTransform: "uppercase" as const, letterSpacing: "0.15em", fontWeight: 600 };
+  const valueStyle = { fontSize: "14px", color: "var(--color-dark)", marginTop: "2px" };
+  const btnStyle = {
+    padding: "8px 16px",
+    borderRadius: "10px",
+    fontSize: "12px",
+    fontWeight: 600,
+    background: "var(--color-plum)",
+    color: "var(--color-cream)",
+    border: "none",
+    cursor: "pointer",
+  };
+  const btnOutline = {
+    ...btnStyle,
+    background: "transparent",
+    border: "1px solid var(--color-dusty-rose)",
+    color: "var(--color-mauve)",
+  };
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
-            {pl ? "← Wróć" : "← Back"}
-          </button>
+          <button onClick={() => router.push("/profile")} className="text-sm" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← Back</button>
+          <div className="w-12" />
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
-          style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
-          {pl ? "Panel AGNÉLIS" : "AGNÉLIS Panel"}
+        <h1 className="text-lg tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
+          Owl Panel
         </h1>
-
-        {/* Tabs */}
-        <div className="flex justify-center gap-2 mt-4">
-          {(["overview", "users", "activity"] as Tab[]).map((t) => (
-            <button key={t} onClick={() => setTab(t)}
-              className="px-4 py-1.5 rounded-full text-xs tracking-wide transition-all"
-              style={{
-                background: tab === t ? "var(--color-plum)" : "transparent",
-                color: tab === t ? "var(--color-cream)" : "var(--color-mauve)",
-                border: tab === t ? "none" : "1px solid var(--color-dusty-rose)",
-                fontWeight: 600,
-              }}>
-              {t === "overview" ? (pl ? "Przegląd" : "Overview") :
-               t === "users" ? (pl ? "Użytkownicy" : "Users") :
-               (pl ? "Aktywność" : "Activity")}
-            </button>
-          ))}
-        </div>
+        {actionMsg && (
+          <p className="text-center text-xs mt-2 py-1 rounded-lg" style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>{actionMsg}</p>
+        )}
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 pb-16 mt-4">
+      <main className="max-w-xl mx-auto px-6 pb-16 space-y-5">
 
-        {/* OVERVIEW TAB */}
-        {tab === "overview" && stats && (
-          <div className="space-y-4">
-            {/* User metrics */}
-            <div className="rounded-2xl border p-4" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>
-                {pl ? "Użytkownicy" : "Users"}
+        {/* Premium toggle */}
+        <div style={sectionStyle}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p style={labelStyle}>Premium Status</p>
+              <p style={{ ...valueStyle, color: premiumStatus ? "var(--color-plum)" : "var(--color-dusty-rose)", fontWeight: 600 }}>
+                {premiumStatus ? "ACTIVE" : "INACTIVE"}
               </p>
-              <div className="grid grid-cols-5 gap-2 text-center">
-                {[
-                  { label: pl ? "Łącznie" : "Total", value: stats.users.total },
-                  { label: pl ? "Dziś" : "Today", value: stats.users.newToday },
-                  { label: pl ? "Tydzień" : "Week", value: stats.users.newThisWeek },
-                  { label: pl ? "Aktywni" : "Active", value: stats.users.activeThisWeek },
-                  { label: "Premium", value: stats.users.premium },
-                ].map((s) => (
-                  <div key={s.label}>
-                    <p className="text-lg" style={{ color: "var(--color-dark)", fontWeight: 600 }}>{s.value}</p>
-                    <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{s.label}</p>
-                  </div>
-                ))}
-              </div>
             </div>
+            <button onClick={togglePremium} style={premiumStatus ? btnOutline : btnStyle}>
+              {premiumStatus ? "Turn OFF" : "Turn ON"}
+            </button>
+          </div>
+        </div>
 
-            {/* Entries */}
-            <div className="rounded-2xl border p-4" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>
-                {pl ? "Wpisy" : "Entries"}
-              </p>
-              <div className="grid grid-cols-4 gap-2 text-center">
-                {[
-                  { label: pl ? "Dziennik" : "Journal", value: stats.entries.journal, today: stats.entries.journalToday },
-                  { label: pl ? "Sny" : "Dreams", value: stats.entries.dreams, today: stats.entries.dreamsToday },
-                  { label: pl ? "Cień" : "Shadow", value: stats.entries.shadow },
-                  { label: pl ? "Cykl" : "Cycle", value: stats.entries.cycle },
-                ].map((s) => (
-                  <div key={s.label}>
-                    <p className="text-lg" style={{ color: "var(--color-dark)", fontWeight: 600 }}>{s.value}</p>
-                    <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{s.label}</p>
-                    {"today" in s && s.today ? <p className="text-xs" style={{ color: "#2d8a4e" }}>+{s.today}</p> : null}
-                  </div>
-                ))}
-              </div>
+        {/* Dream analyses */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Dream Analyses This Month</p>
+          <div className="flex items-center justify-between mt-2">
+            <p style={valueStyle}>{dreamAnalysesUsed} / {dreamAnalysesLimit}</p>
+            <button onClick={resetDreamAnalyses} style={btnOutline}>Reset</button>
+          </div>
+        </div>
+
+        {/* Entry counts */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>My Entries</p>
+          <div className="grid grid-cols-3 gap-3 mt-2">
+            <div className="text-center">
+              <p style={{ fontSize: "22px", color: "var(--color-plum)", fontWeight: 600 }}>{journalCount}</p>
+              <p style={{ fontSize: "10px", color: "var(--color-mauve)" }}>Journal</p>
             </div>
-
-            {/* AI & Commerce */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl border p-4" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>AI</p>
-                <div className="space-y-2">
-                  {[
-                    { label: pl ? "Analizy" : "Analyses", value: stats.ai.analyses },
-                    { label: pl ? "Raporty" : "Reports", value: stats.ai.reports },
-                    { label: "Workbooks", value: stats.ai.workbooks },
-                  ].map((s) => (
-                    <div key={s.label} className="flex justify-between">
-                      <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{s.label}</span>
-                      <span className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 600 }}>{s.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-2xl border p-4" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>
-                  {pl ? "Sprzedaż" : "Commerce"}
-                </p>
-                <div className="space-y-2">
-                  {[
-                    { label: pl ? "Zakupy" : "Purchases", value: stats.commerce.purchases },
-                    { label: pl ? "Zaproszenia" : "Referrals", value: stats.commerce.referrals },
-                    { label: pl ? "Aktywne" : "Active", value: stats.commerce.activeReferrals },
-                  ].map((s) => (
-                    <div key={s.label} className="flex justify-between">
-                      <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{s.label}</span>
-                      <span className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 600 }}>{s.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="text-center">
+              <p style={{ fontSize: "22px", color: "var(--color-plum)", fontWeight: 600 }}>{dreamCount}</p>
+              <p style={{ fontSize: "10px", color: "var(--color-mauve)" }}>Dreams</p>
             </div>
-
-            {/* Quick activity */}
-            <div className="rounded-2xl border p-4" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>
-                {pl ? "Ostatnia aktywność" : "Recent activity"}
-              </p>
-              <div className="space-y-2">
-                {stats.activity.slice(0, 8).map((a, i) => {
-                  const info = activityLabels[a.type] || { en: a.type, pl: a.type, color: "#9B6B8D" };
-                  return (
-                    <div key={i} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: info.color }} />
-                        <span className="text-xs truncate" style={{ color: "var(--color-dark)" }}>{a.user.split("@")[0]}</span>
-                        <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{pl ? info.pl : info.en}</span>
-                      </div>
-                      <span className="text-xs flex-shrink-0" style={{ color: "var(--color-dusty-rose)" }}>
-                        <TimeAgo date={a.at} />
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="text-center">
+              <p style={{ fontSize: "22px", color: "var(--color-plum)", fontWeight: 600 }}>{shadowCount}</p>
+              <p style={{ fontSize: "10px", color: "var(--color-mauve)" }}>Shadow</p>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* USERS TAB */}
-        {tab === "users" && (
-          <div className="space-y-3">
-            {users.map((u) => (
-              <div key={u.id} className="rounded-2xl border p-4 transition-all cursor-pointer"
-                style={{ backgroundColor: "var(--color-blush)", borderColor: expanded === u.id ? "var(--color-plum)" : "var(--color-dusty-rose)" }}
-                onClick={() => setExpanded(expanded === u.id ? null : u.id)}>
+        {/* Quick actions */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Quick Actions</p>
+          <div className="flex flex-wrap gap-2 mt-3">
+            <button onClick={unlockAllThemes} style={btnStyle}>Unlock all themes</button>
+            <button onClick={unlockAllProducts} style={btnStyle}>Unlock all products</button>
+            <button onClick={generateWeeklyInsight} style={btnOutline}>Generate weekly insight</button>
+          </div>
+        </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm truncate" style={{ color: "var(--color-dark)", fontWeight: 600 }}>
-                        {u.displayName || u.email}
-                      </p>
-                      {u.isPremium && (
-                        <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>P</span>
-                      )}
-                    </div>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--color-mauve)" }}>
-                      {u.stats.totalEntries} {pl ? "wpisów" : "entries"} · {u.lastSignIn ? <TimeAgo date={u.lastSignIn} /> : "never"}
-                    </p>
-                  </div>
-                  <ScoreBadge score={u.engagementScore} />
+        {/* Referrals */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Referrals</p>
+          <p style={{ ...valueStyle, marginTop: "4px" }}>Code: <span style={{ fontWeight: 600 }}>{referralCode || "none"}</span></p>
+          <p style={{ ...valueStyle }}>Total: {referrals.length} — Completed: {referrals.filter(r => r.status === "completed").length}</p>
+
+          <p style={{ ...labelStyle, marginTop: "12px" }}>Rewards</p>
+          {rewards.length === 0 ? (
+            <p style={{ ...valueStyle, opacity: 0.5 }}>No rewards yet</p>
+          ) : (
+            rewards.map(r => (
+              <p key={r.id} style={valueStyle}>{r.reward_type} — {r.claimed ? "Claimed" : "Unclaimed"}</p>
+            ))
+          )}
+
+          <div className="flex flex-wrap gap-2 mt-3">
+            <button onClick={() => simulateReferrals(3)} style={btnOutline}>+3 referrals (free analysis)</button>
+            <button onClick={() => simulateReferrals(7)} style={btnOutline}>+7 more (=10, monthly report)</button>
+            <button onClick={() => simulateReferrals(10)} style={btnOutline}>+10 more (=20, 30% discount)</button>
+            <button onClick={clearTestReferrals} style={{ ...btnOutline, color: "var(--color-dusty-rose)" }}>Clear test referrals</button>
+          </div>
+        </div>
+
+        {/* Purchases */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>My Purchases ({purchases.length})</p>
+          {purchases.length === 0 ? (
+            <p style={{ ...valueStyle, opacity: 0.5 }}>No purchases</p>
+          ) : (
+            <div className="space-y-2 mt-2">
+              {purchases.map(p => (
+                <div key={p.id} className="flex justify-between items-center">
+                  <p style={{ fontSize: "13px", color: "var(--color-dark)" }}>{(p.shop_products as any)?.name || p.product_id}</p>
+                  <p style={{ fontSize: "10px", color: p.used_at ? "var(--color-dusty-rose)" : "var(--color-plum)" }}>
+                    {p.used_at ? "Used" : "Active"}
+                  </p>
                 </div>
-
-                {expanded === u.id && (
-                  <div className="mt-4 pt-4 space-y-3" style={{ borderTop: "1px solid var(--color-dusty-rose)" }}>
-                    <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{u.email}</p>
-                    <p className="text-xs" style={{ color: "var(--color-mauve)" }}>
-                      {pl ? "Dołączyła" : "Joined"}: {new Date(u.createdAt).toLocaleDateString(pl ? "pl-PL" : "en-GB")} ({u.daysSinceCreation} {pl ? "dni temu" : "days ago"})
-                    </p>
-                    <div className="grid grid-cols-4 gap-2 text-center">
-                      {[
-                        { label: pl ? "Dz" : "Jn", value: u.stats.journalCount },
-                        { label: pl ? "Sn" : "Dr", value: u.stats.dreamCount },
-                        { label: pl ? "Ci" : "Sh", value: u.stats.shadowCount },
-                        { label: pl ? "Cy" : "Cy", value: u.stats.cycleCount },
-                      ].map((s) => (
-                        <div key={s.label} className="rounded-lg p-2" style={{ backgroundColor: "var(--color-cream)" }}>
-                          <p className="text-lg" style={{ color: "var(--color-dark)", fontWeight: 600 }}>{s.value}</p>
-                          <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{s.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      {[
-                        { label: "Workbooks", value: u.stats.completedWorkbooks },
-                        { label: pl ? "Analizy" : "Analyses", value: u.stats.analysisCount },
-                        { label: pl ? "Raporty" : "Reports", value: u.stats.reportCount },
-                      ].map((s) => (
-                        <div key={s.label} className="rounded-lg p-2" style={{ backgroundColor: "var(--color-cream)" }}>
-                          <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 600 }}>{s.value}</p>
-                          <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{s.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="pt-2">
-                      <p className="text-xs" style={{ color: "var(--color-dark)" }}>
-                        <span style={{ fontWeight: 600 }}>Engagement: </span>
-                        {u.engagementScore >= 70 ? (pl ? "♡ Wysoki rezonans. Ta osoba pracuje nad sobą regularnie i głęboko." : "♡ High resonance. This person works on themselves regularly and deeply.") :
-                         u.engagementScore >= 40 ? (pl ? "Rośnie. Wraca, pisze, eksploruje." : "Growing. Returns, writes, explores.") :
-                         u.engagementScore >= 15 ? (pl ? "Eksploruje. Zaczyna się otwierać." : "Exploring. Starting to open up.") :
-                         (pl ? "Nowa. Za wcześnie na ocenę." : "New. Too early to assess.")}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ACTIVITY TAB */}
-        {tab === "activity" && stats && (
-          <div className="rounded-2xl border p-4" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-            <div className="space-y-3">
-              {stats.activity.map((a, i) => {
-                const info = activityLabels[a.type] || { en: a.type, pl: a.type, color: "#9B6B8D" };
-                return (
-                  <div key={i} className="flex items-center justify-between py-2" style={{ borderBottom: i < stats.activity.length - 1 ? "1px solid var(--color-dusty-rose)" : "none" }}>
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: info.color }} />
-                      <div className="min-w-0">
-                        <p className="text-sm truncate" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{a.user.split("@")[0]}</p>
-                        <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{pl ? info.pl : info.en}</p>
-                      </div>
-                    </div>
-                    <span className="text-xs flex-shrink-0 ml-2" style={{ color: "var(--color-dusty-rose)" }}>
-                      <TimeAgo date={a.at} />
-                    </span>
-                  </div>
-                );
-              })}
+              ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Weekly Insight */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Latest Weekly Insight</p>
+          {weeklyInsight ? (
+            <p style={{ ...valueStyle, lineHeight: "1.6", marginTop: "8px" }}>{weeklyInsight}</p>
+          ) : (
+            <p style={{ ...valueStyle, opacity: 0.5 }}>None generated yet</p>
+          )}
+        </div>
+
       </main>
     </div>
   );

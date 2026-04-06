@@ -32,6 +32,7 @@ export default function ProfilePage() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [createdAt, setCreatedAt] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [refTotal, setRefTotal] = useState(0);
   const [refActive, setRefActive] = useState(0);
 
@@ -45,8 +46,9 @@ export default function ProfilePage() {
     setEmail(user.email || "");
     setCreatedAt(user.created_at);
 
-    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium, is_admin").eq("id", user.id).single();
     setIsPremium(profile?.is_premium || false);
+    setIsAdmin(profile?.is_admin || false);
     const { data: refs } = await supabase.from("referrals").select("status").eq("referrer_id", user.id);
     if (refs) {
       setRefTotal(refs.length);

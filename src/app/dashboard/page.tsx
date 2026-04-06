@@ -139,37 +139,10 @@ export default function DashboardPage() {
   const [greeting, setGreeting] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
-  const [weeklyInsight, setWeeklyInsight] = useState<string | null>(null);
-  const [insightLoading, setInsightLoading] = useState(false);
 
   useEffect(() => {
     setMoon(getMoonPhase());
     setGreeting(getGreeting(language));
-
-    // Check premium status + weekly insight
-    const checkPremium = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("is_premium")
-        .eq("id", user.id)
-        .single();
-      if (profile?.is_premium) {
-        setIsPremium(true);
-        setInsightLoading(true);
-        try {
-          const res = await fetch("/api/weekly-insight");
-          if (res.ok) {
-            const data = await res.json();
-            setWeeklyInsight(data.insight);
-          }
-        } catch {}
-        setInsightLoading(false);
-      }
-    };
-    checkPremium();
 
     // Check referral completion
     const checkReferral = async () => {
@@ -331,36 +304,6 @@ export default function DashboardPage() {
             </p>
           </div>
         </section>
-
-        {/* Weekly Insight (Premium) */}
-        {isPremium && (
-          <section className="max-w-md mx-auto">
-            <div className="rounded-2xl p-5 space-y-3" style={{ background: "var(--color-blush)", border: "1px solid color-mix(in srgb, var(--color-gold) 30%, transparent)" }}>
-              <div className="flex items-center gap-2">
-                <span className="text-xs" style={{ color: "var(--color-gold)" }}>✦</span>
-                <p className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
-                  {language === "pl" ? "Tygodniowy wgląd" : "Weekly Insight"}
-                </p>
-              </div>
-              {insightLoading ? (
-                <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{t("loading")}</p>
-              ) : weeklyInsight ? (
-                <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "Georgia, serif" }}>
-                  {weeklyInsight.length > 200 ? weeklyInsight.slice(0, 200) + "..." : weeklyInsight}
-                </p>
-              ) : (
-                <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
-                  {language === "pl" ? "Pisz dziennik i zapisuj sny. Twój wgląd pojawi się w poniedziałek." : "Journal and record dreams. Your insight appears on Monday."}
-                </p>
-              )}
-              {weeklyInsight && weeklyInsight.length > 200 && (
-                <button onClick={() => router.push("/reports")} className="text-xs" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
-                  {language === "pl" ? "Czytaj dalej →" : "Read more →"}
-                </button>
-              )}
-            </div>
-          </section>
-        )}
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4">
