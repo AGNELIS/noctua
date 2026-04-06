@@ -233,10 +233,10 @@ const saveName = async () => {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px" }}>
             {[
               { label: language === "pl" ? "Wpisy" : "Entries", value: stats.journalCount },
-              { label: language === "pl" ? "Sny" : "Dreams", value: stats.dreamCount },
-              { label: language === "pl" ? "Symbole" : "Symbols", value: stats.symbolCount },
               { label: language === "pl" ? "Cień" : "Shadow", value: stats.shadowCount },
+              { label: language === "pl" ? "Sny" : "Dreams", value: stats.dreamCount },
               { label: language === "pl" ? "Cykl" : "Cycle", value: stats.cycleCount },
+              { label: language === "pl" ? "Symbole" : "Symbols", value: stats.symbolCount },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1, fontWeight: 600 }}>{s.value}</p>
