@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getMoonPhase } from "@/lib/moon";
-import { getDailyInsight } from "@/lib/moon";
+import { getMoonPhase, getDailyInsight, getSeasonalShadowPrompt, getSeason } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/i18n";
 
@@ -46,7 +45,6 @@ export default function ShadowWorkPage() {
     "Waning Crescent": "moon_waning_crescent",
   };
   const moon = getMoonPhase();
-  const todayPrompt = getDailyInsight(moon.phase, language);
 
   const [response, setResponse] = useState("");
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
@@ -59,6 +57,18 @@ export default function ShadowWorkPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [editEmotions, setEditEmotions] = useState<string[]>([]);
+  const [isPremium, setIsPremium] = useState(false);
+
+  const todayPrompt = isPremium
+    ? getSeasonalShadowPrompt(moon.phase, language)
+    : getDailyInsight(moon.phase, language);
+  const season = getSeason();
+  const seasonLabel: Record<string, { en: string; pl: string }> = {
+    spring: { en: "Spring", pl: "Wiosna" },
+    summer: { en: "Summer", pl: "Lato" },
+    autumn: { en: "Autumn", pl: "Jesień" },
+    winter: { en: "Winter", pl: "Zima" },
+  };
 
   useEffect(() => {
     loadEntries();
@@ -68,6 +78,13 @@ export default function ShadowWorkPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_premium")
+      .eq("id", user.id)
+      .single();
+    setIsPremium(profile?.is_premium || false);
 
     const { data } = await supabase
       .from("shadow_work_entries")
@@ -179,6 +196,11 @@ export default function ShadowWorkPage() {
         <section className="text-center space-y-4 pt-4">
           <p className="text-base uppercase tracking-widest" style={{ color: "var(--color-mauve)", fontWeight: 600 }}>
             {t((moonPhaseKey[moon.phase] || "moon_new") as TranslationKey)}
+            {isPremium && (
+              <span className="ml-2 text-xs tracking-wider" style={{ color: "var(--color-gold)" }}>
+                · {seasonLabel[season]?.[language] || seasonLabel[season]?.en}
+              </span>
+            )}
           </p>
           <p
             className="text-2xl md:text-3xl leading-relaxed"

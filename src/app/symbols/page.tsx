@@ -46,16 +46,26 @@ export default function SymbolsPage() {
 
   const loadSymbols = async () => {
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_premium")
+      .eq("id", user!.id)
+      .single();
+    const userIsPremium = profile?.is_premium || false;
+
     const { data: purchases } = await supabase
       .from("user_purchases")
       .select("product_id, shop_products(name)")
       .eq("shop_products.category", "symbol_pack");
 
     const ownsExtended = (purchases || []).some((p: any) => p.shop_products?.name === "Extended Dream Symbols");
-    setHasExtended(ownsExtended);
+    const hasFullAccess = ownsExtended || userIsPremium;
+    setHasExtended(hasFullAccess);
 
     let query = supabase.from("dream_symbols").select("*").order("symbol", { ascending: true });
-    if (!ownsExtended) query = query.eq("is_premium", false);
+    if (!hasFullAccess) query = query.eq("is_premium", false);
 
     const { data } = await query;
     setSymbols(data || []);
@@ -88,10 +98,10 @@ export default function SymbolsPage() {
         ) : (
           <div className="text-center space-y-2">
             <p className="text-xs" style={{ color: "var(--color-mauve)" }}>{freeCount} {language === "pl" ? "symboli" : "symbols"}</p>
-            <button onClick={() => router.push("/shop")}
+            <button onClick={() => router.push("/premium")}
               className="text-xs px-4 py-1.5 rounded-full border transition-all hover:scale-105"
               style={{ borderColor: "var(--color-gold)", color: "var(--color-gold)" }}>
-              {language === "pl" ? "Odblokuj wiecej symboli" : "Unlock more symbols"} →
+              {language === "pl" ? "Przejdź na Premium — wszystkie symbole" : "Go Premium — all symbols unlocked"} →
             </button>
           </div>
         )}

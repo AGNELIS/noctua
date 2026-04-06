@@ -166,6 +166,18 @@ const translations = {
   auth_set_password: { en: "Set new password", pl: "Ustaw nowe hasło" },
   auth_setting_password: { en: "Saving...", pl: "Zapisywanie..." },
 
+  weekly_insight_title: { en: "Weekly Insight", pl: "Tygodniowy wgląd" },
+  weekly_insight_empty: { en: "Journal and record dreams. Your insight appears on Monday.", pl: "Pisz dziennik i zapisuj sny. Twój wgląd pojawi się w poniedziałek." },
+  weekly_insight_more: { en: "Read more", pl: "Czytaj dalej" },
+  premium_hero_line1: { en: "I see your patterns.", pl: "Widzę twoje wzorce." },
+  premium_hero_line2: { en: "Let me show you.", pl: "Pokażę ci je." },
+  premium_hero_desc: { en: "You are not paying for features. You are paying for someone to see what you cannot see yourself.", pl: "Nie płacisz za funkcje. Płacisz za to, że ktoś widzi to, czego sama nie widzisz." },
+  premium_formula: { en: "Premium = I understand you. I guide you. I show you patterns.", pl: "Premium = Rozumiem cię. Prowadzę cię. Pokazuję ci wzorce." },
+  season_spring: { en: "Spring", pl: "Wiosna" },
+  season_summer: { en: "Summer", pl: "Lato" },
+  season_autumn: { en: "Autumn", pl: "Jesień" },
+  season_winter: { en: "Winter", pl: "Zima" },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
