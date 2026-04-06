@@ -10,6 +10,7 @@ export default function PremiumPage() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [loadingSubscribe, setLoadingSubscribe] = useState(false);
   const [loadingPack, setLoadingPack] = useState(false);
+  const [promoCode, setPromoCode] = useState<string | null>(null);
 
   const handleSubscribe = async () => {
     setLoadingSubscribe(true);
@@ -17,7 +18,7 @@ export default function PremiumPage() {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: billingCycle }),
+        body: JSON.stringify({ plan: billingCycle, promoCode }),
       });
       const data = await res.json();
       if (data.url) {
