@@ -267,9 +267,19 @@ const saveName = async () => {
 {/* Premium */}
         <section>
           {isPremium ? (
-            <div className="w-full py-3 rounded-xl text-sm tracking-wide text-center"
-              style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
-              {language === "pl" ? "Premium aktywne ♡" : "Premium active ♡"}
+            <div className="space-y-2">
+              <div className="w-full py-3 rounded-xl text-sm tracking-wide text-center"
+                style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
+                {language === "pl" ? "Premium aktywne ♡" : "Premium active ♡"}
+              </div>
+              <button onClick={async () => {
+                const res = await fetch("/api/billing-portal", { method: "POST" });
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
+              }} className="w-full py-2 rounded-xl text-xs tracking-wide transition-all border"
+                style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)", fontWeight: 500 }}>
+                {language === "pl" ? "Zarządzaj subskrypcją" : "Manage subscription"}
+              </button>
             </div>
           ) : (
             <button onClick={() => router.push("/premium")}
