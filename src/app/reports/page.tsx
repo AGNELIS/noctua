@@ -157,14 +157,15 @@ export default function ReportsPage() {
               ? (pl ? "Czytam Twoje wzorce..." : "Reading your patterns...")
               : (pl ? "Nowy odczyt" : "New reading")}
           </button>
-          {error && (
+          {error ? (
             <p className="text-sm leading-relaxed mt-3" style={{ color: "var(--color-dusty-rose)" }}>{error}</p>
+          ) : (
+            <p className="text-xs mt-3" style={{ color: "var(--color-mauve)", opacity: 0.6 }}>
+              {pl
+                ? "Minimum 8 wpisów od ostatniego odczytu. Pełny odczyt od 15 wpisów."
+                : "Minimum 8 entries since your last reading. Full reading from 15 entries."}
+            </p>
           )}
-          <p className="text-xs mt-3" style={{ color: "var(--color-mauve)", opacity: 0.6 }}>
-            {pl
-              ? "Minimum 8 wpisów od ostatniego odczytu. Pełny odczyt od 15 wpisów."
-              : "Minimum 8 entries since your last reading. Full reading from 15 entries."}
-          </p>
         </div>
 
         {/* Loading */}
