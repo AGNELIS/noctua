@@ -255,7 +255,7 @@ export default function ReportsPage() {
                       {/* Reflection */}
                       <div className="rounded-xl border p-4 mt-4 transition-colors duration-500" style={{ background: "var(--color-cream)", borderColor: "var(--color-dusty-rose)" }}>
                         <p className="text-base mb-3" style={{ color: "var(--color-plum)", fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
-                          {pl ? "Co czujesz po przeczytaniu?" : "What do you feel after reading this?"}
+                          {pl ? "Zapisz swoją refleksję..." : "Write your reflection..."}
                         </p>
                         {r.reflection_response ? (
                           <div>
