@@ -11,6 +11,7 @@ type Stats = {
   journalCount: number;
   dreamCount: number;
   symbolCount: number;
+  shadowCount: number;
   cycleCount: number;
 };
 
@@ -22,7 +23,7 @@ export default function ProfilePage() {
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [stats, setStats] = useState<Stats>({ journalCount: 0, dreamCount: 0, symbolCount: 0, cycleCount: 0 });
+  const [stats, setStats] = useState<Stats>({ journalCount: 0, dreamCount: 0, symbolCount: 0, shadowCount: 0, cycleCount: 0 });
   const [purchases, setPurchases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -54,16 +55,18 @@ export default function ProfilePage() {
     setDisplayName(profile?.display_name || "");
     setAvatarUrl(profile?.avatar_url || null);
 
-    const [journal, dreams, symbols, cycle] = await Promise.all([
+    const [journal, dreams, symbols, shadow, cycle] = await Promise.all([
       supabase.from("journal_entries").select("id", { count: "exact", head: true }),
       supabase.from("dream_entries").select("id", { count: "exact", head: true }),
       supabase.from("dream_symbols").select("id", { count: "exact", head: true }),
+      supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }),
       supabase.from("cycle_entries").select("id", { count: "exact", head: true }),
     ]);
     setStats({
       journalCount: journal.count || 0,
       dreamCount: dreams.count || 0,
       symbolCount: symbols.count || 0,
+      shadowCount: shadow.count || 0,
       cycleCount: cycle.count || 0,
     });
 
@@ -232,6 +235,7 @@ const saveName = async () => {
               { label: language === "pl" ? "Wpisy" : "Entries", value: stats.journalCount },
               { label: language === "pl" ? "Sny" : "Dreams", value: stats.dreamCount },
               { label: language === "pl" ? "Symbole" : "Symbols", value: stats.symbolCount },
+              { label: language === "pl" ? "Cień" : "Shadow", value: stats.shadowCount },
               { label: language === "pl" ? "Cykl" : "Cycle", value: stats.cycleCount },
             ].map((s) => (
               <div key={s.label} className="text-center">
