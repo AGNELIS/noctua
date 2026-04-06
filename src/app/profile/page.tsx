@@ -320,9 +320,9 @@ const saveName = async () => {
         {isPremium && (
           <section>
             <button onClick={() => router.push("/owl-panel")}
-              className="text-xs tracking-wide"
-              style={{ color: "var(--color-dusty-rose)", opacity: 0.4 }}>
-              ◇
+              className="w-full text-center py-2 text-sm tracking-wide"
+              style={{ color: "var(--color-mauve)", opacity: 0.5 }}>
+              ◇ ◇ ◇
             </button>
           </section>
         )}
