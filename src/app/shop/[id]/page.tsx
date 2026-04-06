@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { THEME_MAP } from "@/lib/themes";
 
 type Product = {
   id: string;
@@ -105,11 +106,31 @@ export default function ProductPage() {
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 
-        <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-          <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
-          </p>
-        </section>
+        {product.category === "theme" && THEME_MAP[product.name] ? (
+          <section className="space-y-4">
+            <div className="rounded-2xl overflow-hidden" style={{ height: "160px", background: THEME_MAP[product.name].gradient, border: "1px solid var(--color-dusty-rose)" }}>
+              <div className="flex items-end justify-center gap-3 h-full pb-5">
+                {Object.entries(THEME_MAP[product.name]).filter(([k]) => k !== "gradient").map(([key, color]) => (
+                  <div key={key} className="flex flex-col items-center gap-1">
+                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: color, border: "1.5px solid rgba(255,255,255,0.3)" }} />
+                    <span className="text-[9px]" style={{ color: THEME_MAP[product.name].dark, opacity: 0.6 }}>{key}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {product.description && (
+              <p className="text-sm text-center leading-relaxed" style={{ color: "var(--color-mauve)" }}>
+                {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
+              </p>
+            )}
+          </section>
+        ) : (
+          <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+            <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
+              {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
+            </p>
+          </section>
+        )}
 
         <section className="text-center space-y-4">
           <p className="text-3xl" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>
