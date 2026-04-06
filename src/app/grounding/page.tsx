@@ -30,7 +30,7 @@ const CRISIS_RESOURCES_EN = [
 
 const CRISIS_RESOURCES_PL = [
   { name: "Centrum Wsparcia", phone: "800 70 2222", description: "Bezpłatna pomoc kryzysowa 24/7", url: "https://centrumwsparcia.pl" },
-  { name: "Telefon Zaufania", phone: "116 123", description: "Wsparcie emocjonalne (EU)", url: "https://centrumwsparcia.pl" },
+  { name: "Telefon Zaufania", phone: "116 123", description: "Wsparcie emocjonalne (EU)", url: "https://116sos.pl" },
   { name: "Telefon dla Dzieci i Młodzieży", phone: "116 111", description: "Pomoc dla młodych osób", url: "https://116111.pl" },
   { name: "Fundacja ITAKA", phone: "801 002 801", description: "Pomoc w sytuacjach kryzysowych", url: "https://www.itaka.org.pl" },
 ];
