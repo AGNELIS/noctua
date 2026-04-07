@@ -51,8 +51,6 @@ export default function AnimatedBackground() {
     };
   }, [animationType]);
 
-  if (!animationType) return null;
-
   return (
     <>
       <div style={{ position: "fixed", top: "10px", right: "10px", background: "red", color: "white", padding: "8px", zIndex: 99999, fontSize: "12px" }}>
