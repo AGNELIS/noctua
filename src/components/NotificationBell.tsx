@@ -119,9 +119,9 @@ export default function NotificationBell() {
 
       {open && (
         <div style={{
-          position: "absolute",
-          top: "36px",
-          right: "0",
+          position: "fixed",
+          top: "60px",
+          right: "16px",
           width: "min(300px, calc(100vw - 32px))",
           maxHeight: "350px",
           overflowY: "auto",
@@ -131,7 +131,7 @@ export default function NotificationBell() {
           boxShadow: "0 8px 32px rgba(42,26,40,0.2)",
           backdropFilter: "blur(20px)",
           opacity: 1,
-          zIndex: 100,
+          zIndex: 99999,
         }}>
           <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--color-dusty-rose)" }}>
             <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--color-plum)", fontWeight: 600 }}>
