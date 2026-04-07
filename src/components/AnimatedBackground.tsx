@@ -7,6 +7,9 @@ const ANIMATED_THEMES: Record<string, string> = {
   "Moonstone": "moonstone",
   "Velvet Night": "velvet",
   "Obsidian Rose": "obsidian",
+  "Falling Stars": "falling-stars",
+  "Cherry Rain": "cherry-rain",
+  "Ocean Drift": "ocean-drift",
 };
 
 export default function AnimatedBackground() {
@@ -29,6 +32,42 @@ export default function AnimatedBackground() {
         s.style.width = size;
         s.style.height = size;
         starsRef.current.appendChild(s);
+      }
+    }
+    if (animationType === "falling-stars" && starsRef.current && starsRef.current.childNodes.length === 0) {
+      for (let i = 0; i < 15; i++) {
+        const s = document.createElement("div");
+        s.className = "noctua-fstar";
+        s.style.left = (5 + Math.random() * 80) + "%";
+        s.style.top = (Math.random() * 30) + "%";
+        s.style.animation = `noctuaFallStar ${3 + Math.random() * 4}s linear infinite`;
+        s.style.animationDelay = (Math.random() * 8) + "s";
+        const size = (1.5 + Math.random() * 2) + "px";
+        s.style.width = size;
+        s.style.height = size;
+        starsRef.current.appendChild(s);
+        const t = document.createElement("div");
+        t.className = "noctua-ftrail";
+        t.style.left = s.style.left;
+        t.style.top = s.style.top;
+        t.style.animation = `noctuaFallTrail ${3 + Math.random() * 4}s linear infinite`;
+        t.style.animationDelay = s.style.animationDelay;
+        starsRef.current.appendChild(t);
+      }
+    }
+    if (animationType === "cherry-rain" && petalsRef.current && petalsRef.current.childNodes.length === 0) {
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement("div");
+        p.className = "noctua-cherry";
+        p.style.left = (Math.random() * 100) + "%";
+        p.style.top = (-10 - Math.random() * 20) + "%";
+        p.style.width = (5 + Math.random() * 8) + "px";
+        p.style.height = (6 + Math.random() * 8) + "px";
+        p.style.background = `rgba(${200 + Math.floor(Math.random() * 55)},${80 + Math.floor(Math.random() * 60)},${100 + Math.floor(Math.random() * 60)},0.25)`;
+        p.style.setProperty("--rot", (Math.random() * 360) + "deg");
+        p.style.animation = `noctuaCherryFall ${6 + Math.random() * 8}s ease-in-out infinite`;
+        p.style.animationDelay = (Math.random() * 10) + "s";
+        petalsRef.current.appendChild(p);
       }
     }
     if (animationType === "obsidian" && petalsRef.current && petalsRef.current.childNodes.length === 0) {
@@ -145,6 +184,60 @@ export default function AnimatedBackground() {
           90% { opacity: 0.2; }
           100% { transform: translateY(-110vh) rotate(calc(var(--rot) + 180deg)) scale(0.6); opacity: 0; }
         }
+        .noctua-fstar {
+          position: absolute;
+          background: #ffe8a0;
+          border-radius: 50%;
+          opacity: 0;
+        }
+        @keyframes noctuaFallStar {
+          0% { transform: translateY(0) translateX(0); opacity: 0; }
+          5% { opacity: 0.9; }
+          70% { opacity: 0.4; }
+          100% { transform: translateY(100vh) translateX(80px); opacity: 0; }
+        }
+        .noctua-ftrail {
+          position: absolute;
+          width: 1px;
+          height: 30px;
+          background: linear-gradient(to bottom, rgba(255,232,160,0.5), transparent);
+          border-radius: 1px;
+          opacity: 0;
+          transform: rotate(-15deg);
+        }
+        @keyframes noctuaFallTrail {
+          0% { transform: translateY(0) translateX(0) rotate(-15deg); opacity: 0; }
+          5% { opacity: 0.7; }
+          50% { opacity: 0.2; }
+          100% { transform: translateY(100vh) translateX(80px) rotate(-15deg); opacity: 0; }
+        }
+        .noctua-cherry {
+          position: absolute;
+          border-radius: 50% 50% 50% 0;
+          opacity: 0;
+        }
+        @keyframes noctuaCherryFall {
+          0% { transform: translateY(0) rotate(var(--rot)) translateX(0); opacity: 0; }
+          8% { opacity: 0.6; }
+          50% { transform: translateY(50vh) rotate(calc(var(--rot) + 120deg)) translateX(40px); opacity: 0.4; }
+          100% { transform: translateY(110vh) rotate(calc(var(--rot) + 260deg)) translateX(-20px); opacity: 0; }
+        }
+        .noctua-ocean-wave {
+          position: absolute;
+          bottom: 0;
+          left: -20%;
+          width: 140%;
+          border-radius: 50%;
+        }
+        .noctua-ow0 { height: 60px; bottom: 0; background: rgba(40,100,160,0.04); animation: noctuaWaveMove 4s ease-in-out infinite; }
+        .noctua-ow1 { height: 80px; bottom: 12px; background: rgba(40,100,160,0.06); animation: noctuaWaveMove 5.5s ease-in-out infinite 0.8s; }
+        .noctua-ow2 { height: 100px; bottom: 24px; background: rgba(40,100,160,0.08); animation: noctuaWaveMove 7s ease-in-out infinite 1.6s; }
+        .noctua-ow3 { height: 120px; bottom: 36px; background: rgba(40,100,160,0.1); animation: noctuaWaveMove 8.5s ease-in-out infinite 2.4s; }
+        .noctua-ow4 { height: 140px; bottom: 48px; background: rgba(40,100,160,0.12); animation: noctuaWaveMove 10s ease-in-out infinite 3.2s; }
+        @keyframes noctuaWaveMove {
+          0%, 100% { transform: translateX(-5%) translateY(0); }
+          50% { transform: translateX(5%) translateY(-8px); }
+        }
         .noctua-volcanic-glow {
           position: absolute;
           bottom: 0;
@@ -161,6 +254,22 @@ export default function AnimatedBackground() {
       `}</style>
 
       <div className="noctua-anim-layer">
+        {animationType === "falling-stars" && (
+          <div ref={starsRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }} />
+        )}
+
+        {animationType === "cherry-rain" && (
+          <div ref={petalsRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", overflow: "hidden" }} />
+        )}
+
+        {animationType === "ocean-drift" && (
+          <>
+            {[0,1,2,3,4].map(i => (
+              <div key={i} className={`noctua-ocean-wave noctua-ow${i}`} />
+            ))}
+          </>
+        )}
+
         {animationType === "moonstone" && (
           <>
             <div className="noctua-aurora-wave noctua-aw1" />
