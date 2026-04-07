@@ -16,10 +16,21 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (!profile?.is_premium) {
-    return NextResponse.json({ error: "Premium required" }, { status: 403 });
+    // Check for purchased credit
+    const { data: product } = await supabase.from("shop_products").select("id").eq("name", "Weekly Insight").single();
+    if (product) {
+      const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", product.id).is("used_at", null).limit(1);
+      if (credit && credit.length > 0) {
+        // Will mark as used after generation
+      } else {
+        return NextResponse.json({ error: "Premium or purchase required" }, { status: 403 });
+      }
+    } else {
+      return NextResponse.json({ error: "Premium required" }, { status: 403 });
+    }
   }
 
-  const lang = profile.preferred_language === "pl" ? "pl" : "en";
+  const lang = profile?.preferred_language === "pl" ? "pl" : "en";
 
   // Check for cached insight this week
   const now = new Date();
@@ -143,6 +154,17 @@ Under 300 words. No markdown. No asterisks. No bold. No bullet points. No dashes
       insight_text: insightText,
       week_start: startOfWeek.toISOString().split("T")[0],
     });
+
+    // Use credit if not premium
+    if (!profile?.is_premium) {
+      const { data: product } = await supabase.from("shop_products").select("id").eq("name", "Weekly Insight").single();
+      if (product) {
+        const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", product.id).is("used_at", null).limit(1);
+        if (credit && credit.length > 0) {
+          await supabase.from("user_purchases").update({ used_at: new Date().toISOString() }).eq("id", credit[0].id);
+        }
+      }
+    }
 
     return NextResponse.json({ insight: insightText, cached: false });
   } catch (err) {

@@ -22,6 +22,7 @@ const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Cycle Alignment Workbook": { name: "Zeszyt harmonii cyklu", desc: "Prowadzony proces przez wszystkie cztery fazy cyklu. Odkryj czego potrzebujesz w każdej fazie, gdzie forsуjesz zamiast podążać i jak zsynchronizować się ze swoim ciałem." },
   "Your Monthly Insight": { name: "Twój miesięczny wgląd", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
   "Pattern Recognition Report": { name: "Raport rozpoznawania wzorców", desc: "Jednorazowa głęboka analiza ujawniająca Twoje powtarzające się wzorce emocjonalne, cykle behawioralne i martwe punkty na podstawie dziennika, snów i danych cyklu." },
+  "Weekly Insight": { name: "Tygodniowy wgląd", desc: "Osobisty odczyt AI z Twojego tygodnia. Na podstawie dziennika, snów i pracy z cieniem z ostatnich 7 dni. Nie podsumowanie. Czytanie." },
 };
 
 const ANIMATED_THEMES = ["Moonstone", "Velvet Night", "Obsidian Rose", "Falling Stars", "Cherry Rain", "Ocean Drift"];
