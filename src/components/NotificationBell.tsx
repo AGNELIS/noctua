@@ -126,9 +126,10 @@ export default function NotificationBell() {
           maxHeight: "350px",
           overflowY: "auto",
           borderRadius: "16px",
-          background: "var(--color-cream)",
+          background: "#FAF7F5",
           border: "1px solid var(--color-dusty-rose)",
           boxShadow: "0 8px 32px rgba(42,26,40,0.15)",
+          backdropFilter: "blur(20px)",
           zIndex: 100,
         }}>git add .
           <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--color-dusty-rose)" }}>
