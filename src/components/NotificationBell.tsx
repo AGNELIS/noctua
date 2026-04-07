@@ -25,6 +25,13 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    setTimeout(() => document.addEventListener("click", close), 10);
+    return () => document.removeEventListener("click", close);
+  }, [open]);
+
+  useEffect(() => {
     loadNotifications();
   }, []);
 
@@ -115,15 +122,15 @@ export default function NotificationBell() {
           position: "absolute",
           top: "36px",
           right: "0",
-          width: "300px",
-          maxHeight: "400px",
+          width: "min(300px, calc(100vw - 32px))",
+          maxHeight: "350px",
           overflowY: "auto",
           borderRadius: "16px",
           background: "var(--color-cream)",
           border: "1px solid var(--color-dusty-rose)",
           boxShadow: "0 8px 32px rgba(42,26,40,0.15)",
           zIndex: 100,
-        }}>
+        }}>git add .
           <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--color-dusty-rose)" }}>
             <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--color-plum)", fontWeight: 600 }}>
               {language === "pl" ? "Powiadomienia" : "Notifications"}
