@@ -23,17 +23,7 @@ export const DEFAULT_THEME: ThemeColors = {
 };
 
 export const THEME_MAP: Record<string, ThemeColors> = {
-  "Midnight Garden": {
-    cream: "#0c0c1e",
-    blush: "#141428",
-    "dusty-rose": "#e94560",
-    mauve: "#a46bbd",
-    plum: "#e06090",
-    gold: "#d4af37",
-    dark: "#ede0f5",
-    deep: "#f8f4fc",
-    gradient: "linear-gradient(180deg, #0c0c1e 0%, #1a1030 40%, #241440 100%)",
-  },
+  
   "Ocean Depths": {
     cream: "#f2fafa",
     blush: "#e0f0ef",
@@ -56,17 +46,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     deep: "#28101c",
     gradient: "linear-gradient(180deg, #fdf5f7 0%, #f5e4ea 35%, #ecd0dc 100%)",
   },
-  "Golden Hour": {
-    cream: "#fdfaf2",
-    blush: "#f8f0dc",
-    "dusty-rose": "#c8a050",
-    mauve: "#96703a",
-    plum: "#6b4a18",
-    gold: "#d4a020",
-    dark: "#3a2a10",
-    deep: "#1e1608",
-    gradient: "linear-gradient(180deg, #fdfaf2 0%, #f8f0dc 35%, #f0e4c0 100%)",
-  },
+  
   "Aurora Borealis": {
     cream: "#080814",
     blush: "#0e1024",
@@ -89,17 +69,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
     deep: "#1a0e28",
     gradient: "linear-gradient(180deg, #f8f4fc 0%, #f0e6f5 35%, #e4d4ec 100%)",
   },
-  "Ruby Flame": {
-    cream: "#fdf5f5",
-    blush: "#f5e0e0",
-    "dusty-rose": "#c47070",
-    mauve: "#a04040",
-    plum: "#7a2020",
-    gold: "#d4806a",
-    dark: "#3a1418",
-    deep: "#280c10",
-    gradient: "linear-gradient(180deg, #fdf5f5 0%, #f5e0e0 35%, #ecc8c8 100%)",
-  },
+  
   "Amber Glow": {
     cream: "#fdf9f2",
     blush: "#f5eadc",

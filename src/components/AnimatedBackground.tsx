@@ -172,7 +172,7 @@ export default function AnimatedBackground() {
         }
         .noctua-petal {
           position: absolute;
-          background: rgba(192, 88, 120, 0.15);
+          background: rgba(192, 88, 120, 0.3);
           border-radius: 50% 50% 50% 0;
           animation: noctuaPetalRise var(--dur) linear infinite;
           bottom: -20px;
@@ -229,11 +229,11 @@ export default function AnimatedBackground() {
           width: 140%;
           border-radius: 50%;
         }
-        .noctua-ow0 { height: 60px; bottom: 0; background: rgba(40,100,160,0.04); animation: noctuaWaveMove 4s ease-in-out infinite; }
-        .noctua-ow1 { height: 80px; bottom: 12px; background: rgba(40,100,160,0.06); animation: noctuaWaveMove 5.5s ease-in-out infinite 0.8s; }
-        .noctua-ow2 { height: 100px; bottom: 24px; background: rgba(40,100,160,0.08); animation: noctuaWaveMove 7s ease-in-out infinite 1.6s; }
-        .noctua-ow3 { height: 120px; bottom: 36px; background: rgba(40,100,160,0.1); animation: noctuaWaveMove 8.5s ease-in-out infinite 2.4s; }
-        .noctua-ow4 { height: 140px; bottom: 48px; background: rgba(40,100,160,0.12); animation: noctuaWaveMove 10s ease-in-out infinite 3.2s; }
+        .noctua-ow0 { height: 60px; bottom: 0; background: rgba(40,100,160,0.1); animation: noctuaWaveMove 4s ease-in-out infinite; }
+        .noctua-ow1 { height: 80px; bottom: 12px; background: rgba(40,100,160,0.14); animation: noctuaWaveMove 5.5s ease-in-out infinite 0.8s; }
+        .noctua-ow2 { height: 100px; bottom: 24px; background: rgba(40,100,160,0.18); animation: noctuaWaveMove 7s ease-in-out infinite 1.6s; }
+        .noctua-ow3 { height: 120px; bottom: 36px; background: rgba(40,100,160,0.22); animation: noctuaWaveMove 8.5s ease-in-out infinite 2.4s; }
+        .noctua-ow4 { height: 140px; bottom: 48px; background: rgba(40,100,160,0.26); animation: noctuaWaveMove 10s ease-in-out infinite 3.2s; }
         @keyframes noctuaWaveMove {
           0%, 100% { transform: translateX(-5%) translateY(0); }
           50% { transform: translateX(5%) translateY(-8px); }
@@ -244,7 +244,7 @@ export default function AnimatedBackground() {
           left: 0;
           width: 100%;
           height: 40%;
-          background: radial-gradient(ellipse at bottom center, rgba(180, 60, 80, 0.07) 0%, transparent 70%);
+          background: radial-gradient(ellipse at bottom center, rgba(180, 60, 80, 0.15) 0%, transparent 70%);
           animation: noctuaVolcanicPulse 6s ease-in-out infinite;
         }
         @keyframes noctuaVolcanicPulse {
