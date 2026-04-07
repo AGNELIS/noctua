@@ -63,14 +63,14 @@ export default function AnimatedBackground() {
           width: 100%;
           height: 100%;
           pointer-events: none;
-          z-index: 0;
+          z-index: 9999;
           overflow: hidden;
         }
         .noctua-aurora-wave {
           position: absolute;
           width: 200%;
           height: 120px;
-          opacity: 0.1;
+          opacity: 0.25;
           border-radius: 50%;
           filter: blur(30px);
         }
