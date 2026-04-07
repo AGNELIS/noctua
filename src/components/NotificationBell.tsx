@@ -28,7 +28,11 @@ export default function NotificationBell() {
     if (!open) return;
     const close = () => setOpen(false);
     setTimeout(() => document.addEventListener("click", close), 10);
-    return () => document.removeEventListener("click", close);
+    window.addEventListener("scroll", close, true);
+    return () => {
+      document.removeEventListener("click", close);
+      window.removeEventListener("scroll", close, true);
+    };
   }, [open]);
 
   useEffect(() => {
