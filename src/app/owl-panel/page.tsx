@@ -406,8 +406,14 @@ export default function OwlPanelPage() {
               const owned = purchases.some(p => (p.shop_products as any)?.name === name);
               return (
                 <div key={name} className="flex items-center gap-2">
-                  <button onClick={() => {
-                    applyTheme(name);
+                  <button onClick={async () => {
+                    const supabase = createClient();
+                    const { data: prod } = await supabase.from("shop_products").select("id").eq("name", name).single();
+                    if (prod) {
+                      await switchTheme(prod.id, name);
+                    } else {
+                      applyTheme(name);
+                    }
                     showMsg(`Preview: ${name}`);
                   }}
                     className="flex-1 flex items-center justify-between py-2 px-3 rounded-xl transition-all"

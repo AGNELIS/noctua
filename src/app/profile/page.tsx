@@ -319,7 +319,7 @@ const saveName = async () => {
         </section>
 
         {/* Admin */}
-        {isPremium && (
+        {isAdmin && (
           <section>
             <button onClick={() => router.push("/owl-panel")}
               className="w-full text-center py-2 text-sm tracking-wide"
