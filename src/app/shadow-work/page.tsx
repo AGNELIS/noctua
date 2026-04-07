@@ -116,6 +116,7 @@ export default function ShadowWorkPage() {
     setSelectedEmotions([]);
     setSaving(false);
     setSaved(true);
+    try { fetch("/api/check-entry-milestones", { method: "POST" }); } catch {}
     setTimeout(() => setSaved(false), 2000);
     loadEntries();
   };

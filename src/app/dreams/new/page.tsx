@@ -53,7 +53,10 @@ export default function NewDreamEntry() {
       symbols, dream_date: new Date().toISOString().split("T")[0],
     });
     if (insertError) { setError(insertError.message); setSaving(false); }
-    else { router.push("/dreams"); }
+    else {
+      try { fetch("/api/check-entry-milestones", { method: "POST" }); } catch {}
+      router.push("/dreams?saved=true");
+    }
   };
 
   return (

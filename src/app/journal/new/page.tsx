@@ -54,7 +54,10 @@ export default function NewJournalEntry() {
       mood: moods, pattern_tag: patternTag?.trim() || null, entry_date: new Date().toISOString().split("T")[0],
     });
     if (insertError) { setError(insertError.message); setSaving(false); }
-    else { router.push("/journal"); }
+    else {
+      try { fetch("/api/check-entry-milestones", { method: "POST" }); } catch {}
+      router.push("/journal?saved=true");
+    }
   };
 
   return (

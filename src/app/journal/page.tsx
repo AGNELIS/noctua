@@ -76,11 +76,21 @@ export default function JournalPage() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [showTeaser, setShowTeaser] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
 
-  useEffect(() => { loadEntries(); }, []);
+  useEffect(() => {
+    loadEntries();
+    if (typeof window !== "undefined" && window.location.search.includes("saved=true")) setShowTeaser(true);
+  }, []);
 
   const loadEntries = async () => {
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase.from("profiles").select("is_premium").eq("id", user.id).single();
+      setIsPremium(profile?.is_premium || false);
+    }
     const { data } = await supabase
       .from("journal_entries")
       .select("*")
@@ -114,6 +124,27 @@ export default function JournalPage() {
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("journal_title")}</h1>
       </header>
+
+      {/* Paywall teaser after saving entry */}
+        {showTeaser && !isPremium && entries.length >= 3 && (
+          <div className="max-w-xl mx-auto px-6 pt-4">
+            <div className="rounded-2xl border p-5 space-y-3" style={{ background: "var(--color-blush)", borderColor: "var(--color-mauve)" }}>
+              <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                {language === "pl"
+                  ? `Masz ${entries.length} wpisów. Mogę pokazać ci jakie wzorce się wyłaniają.`
+                  : `You have ${entries.length} entries. I can show you what patterns are emerging.`}
+              </p>
+              <div className="flex gap-2">
+                <button onClick={() => router.push("/premium")} className="px-4 py-2 rounded-xl text-xs tracking-wide" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+                  {language === "pl" ? "Odblokuj wzorce" : "Unlock patterns"}
+                </button>
+                <button onClick={() => setShowTeaser(false)} className="px-4 py-2 rounded-xl text-xs" style={{ color: "var(--color-mauve)" }}>
+                  {language === "pl" ? "Nie teraz" : "Not now"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       <main className="max-w-xl mx-auto px-6 pb-12">
         {loading ? (
