@@ -53,9 +53,7 @@ export default function AnimatedBackground() {
 
   return (
     <>
-      <div style={{ position: "fixed", top: "10px", right: "10px", background: "red", color: "white", padding: "8px", zIndex: 99999, fontSize: "12px" }}>
-        DEBUG: name={activeThemeName || "null"} type={animationType || "null"}
-      </div>
+      
       <style>{`
         .noctua-anim-layer {
           position: fixed;

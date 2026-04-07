@@ -40,15 +40,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       .eq("id", user.id)
       .single();
 
-    console.log("THEME DEBUG: active_theme =", profile?.active_theme);
     if (profile?.active_theme) {
       // Fetch theme name from shop_products
-      const { data: product, error } = await supabase
+      const { data: product } = await supabase
         .from("shop_products")
         .select("name")
         .eq("id", profile.active_theme)
         .single();
-      console.log("THEME DEBUG: product =", product, "error =", error);
+      
       if (product) {
         setActiveThemeId(profile.active_theme);
         setActiveThemeName(product.name);
