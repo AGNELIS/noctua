@@ -60,6 +60,9 @@ export default function ReferralPage() {
     const completed = (refs || []).filter((r) => r.status === "completed").length;
     setCompletedCount(completed);
 
+    // Auto-create rewards at thresholds
+    try { await fetch("/api/check-referral-rewards", { method: "POST" }); } catch {}
+
     const { data: rews } = await supabase.from("referral_rewards").select("reward_type").eq("user_id", user.id);
     setRewards((rews || []).map((r) => r.reward_type));
 

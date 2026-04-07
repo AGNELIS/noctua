@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getMoonPhase, getMoonSign, getGreeting, getDailyInsight, type MoonPhaseInfo, type MoonSignInfo } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
+import NotificationBell from "@/components/NotificationBell";
 
 const NAV_CARDS = [
   { titleKey: "nav_journal" as const, descKey: "nav_journal_desc" as const, href: "/journal" },
@@ -219,17 +220,20 @@ export default function DashboardPage() {
         >
           Noctua
         </h1>
-        <button
-          onClick={() => router.push("/profile")}
-          className="transition-all hover:scale-110"
-          aria-label="Profile"
-        >
-          <img
-            src="/noctua-owl-icon.png"
-            alt="Profile"
-            className="w-16 h-16 object-contain"
-          />
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <button
+            onClick={() => router.push("/profile")}
+            className="transition-all hover:scale-110"
+            aria-label="Profile"
+          >
+            <img
+              src="/noctua-owl-icon.png"
+              alt="Profile"
+              className="w-16 h-16 object-contain"
+            />
+          </button>
+        </div>
       </header>
 
       {/* Main content */}
