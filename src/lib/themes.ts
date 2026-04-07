@@ -24,17 +24,6 @@ export const DEFAULT_THEME: ThemeColors = {
 
 export const THEME_MAP: Record<string, ThemeColors> = {
   
-  "Ocean Depths": {
-    cream: "#f2fafa",
-    blush: "#e0f0ef",
-    "dusty-rose": "#6aada5",
-    mauve: "#3a7a76",
-    plum: "#1c4a48",
-    gold: "#60bab2",
-    dark: "#102e2d",
-    deep: "#081c1c",
-    gradient: "linear-gradient(180deg, #f2fafa 0%, #e0f0ef 35%, #c8e8e6 100%)",
-  },
   "Cherry Blossom": {
     cream: "#fdf5f7",
     blush: "#f5e4ea",
