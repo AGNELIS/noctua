@@ -145,6 +145,9 @@ export default function DashboardPage() {
     setMoon(getMoonPhase());
     setGreeting(getGreeting(language));
 
+    // Check entry milestones (notifications)
+    try { fetch("/api/check-entry-milestones", { method: "POST" }); } catch {}
+
     // Check referral completion
     const checkReferral = async () => {
       const supabase = createClient();

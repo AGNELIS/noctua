@@ -30,8 +30,25 @@ export async function POST(req: NextRequest) {
   const { count: cSince } = await supabase.from("cycle_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDate);
 
   const totalSinceLastReading = (jSince || 0) + (dSince || 0) + (sSince || 0) + (cSince || 0);
-  const { data: adminProfile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+  const { data: adminProfile } = await supabase.from("profiles").select("is_admin, is_premium").eq("id", user.id).single();
   const isAdmin = adminProfile?.is_admin || false;
+  const isPremium = adminProfile?.is_premium || false;
+
+  if (!isAdmin && !isPremium) {
+    // Check if user has a purchased report credit
+    const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Monthly Reading").single();
+    if (reportProduct) {
+      const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", reportProduct.id).is("used_at", null).limit(1);
+      if (!credit || credit.length === 0) {
+        return NextResponse.json({
+          error: "no_access",
+          message: lang === "pl"
+            ? "Odczyty są dostępne dla użytkowników Premium lub jako jednorazowy zakup w sklepie."
+            : "Readings are available for Premium subscribers or as a single purchase in the shop.",
+        }, { status: 403 });
+      }
+    }
+  }
   const reportType = totalSinceLastReading >= 15 ? "full" : "mid";
   if (!isAdmin && totalSinceLastReading < 8) {
     return NextResponse.json({
@@ -209,6 +226,28 @@ Keep the response under 600 words. Do NOT use any markdown formatting. No asteri
       report_text: reportText,
       report_data: reportData,
       language: lang,
+    });
+
+    // Use report credit if not premium
+    if (!isAdmin && !isPremium) {
+      const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Monthly Reading").single();
+      if (reportProduct) {
+        const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", reportProduct.id).is("used_at", null).limit(1);
+        if (credit && credit.length > 0) {
+          await supabase.from("user_purchases").update({ used_at: new Date().toISOString() }).eq("id", credit[0].id);
+        }
+      }
+    }
+
+    // Notify user
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      type: "report_ready",
+      title_en: reportType === "full" ? "Your full monthly reading is ready" : "Your mid-month reading is ready",
+      title_pl: reportType === "full" ? "Twój pełny odczyt miesięczny jest gotowy" : "Twój odczyt połowy miesiąca jest gotowy",
+      body_en: "Open it to see what patterns emerged this month.",
+      body_pl: "Otwórz, żeby zobaczyć jakie wzorce pojawiły się w tym miesiącu.",
+      link: "/reports",
     });
 
     return NextResponse.json({ report: reportText, data: reportData, reportType, cached: false });

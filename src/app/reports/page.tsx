@@ -46,6 +46,8 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
+  const [hasCredit, setHasCredit] = useState(false);
 
   useEffect(() => {
     loadReports();
@@ -56,6 +58,15 @@ export default function ReportsPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
+
+    const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
+    setIsPremium(profile?.is_premium || profile?.is_admin || false);
+
+    const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Monthly Reading").single();
+    if (reportProduct) {
+      const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", reportProduct.id).is("used_at", null).limit(1);
+      setHasCredit((credit || []).length > 0);
+    }
 
     const { data } = await supabase
       .from("smart_reports")
@@ -147,9 +158,26 @@ export default function ReportsPage() {
       <main className="max-w-xl mx-auto px-6 pb-16">
         {/* Generate button */}
         <div className="text-center pt-4 pb-6">
+          {!isPremium && !hasCredit && (
+            <div className="rounded-2xl border p-5 mb-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+              <p className="text-sm leading-relaxed mb-3" style={{ color: "var(--color-dark)" }}>
+                {pl
+                  ? "Odczyty są dostępne dla użytkowników Premium. Możesz też kupić pojedynczy odczyt w sklepie."
+                  : "Readings are available for Premium subscribers. You can also buy a single reading in the shop."}
+              </p>
+              <div className="flex gap-2 justify-center">
+                <button onClick={() => router.push("/premium")} className="px-4 py-2 rounded-xl text-xs tracking-wide" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+                  {pl ? "Premium" : "Go Premium"}
+                </button>
+                <button onClick={() => router.push("/shop")} className="px-4 py-2 rounded-xl text-xs tracking-wide border" style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-plum)", fontWeight: 500 }}>
+                  {pl ? "Kup odczyt" : "Buy reading"}
+                </button>
+              </div>
+            </div>
+          )}
           <button
             onClick={generateReport}
-            disabled={generating}
+            disabled={generating || (!isPremium && !hasCredit)}
             className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase transition-all disabled:opacity-50"
             style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
           >
