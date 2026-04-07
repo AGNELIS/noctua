@@ -222,21 +222,18 @@ export default function AnimatedBackground() {
           50% { transform: translateY(50vh) rotate(calc(var(--rot) + 120deg)) translateX(40px); opacity: 0.4; }
           100% { transform: translateY(110vh) rotate(calc(var(--rot) + 260deg)) translateX(-20px); opacity: 0; }
         }
-        .noctua-ocean-wave {
+        .noctua-ripple {
           position: absolute;
-          bottom: 0;
-          left: -20%;
-          width: 140%;
           border-radius: 50%;
+          border: 1px solid rgba(40,100,160,0.15);
+          animation: noctuaRipple var(--dur) ease-out infinite;
+          animation-delay: var(--delay);
+          opacity: 0;
+          transform: scale(0);
         }
-        .noctua-ow0 { height: 60px; bottom: 0; background: rgba(40,100,160,0.1); animation: noctuaWaveMove 4s ease-in-out infinite; }
-        .noctua-ow1 { height: 80px; bottom: 12px; background: rgba(40,100,160,0.14); animation: noctuaWaveMove 5.5s ease-in-out infinite 0.8s; }
-        .noctua-ow2 { height: 100px; bottom: 24px; background: rgba(40,100,160,0.18); animation: noctuaWaveMove 7s ease-in-out infinite 1.6s; }
-        .noctua-ow3 { height: 120px; bottom: 36px; background: rgba(40,100,160,0.22); animation: noctuaWaveMove 8.5s ease-in-out infinite 2.4s; }
-        .noctua-ow4 { height: 140px; bottom: 48px; background: rgba(40,100,160,0.26); animation: noctuaWaveMove 10s ease-in-out infinite 3.2s; }
-        @keyframes noctuaWaveMove {
-          0%, 100% { transform: translateX(-5%) translateY(0); }
-          50% { transform: translateX(5%) translateY(-8px); }
+        @keyframes noctuaRipple {
+          0% { transform: scale(0); opacity: 0.4; border-width: 2px; }
+          100% { transform: scale(1); opacity: 0; border-width: 0.5px; }
         }
         .noctua-volcanic-glow {
           position: absolute;
@@ -264,8 +261,16 @@ export default function AnimatedBackground() {
 
         {animationType === "ocean-drift" && (
           <>
-            {[0,1,2,3,4].map(i => (
-              <div key={i} className={`noctua-ocean-wave noctua-ow${i}`} />
+            {[
+              { x: "30%", y: "25%", size: 300, dur: 6, delay: 0 },
+              { x: "70%", y: "60%", size: 250, dur: 7, delay: 2 },
+              { x: "50%", y: "45%", size: 350, dur: 8, delay: 4 },
+              { x: "20%", y: "70%", size: 200, dur: 5, delay: 1 },
+              { x: "80%", y: "30%", size: 280, dur: 7, delay: 3 },
+              { x: "45%", y: "80%", size: 320, dur: 9, delay: 5 },
+              { x: "65%", y: "15%", size: 220, dur: 6, delay: 2.5 },
+            ].map((r, i) => (
+              <div key={i} className="noctua-ripple" style={{ left: r.x, top: r.y, width: r.size + "px", height: r.size + "px", marginLeft: -(r.size/2) + "px", marginTop: -(r.size/2) + "px", "--dur": r.dur + "s", "--delay": r.delay + "s" } as React.CSSProperties} />
             ))}
           </>
         )}
