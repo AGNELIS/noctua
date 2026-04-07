@@ -127,11 +127,12 @@ export default function NotificationBell() {
           overflowY: "auto",
           borderRadius: "16px",
           background: "#FAF7F5",
-          border: "1px solid var(--color-dusty-rose)",
-          boxShadow: "0 8px 32px rgba(42,26,40,0.15)",
+          border: "1px solid rgba(180,150,170,0.4)",
+          boxShadow: "0 8px 32px rgba(42,26,40,0.2)",
           backdropFilter: "blur(20px)",
+          opacity: 1,
           zIndex: 100,
-        }}>git add .
+        }}>
           <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--color-dusty-rose)" }}>
             <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.15em", color: "var(--color-plum)", fontWeight: 600 }}>
               {language === "pl" ? "Powiadomienia" : "Notifications"}
