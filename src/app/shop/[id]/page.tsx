@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
-import { THEME_MAP } from "@/lib/themes";
+import { THEME_MAP, type ThemeColors } from "@/lib/themes";
 
 type Product = {
   id: string;
@@ -23,6 +23,95 @@ const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Your Monthly Insight": { name: "Twój miesięczny wgląd", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
   "Pattern Recognition Report": { name: "Raport rozpoznawania wzorców", desc: "Jednorazowa głęboka analiza ujawniająca Twoje powtarzające się wzorce emocjonalne, cykle behawioralne i martwe punkty na podstawie dziennika, snów i danych cyklu." },
 };
+
+const ANIMATED_THEMES = ["Moonstone", "Velvet Night", "Obsidian Rose", "Falling Stars", "Cherry Rain", "Ocean Drift"];
+
+const ANIM_STYLES = `
+@keyframes prevAurora { 0%,100% { transform: translateX(-10%) scaleY(1); } 50% { transform: translateX(15%) scaleY(1.3); } }
+@keyframes prevTwinkle { 0%,100% { opacity: 0.1; transform: scale(0.8); } 50% { opacity: 0.85; transform: scale(1.2); } }
+@keyframes prevNebula { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.2) rotate(10deg); opacity: 1; } }
+@keyframes prevPetal { 0% { transform: translateY(0) rotate(25deg); opacity: 0; } 10% { opacity: 0.5; } 90% { opacity: 0.2; } 100% { transform: translateY(-200px) rotate(205deg) scale(0.6); opacity: 0; } }
+@keyframes prevVolcanic { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes prevFall { 0% { transform: translateY(0) translateX(0); opacity: 0; } 5% { opacity: 0.9; } 70% { opacity: 0.4; } 100% { transform: translateY(200px) translateX(30px); opacity: 0; } }
+@keyframes prevCherryFall { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 8% { opacity: 0.6; } 50% { opacity: 0.4; } 100% { transform: translateY(200px) rotate(180deg); opacity: 0; } }
+@keyframes prevRipple { 0% { transform: scale(0); opacity: 0.7; border-width: 3px; } 40% { opacity: 0.4; } 100% { transform: scale(1); opacity: 0; border-width: 0.5px; } }
+`;
+
+function ThemePreview({ name, colors }: { name: string; colors: ThemeColors }) {
+  const isAnimated = ANIMATED_THEMES.includes(name);
+
+  return (
+    <>
+      {isAnimated && <style dangerouslySetInnerHTML={{ __html: ANIM_STYLES }} />}
+      <div className="rounded-2xl overflow-hidden relative" style={{ height: "280px", background: colors.gradient, border: "1px solid " + colors["dusty-rose"] + "40" }}>
+        
+        {/* Animation layer */}
+        {name === "Moonstone" && (
+          <>
+            <div style={{ position: "absolute", width: "200%", height: "60px", opacity: 0.15, borderRadius: "50%", filter: "blur(20px)", background: "#9B6BCD", top: "15%", left: "-50%", animation: "prevAurora 8s ease-in-out infinite" }} />
+            <div style={{ position: "absolute", width: "200%", height: "50px", opacity: 0.1, borderRadius: "50%", filter: "blur(20px)", background: "#b498c8", top: "55%", left: "-30%", animation: "prevAurora 10s ease-in-out infinite reverse" }} />
+          </>
+        )}
+        {name === "Velvet Night" && (
+          <>
+            <div style={{ position: "absolute", width: "100px", height: "100px", borderRadius: "50%", filter: "blur(30px)", background: "rgba(152,88,160,0.2)", top: "10%", right: "10%", animation: "prevNebula 12s ease-in-out infinite" }} />
+            {Array.from({ length: 25 }).map((_, i) => (
+              <div key={i} style={{ position: "absolute", width: (1 + Math.random() * 2) + "px", height: (1 + Math.random() * 2) + "px", background: "#fff", borderRadius: "50%", left: (5 + i * 3.8) + "%", top: (5 + ((i * 17) % 90)) + "%", opacity: 0.2 + (i % 4) * 0.15, animation: `prevTwinkle ${2 + (i % 3) * 1.5}s ease-in-out infinite ${i * 0.3}s` }} />
+            ))}
+          </>
+        )}
+        {name === "Obsidian Rose" && (
+          <>
+            <div style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "40%", background: "radial-gradient(ellipse at bottom center, rgba(180,60,80,0.15) 0%, transparent 70%)", animation: "prevVolcanic 6s ease-in-out infinite" }} />
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} style={{ position: "absolute", width: (5 + i % 3 * 3) + "px", height: (6 + i % 3 * 3) + "px", background: "rgba(192,88,120,0.2)", borderRadius: "50% 50% 50% 0", bottom: "-10px", left: (10 + i * 11) + "%", animation: `prevPetal ${7 + i * 1.2}s linear infinite ${i * 1.5}s` }} />
+            ))}
+          </>
+        )}
+        {name === "Falling Stars" && (
+          <>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} style={{ position: "absolute", width: "2px", height: "2px", background: "#ffe8a0", borderRadius: "50%", left: (5 + i * 12) + "%", top: (5 + (i * 7) % 25) + "%", opacity: 0, animation: `prevFall ${3 + i * 0.5}s linear infinite ${i * 1.2}s` }} />
+            ))}
+          </>
+        )}
+        {name === "Cherry Rain" && (
+          <>
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} style={{ position: "absolute", width: (5 + i % 3 * 3) + "px", height: (6 + i % 3 * 3) + "px", background: `rgba(${210 + i * 4},${80 + i * 5},${100 + i * 5},0.25)`, borderRadius: "50% 50% 50% 0", top: "-10px", left: (5 + i * 9.5) + "%", animation: `prevCherryFall ${5 + i * 0.8}s ease-in-out infinite ${i * 1}s` }} />
+            ))}
+          </>
+        )}
+        {name === "Ocean Drift" && (
+          <>
+            {[
+              { x: "30%", y: "35%", size: 120, dur: 4, delay: 0 },
+              { x: "65%", y: "55%", size: 100, dur: 5, delay: 1.5 },
+              { x: "45%", y: "45%", size: 140, dur: 6, delay: 3 },
+            ].map((r, i) => (
+              <div key={i} style={{ position: "absolute", left: r.x, top: r.y, width: r.size + "px", height: r.size + "px", marginLeft: -(r.size/2) + "px", marginTop: -(r.size/2) + "px", borderRadius: "50%", border: "2px solid rgba(30,80,140,0.3)", animation: `prevRipple ${r.dur}s ease-out infinite ${r.delay}s`, opacity: 0 }} />
+            ))}
+          </>
+        )}
+
+        {/* Mini dashboard mockup */}
+        <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: "24px", textAlign: "center" }}>
+          <p style={{ fontSize: "10px", letterSpacing: "0.3em", textTransform: "uppercase", color: colors.plum, fontWeight: 700, marginBottom: "8px", fontFamily: "'Cinzel Decorative', serif" }}>Noctua</p>
+          <p style={{ fontSize: "20px", color: colors.dark, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400, marginBottom: "4px" }}>Full Moon</p>
+          <p style={{ fontSize: "11px", color: colors.mauve, marginBottom: "16px" }}>98% illuminated</p>
+          <p style={{ fontSize: "13px", color: colors.dark, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1.5, maxWidth: "220px", opacity: 0.8 }}>
+            "What can you see now that you were not ready to see before?"
+          </p>
+          <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
+            <div style={{ padding: "4px 12px", borderRadius: "12px", fontSize: "9px", background: colors.blush, color: colors.plum, border: "1px solid " + colors["dusty-rose"] + "60" }}>Journal</div>
+            <div style={{ padding: "4px 12px", borderRadius: "12px", fontSize: "9px", background: colors.blush, color: colors.plum, border: "1px solid " + colors["dusty-rose"] + "60" }}>Dreams</div>
+            <div style={{ padding: "4px 12px", borderRadius: "12px", fontSize: "9px", background: colors.blush, color: colors.plum, border: "1px solid " + colors["dusty-rose"] + "60" }}>Shadow</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default function ProductPage() {
   const router = useRouter();
@@ -108,16 +197,7 @@ export default function ProductPage() {
 
         {product.category === "theme" && THEME_MAP[product.name] ? (
           <section className="space-y-4">
-            <div className="rounded-2xl overflow-hidden" style={{ height: "160px", background: THEME_MAP[product.name].gradient, border: "1px solid var(--color-dusty-rose)" }}>
-              <div className="flex items-end justify-center gap-3 h-full pb-5">
-                {Object.entries(THEME_MAP[product.name]).filter(([k]) => k !== "gradient").map(([key, color]) => (
-                  <div key={key} className="flex flex-col items-center gap-1">
-                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: color, border: "1.5px solid rgba(255,255,255,0.3)" }} />
-                    <span className="text-[9px]" style={{ color: THEME_MAP[product.name].dark, opacity: 0.6 }}>{key}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ThemePreview name={product.name} colors={THEME_MAP[product.name]} />
             {product.description && (
               <p className="text-sm text-center leading-relaxed" style={{ color: "var(--color-mauve)" }}>
                 {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
