@@ -225,14 +225,16 @@ export default function AnimatedBackground() {
         .noctua-ripple {
           position: absolute;
           border-radius: 50%;
-          border: 1px solid rgba(40,100,160,0.15);
+          border: 2.5px solid rgba(30,80,140,0.35);
           animation: noctuaRipple var(--dur) ease-out infinite;
           animation-delay: var(--delay);
           opacity: 0;
           transform: scale(0);
+          box-shadow: 0 0 8px rgba(30,80,140,0.1);
         }
         @keyframes noctuaRipple {
-          0% { transform: scale(0); opacity: 0.4; border-width: 2px; }
+          0% { transform: scale(0); opacity: 0.7; border-width: 3px; }
+          40% { opacity: 0.4; }
           100% { transform: scale(1); opacity: 0; border-width: 0.5px; }
         }
         .noctua-volcanic-glow {
