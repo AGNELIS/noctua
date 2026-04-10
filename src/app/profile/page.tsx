@@ -33,6 +33,13 @@ export default function ProfilePage() {
   const [createdAt, setCreatedAt] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [birthDate, setBirthDate] = useState<string | null>(null);
+  const [birthTime, setBirthTime] = useState<string | null>(null);
+  const [birthCity, setBirthCity] = useState<string | null>(null);
+  const [editingBirth, setEditingBirth] = useState(false);
+  const [birthDateInput, setBirthDateInput] = useState("");
+  const [birthTimeInput, setBirthTimeInput] = useState("");
+  const [birthCityInput, setBirthCityInput] = useState("");
   const [refTotal, setRefTotal] = useState(0);
   const [refActive, setRefActive] = useState(0);
 
@@ -46,9 +53,12 @@ export default function ProfilePage() {
     setEmail(user.email || "");
     setCreatedAt(user.created_at);
 
-    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium, is_admin").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium, is_admin, birth_date, birth_time, birth_city").eq("id", user.id).single();
     setIsPremium(profile?.is_premium || false);
     setIsAdmin(profile?.is_admin || false);
+    setBirthDate(profile?.birth_date || null);
+    setBirthTime(profile?.birth_time || null);
+    setBirthCity(profile?.birth_city || null);
     const { data: refs } = await supabase.from("referrals").select("status").eq("referrer_id", user.id);
     if (refs) {
       setRefTotal(refs.length);
@@ -79,6 +89,21 @@ export default function ProfilePage() {
     setPurchases((purch as any[]) || []);
     setLoading(false);
   };
+const saveBirthData = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("profiles").update({
+      birth_date: birthDateInput || null,
+      birth_time: birthTimeInput || null,
+      birth_city: birthCityInput.trim() || null,
+    }).eq("id", user.id);
+    setBirthDate(birthDateInput || null);
+    setBirthTime(birthTimeInput || null);
+    setBirthCity(birthCityInput.trim() || null);
+    setEditingBirth(false);
+  };
+
 const saveName = async () => {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -270,6 +295,78 @@ const saveName = async () => {
             )}
           </div>
         </section>
+{/* Birth Data (Premium) */}
+        {isPremium && (
+          <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+            <div className="flex items-center justify-between mb-3">
+              <p style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 500 }}>
+                {language === "pl" ? "Dane urodzeniowe" : "Birth data"}
+              </p>
+              {!editingBirth && (
+                <button onClick={() => {
+                  setBirthDateInput(birthDate || "");
+                  setBirthTimeInput(birthTime || "");
+                  setBirthCityInput(birthCity || "");
+                  setEditingBirth(true);
+                }} className="text-xs" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
+                  {birthDate ? (language === "pl" ? "Edytuj" : "Edit") : (language === "pl" ? "Dodaj" : "Add")}
+                </button>
+              )}
+            </div>
+
+            {editingBirth ? (
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Data urodzenia" : "Date of birth"}</p>
+                  <input type="date" value={birthDateInput} onChange={e => setBirthDateInput(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: "var(--color-cream)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
+                </div>
+                <div>
+                  <p className="text-xs mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Godzina urodzenia" : "Time of birth"}</p>
+                  <input type="time" value={birthTimeInput} onChange={e => setBirthTimeInput(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: "var(--color-cream)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
+                  <p className="text-xs mt-1" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Opcjonalne" : "Optional"}</p>
+                </div>
+                <div>
+                  <p className="text-xs mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Miejsce urodzenia" : "Place of birth"}</p>
+                  <input type="text" value={birthCityInput} onChange={e => setBirthCityInput(e.target.value)}
+                    placeholder={language === "pl" ? "np. Warszawa" : "e.g. London"}
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: "var(--color-cream)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={saveBirthData} className="px-4 py-2 rounded-lg text-xs"
+                    style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+                    {language === "pl" ? "Zapisz" : "Save"}
+                  </button>
+                  <button onClick={() => setEditingBirth(false)} className="px-4 py-2 text-xs" style={{ color: "var(--color-mauve)" }}>
+                    {language === "pl" ? "Anuluj" : "Cancel"}
+                  </button>
+                </div>
+              </div>
+            ) : birthDate ? (
+              <div className="space-y-1">
+                <p style={{ fontSize: "15px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
+                  {new Date(birthDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                  {birthTime && ` · ${birthTime}`}
+                </p>
+                {birthCity && (
+                  <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{birthCity}</p>
+                )}
+              </div>
+            ) : (
+              <button onClick={() => {
+                setBirthDateInput(""); setBirthTimeInput(""); setBirthCityInput("");
+                setEditingBirth(true);
+              }} className="text-sm" style={{ color: "var(--color-gold)", fontStyle: "italic" }}>
+                {language === "pl" ? "Dodaj dane urodzeniowe żebym mogła widzieć głębiej..." : "Add your birth data so I can see deeper..."}
+              </button>
+            )}
+          </section>
+        )}
+
 {/* Premium */}
         <section>
           {isPremium ? (
