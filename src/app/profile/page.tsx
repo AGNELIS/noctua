@@ -347,14 +347,27 @@ const saveName = async () => {
                 </div>
               </div>
             ) : birthDate ? (
-              <div className="space-y-1">
-                <p style={{ fontSize: "15px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
-                  {new Date(birthDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "long", year: "numeric" })}
-                  {birthTime && ` · ${birthTime}`}
-                </p>
-                {birthCity && (
-                  <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{birthCity}</p>
-                )}
+              <div className="flex justify-between items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="text-center" style={{ minWidth: "48px" }}>
+                    <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, lineHeight: 1 }}>
+                      {new Date(birthDate + "T12:00:00").getDate()}
+                    </p>
+                    <p style={{ fontSize: "11px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
+                      {new Date(birthDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "short" })}
+                    </p>
+                  </div>
+                  <div className="h-8" style={{ width: "1px", background: "var(--color-dusty-rose)", opacity: 0.4 }} />
+                  <div>
+                    <p style={{ fontSize: "16px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
+                      {new Date(birthDate + "T12:00:00").getFullYear()}
+                      {birthTime && <span style={{ color: "var(--color-mauve)" }}> · {birthTime}</span>}
+                    </p>
+                    {birthCity && (
+                      <p style={{ fontSize: "14px", color: "var(--color-mauve)", marginTop: "2px" }}>{birthCity}</p>
+                    )}
+                  </div>
+                </div>
               </div>
             ) : (
               <button onClick={() => {

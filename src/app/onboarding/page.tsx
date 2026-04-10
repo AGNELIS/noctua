@@ -116,9 +116,9 @@ export default function OnboardingPage() {
               <p className="text-lg mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
                 {pl ? "O której godzinie?" : "What time?"}
               </p>
-              <p className="text-xs" style={{ color: "var(--color-mauve)" }}>
-                {pl ? "Im dokładniej, tym głębiej mogę widzieć." : "The more precise, the deeper I can see."}
-              </p>
+              <p className="text-sm" style={{ color: "var(--color-plum)", opacity: 0.8 }}>
+              {pl ? "Im dokładniej, tym głębiej mogę widzieć." : "The more precise, the deeper I can see."}
+            </p>
             </div>
 
             <div className="space-y-3">
@@ -225,7 +225,7 @@ export default function OnboardingPage() {
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
               }}
             />
-            <p className="text-xs text-center" style={{ color: "var(--color-mauve)", opacity: 0.6 }}>
+            <p className="text-sm text-center" style={{ color: "var(--color-plum)", opacity: 0.8 }}>
               {pl ? "Opcjonalne, ale pomaga w dokładności odczytu." : "Optional, but helps with reading accuracy."}
             </p>
           </section>
