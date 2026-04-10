@@ -44,9 +44,9 @@ function SuccessContent() {
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
             {pl ? "Masz teraz dostęp do wszystkich funkcji Noctua. Czas zacząć." : "You now have access to all Noctua features. Time to begin."}
           </p>
-          <button onClick={() => router.push("/dashboard")} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
+          <button onClick={() => router.push("/onboarding")} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
             style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
-            {pl ? "Przejdź do panelu" : "Go to dashboard"}
+            {pl ? "Rozpocznij konfigurację" : "Begin setup"}
           </button>
         </>
       )}

@@ -140,10 +140,24 @@ export default function DashboardPage() {
   const [greeting, setGreeting] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
     setMoon(getMoonPhase());
     setGreeting(getGreeting(language));
+
+    // Check premium onboarding
+    const checkOnboarding = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: profile } = await supabase.from("profiles").select("is_premium, birth_date").eq("id", user.id).single();
+      if (profile?.is_premium) {
+        setIsPremium(true);
+        if (!profile.birth_date) setNeedsOnboarding(true);
+      }
+    };
+    checkOnboarding();
 
     // Check entry milestones (notifications)
     try { fetch("/api/check-entry-milestones", { method: "POST" }); } catch {}
@@ -311,6 +325,26 @@ export default function DashboardPage() {
             </p>
           </div>
         </section>
+
+        {/* Onboarding reminder */}
+        {needsOnboarding && (
+          <section className="max-w-md mx-auto">
+            <button
+              onClick={() => router.push("/onboarding")}
+              className="w-full rounded-2xl p-4 text-center transition-all hover:opacity-90"
+              style={{ background: "var(--color-blush)", border: "1px solid color-mix(in srgb, var(--color-gold) 40%, transparent)" }}
+            >
+              <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+                {language === "pl" ? "Dokończ konfigurację" : "Complete your setup"}
+              </p>
+              <p className="text-sm" style={{ color: "var(--color-dark)" }}>
+                {language === "pl"
+                  ? "Podaj dane urodzeniowe żebym mogła czytać twoje wzorce głębiej."
+                  : "Add your birth data so I can read your patterns deeper."}
+              </p>
+            </button>
+          </section>
+        )}
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4">
