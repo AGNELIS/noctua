@@ -21,10 +21,11 @@ const CATEGORY_LABELS: Record<string, { en: string; pl: string }> = {
   symbol_pack: { en: "Knowledge packs", pl: "Paczki wiedzy" },
   report: { en: "Readings", pl: "Odczyty" },
   interpretation: { en: "Interpretations", pl: "Interpretacje" },
-  workbook: { en: "Workbooks", pl: "Zeszyty pracy" },
+  self_work: { en: "Self Work", pl: "Praca z sobą" },
+  depth_work: { en: "Depth Work", pl: "Praca w głębi" },
 };
 
-const CATEGORY_ORDER = ["theme", "symbol_pack", "report", "interpretation", "workbook"];
+const CATEGORY_ORDER = ["theme", "symbol_pack", "report", "interpretation", "self_work", "depth_work"];
 
 const PRODUCT_NAME_PL: Record<string, string> = {
   "Extended Dream Symbols": "Rozszerzone symbole snów",
@@ -34,6 +35,13 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Cycle Alignment Workbook": "Zeszyt harmonii cyklu",
   "Monthly Reading": "Odczyt miesięczny",
   "Pattern Reading": "Odczyt wzorców",
+  "Weekly Insight": "Tygodniowy wgląd",
+  "Moon Workbook": "Zeszyt Księżyca",
+  "Saturn Workbook": "Zeszyt Saturna",
+  "Pluto Workbook": "Zeszyt Plutona",
+  "Chiron Workbook": "Zeszyt Chirona",
+  "Lilith Workbook": "Zeszyt Lilith",
+  "Lunar Nodes Workbook": "Zeszyt Węzłów Księżycowych",
 };
 
 const MIN_ENTRIES_REQUIRED: Record<string, number> = {
@@ -61,7 +69,7 @@ export default function ShopPage() {
       .from("shop_products")
       .select("*")
       .eq("is_active", true)
-      .in("category", ["theme", "symbol_pack", "report", "interpretation", "workbook"])
+      .in("category", ["theme", "symbol_pack", "report", "interpretation", "self_work", "depth_work"])
       .order("sort_order");
 
    const { data: purch } = await supabase

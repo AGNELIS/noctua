@@ -181,7 +181,7 @@ const DAILY_INSIGHTS: Record<string, { en: string; pl: string }[]> = {
     { en: "Who do you owe an honest conversation?", pl: "Komu jesteś winna szczerą rozmowę?" },
   ],
   "Last Quarter": [
-    { en: "What pattern keeps returning? That is your work.", pl: "Jaki wzorzec ciągle wraca? To jest twoja praca." },
+    { en: "What pattern keeps returning?", pl: "Jaki wzorzec ciągle wraca?" },
     { en: "What are you still carrying that you already know the answer to?", pl: "Co nadal dźwigasz, choć znasz już odpowiedź?" },
     { en: "What would you stop doing if nobody was watching?", pl: "Co byś przestała robić, gdyby nikt nie patrzył?" },
     { en: "Where are you repeating something hoping for a different result?", pl: "Gdzie powtarzasz coś, licząc na inny wynik?" },

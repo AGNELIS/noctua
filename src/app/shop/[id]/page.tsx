@@ -23,6 +23,12 @@ const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Your Monthly Insight": { name: "Twój miesięczny wgląd", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
   "Pattern Recognition Report": { name: "Raport rozpoznawania wzorców", desc: "Jednorazowa głęboka analiza ujawniająca Twoje powtarzające się wzorce emocjonalne, cykle behawioralne i martwe punkty na podstawie dziennika, snów i danych cyklu." },
   "Weekly Insight": { name: "Tygodniowy wgląd", desc: "Osobisty odczyt AI z Twojego tygodnia. Na podstawie dziennika, snów i pracy z cieniem z ostatnich 7 dni. Nie podsumowanie. Czytanie." },
+  "Moon Workbook": { name: "Zeszyt Księżyca", desc: "Twoje wzorce emocjonalne, potrzeby i instynktowne reakcje. Na podstawie Twojego natalnego znaku Księżyca." },
+  "Saturn Workbook": { name: "Zeszyt Saturna", desc: "Twoje struktury, odpowiedzialności i gdzie musisz dorosnąć. Na podstawie Twojego natalnego Saturna." },
+  "Pluto Workbook": { name: "Zeszyt Plutona", desc: "Twoja relacja z mocą, kontrolą i transformacją. Na podstawie Twojego natalnego Plutona." },
+  "Chiron Workbook": { name: "Zeszyt Chirona", desc: "Twoja najgłębsza rana i jak staje się twoim nauczycielem. Na podstawie Twojego natalnego Chirona." },
+  "Lilith Workbook": { name: "Zeszyt Lilith", desc: "Twoja odrzucona moc, to co tłumisz, to co chce wrócić. Na podstawie Twojej natalnej Lilith." },
+  "Lunar Nodes Workbook": { name: "Zeszyt Węzłów Księżycowych", desc: "Skąd przychodzisz i dokąd zmierzasz. Na podstawie Twoich natalnych Węzłów." },
 };
 
 const ANIMATED_THEMES = ["Moonstone", "Velvet Night", "Obsidian Rose", "Falling Stars", "Cherry Rain", "Ocean Drift"];
