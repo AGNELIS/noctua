@@ -141,6 +141,13 @@ export default function WorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
+    const { data: swProfile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
+    if (!swProfile?.is_admin) {
+      const { data: swProduct } = await supabase.from("shop_products").select("id").eq("name", "Shadow Work Workbook").single();
+      const { data: swPurchase } = swProduct ? await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", swProduct.id).limit(1) : { data: [] };
+      if (!(swPurchase || []).length && !swProfile?.is_premium) { router.push("/shop"); return; }
+    }
+
     const { count: jRaw } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
     const { count: sRaw } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
     const jCount = jRaw || 0;

@@ -180,6 +180,13 @@ export default function DreamWorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
+    const { data: diProfile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
+    if (!diProfile?.is_admin) {
+      const { data: diProduct } = await supabase.from("shop_products").select("id").eq("name", "Dream Integration Workbook").single();
+      const { data: diPurchase } = diProduct ? await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", diProduct.id).limit(1) : { data: [] };
+      if (!(diPurchase || []).length && !diProfile?.is_premium) { router.push("/shop"); return; }
+    }
+
     const { count } = await supabase
       .from("dream_entries")
       .select("id", { count: "exact", head: true })
