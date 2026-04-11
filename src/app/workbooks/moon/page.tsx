@@ -237,10 +237,30 @@ export default function MoonWorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: profile } = await supabase.from("profiles").select("birth_date, birth_time, birth_city").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("birth_date, birth_time, birth_city, is_premium, is_admin").eq("id", user.id).single();
     if (!profile?.birth_date) {
       router.push("/onboarding");
       return;
+    }
+
+    // Check access: purchased workbook OR bundle OR premium OR admin
+    if (!profile.is_admin) {
+      const { data: moonProduct } = await supabase.from("shop_products").select("id").eq("name", "Moon Workbook").single();
+      const { data: bundleProduct } = await supabase.from("shop_products").select("id").eq("name", "Depth Work Bundle").single();
+      const productIds = [moonProduct?.id, bundleProduct?.id].filter(Boolean);
+
+      const { data: purchases } = await supabase
+        .from("user_purchases")
+        .select("id")
+        .eq("user_id", user.id)
+        .in("product_id", productIds);
+
+      const hasPurchased = (purchases || []).length > 0;
+
+      if (!hasPurchased && !profile.is_premium) {
+        router.push("/shop");
+        return;
+      }
     }
 
     const chart = calculateNatalChart(profile.birth_date, profile.birth_time, profile.birth_city);
