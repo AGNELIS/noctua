@@ -42,6 +42,21 @@ export async function POST(req: NextRequest) {
             stripe_session_id: sessionId,
           });
         }
+
+        // If bundle purchased, unlock all included products
+        const { data: purchasedProduct } = await supabase.from("shop_products").select("name").eq("id", productId).single();
+        if (purchasedProduct?.name === "Depth Work Bundle") {
+          const bundleProducts = ["Moon Workbook", "Saturn Workbook", "Pluto Workbook", "Chiron Workbook", "Lilith Workbook", "Lunar Nodes Workbook"];
+          for (const name of bundleProducts) {
+            const { data: prod } = await supabase.from("shop_products").select("id").eq("name", name).single();
+            if (prod) {
+              const { data: alreadyOwned } = await supabase.from("user_purchases").select("id").eq("user_id", userId).eq("product_id", prod.id).limit(1);
+              if (!alreadyOwned || alreadyOwned.length === 0) {
+                await supabase.from("user_purchases").insert({ user_id: userId, product_id: prod.id, stripe_session_id: sessionId });
+              }
+            }
+          }
+        }
       }
 
       // If subscription, save to profiles
