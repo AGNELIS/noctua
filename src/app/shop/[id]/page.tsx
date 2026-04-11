@@ -29,6 +29,7 @@ const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Chiron Workbook": { name: "Zeszyt Chirona", desc: "Twoja najgłębsza rana i jak staje się twoim nauczycielem. Na podstawie Twojego natalnego Chirona." },
   "Lilith Workbook": { name: "Zeszyt Lilith", desc: "Twoja odrzucona moc, to co tłumisz, to co chce wrócić. Na podstawie Twojej natalnej Lilith." },
   "Lunar Nodes Workbook": { name: "Zeszyt Węzłów Księżycowych", desc: "Skąd przychodzisz i dokąd zmierzasz. Na podstawie Twoich natalnych Węzłów." },
+  "Depth Work Bundle": { name: "Pakiet Pracy w głębi", desc: "Wszystkie 6 zeszytów planetarnych: Księżyc, Saturn, Pluton, Chiron, Lilith, Węzły Księżycowe. Oszczędność 36%." },
 };
 
 const ANIMATED_THEMES = ["Moonstone", "Velvet Night", "Obsidian Rose", "Falling Stars", "Cherry Rain", "Ocean Drift"];

@@ -42,6 +42,7 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Chiron Workbook": "Zeszyt Chirona",
   "Lilith Workbook": "Zeszyt Lilith",
   "Lunar Nodes Workbook": "Zeszyt Węzłów Księżycowych",
+  "Depth Work Bundle": "Pakiet Pracy w głębi",
 };
 
 const MIN_ENTRIES_REQUIRED: Record<string, number> = {
