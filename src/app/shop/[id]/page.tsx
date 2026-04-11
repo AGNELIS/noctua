@@ -23,13 +23,13 @@ const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Your Monthly Insight": { name: "Twój miesięczny wgląd", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
   "Pattern Recognition Report": { name: "Raport rozpoznawania wzorców", desc: "Jednorazowa głęboka analiza ujawniająca Twoje powtarzające się wzorce emocjonalne, cykle behawioralne i martwe punkty na podstawie dziennika, snów i danych cyklu." },
   "Weekly Insight": { name: "Tygodniowy wgląd", desc: "Osobisty odczyt AI z Twojego tygodnia. Na podstawie dziennika, snów i pracy z cieniem z ostatnich 7 dni. Nie podsumowanie. Czytanie." },
-  "Moon Workbook": { name: "Zeszyt Księżyca", desc: "Twoje wzorce emocjonalne, potrzeby i instynktowne reakcje. Na podstawie Twojego natalnego znaku Księżyca." },
-  "Saturn Workbook": { name: "Zeszyt Saturna", desc: "Twoje struktury, odpowiedzialności i gdzie musisz dorosnąć. Na podstawie Twojego natalnego Saturna." },
-  "Pluto Workbook": { name: "Zeszyt Plutona", desc: "Twoja relacja z mocą, kontrolą i transformacją. Na podstawie Twojego natalnego Plutona." },
-  "Chiron Workbook": { name: "Zeszyt Chirona", desc: "Twoja najgłębsza rana i jak staje się twoim nauczycielem. Na podstawie Twojego natalnego Chirona." },
-  "Lilith Workbook": { name: "Zeszyt Lilith", desc: "Twoja odrzucona moc, to co tłumisz, to co chce wrócić. Na podstawie Twojej natalnej Lilith." },
-  "Lunar Nodes Workbook": { name: "Zeszyt Węzłów Księżycowych", desc: "Skąd przychodzisz i dokąd zmierzasz. Na podstawie Twoich natalnych Węzłów." },
-  "Depth Work Bundle": { name: "Pakiet Pracy w głębi", desc: "Wszystkie 6 zeszytów planetarnych: Księżyc, Saturn, Pluton, Chiron, Lilith, Węzły Księżycowe. Oszczędność 36%." },
+  "Moon Workbook": { name: "Zeszyt Księżyca", desc: "Jak reagujesz kiedy nikt nie patrzy. Czego potrzebujesz żeby czuć się bezpiecznie. Co robisz z emocjami kiedy nie masz czasu ich przetwarzać. Cztery etapy prowadzonej pracy opartej na pozycji Twojego natalnego Księżyca. System wraca do Twoich odpowiedzi co 30 dni i zadaje nowe pytania." },
+  "Saturn Workbook": { name: "Zeszyt Saturna", desc: "Gdzie stawiasz sobie wymagania których nikt nie postawił. Jakie struktury budujesz ze strachu a jakie z wyboru. Co by się stało gdybyś przestała dźwigać. Prowadzony proces oparty na pozycji Twojego natalnego Saturna. Cztery etapy konfrontacji z tym co trzymasz za mocno." },
+  "Pluto Workbook": { name: "Zeszyt Plutona", desc: "Gdzie kontrolujesz bo boisz się straty. Co trzymasz przy życiu choć powinno umrzeć. Jaka wersja Ciebie musi odejść żeby mogła przyjść następna. Prowadzony proces oparty na pozycji Twojego natalnego Plutona. Praca z transformacją która już się dzieje." },
+  "Chiron Workbook": { name: "Zeszyt Chirona", desc: "Rana która wraca niezależnie od tego ile razy ją przepracujesz. Nie dlatego że robisz to źle. Dlatego że ta rana jest nauczycielem, nie problemem do rozwiązania. Prowadzony proces oparty na pozycji Twojego natalnego Chirona. Praca z bólem który ma sens." },
+  "Lilith Workbook": { name: "Zeszyt Lilith", desc: "To co w Tobie nauczono Cię ukrywać. Moc której się wstydzisz. Instynkt który tłumisz bo ktoś kiedyś powiedział że jest za dużo. Prowadzony proces oparty na pozycji Twojej natalnej Lilith. Praca z tym co chce wrócić." },
+  "Lunar Nodes Workbook": { name: "Zeszyt Węzłów Księżycowych", desc: "Twoja strefa komfortu i to co poza nią. Stare wzorce które powtarzasz bo są znane. Kierunek który czujesz ale boisz się w niego iść. Prowadzony proces oparty na Twoich natalnych Węzłach Księżycowych. Dostępny po ukończeniu minimum dwóch innych zeszytów planetarnych." },
+  "Depth Work Bundle": { name: "Pakiet Go Deeper", desc: "Wszystkie 6 zeszytów planetarnych: Księżyc, Saturn, Pluton, Chiron, Lilith, Węzły Księżycowe. Pełna mapa Twojej wewnętrznej pracy. Każdy zeszyt odnawia się co 30 dni z nowymi pytaniami. Oszczędność 36%." },
 };
 
 const ANIMATED_THEMES = ["Moonstone", "Velvet Night", "Obsidian Rose", "Falling Stars", "Cherry Rain", "Ocean Drift"];

@@ -21,8 +21,8 @@ const CATEGORY_LABELS: Record<string, { en: string; pl: string }> = {
   symbol_pack: { en: "Knowledge packs", pl: "Paczki wiedzy" },
   report: { en: "Readings", pl: "Odczyty" },
   interpretation: { en: "Interpretations", pl: "Interpretacje" },
-  self_work: { en: "Self Work", pl: "Praca z sobą" },
-  depth_work: { en: "Depth Work", pl: "Praca w głębi" },
+  self_work: { en: "Begin Here", pl: "Zacznij tutaj" },
+  depth_work: { en: "Go Deeper", pl: "Wejdź głębiej" },
 };
 
 const CATEGORY_ORDER = ["theme", "symbol_pack", "report", "interpretation", "self_work", "depth_work"];
@@ -41,8 +41,7 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Pluto Workbook": "Zeszyt Plutona",
   "Chiron Workbook": "Zeszyt Chirona",
   "Lilith Workbook": "Zeszyt Lilith",
-  "Lunar Nodes Workbook": "Zeszyt Węzłów Księżycowych",
-  "Depth Work Bundle": "Pakiet Pracy w głębi",
+  "Depth Work Bundle": "Pakiet Go Deeper",
 };
 
 const MIN_ENTRIES_REQUIRED: Record<string, number> = {
