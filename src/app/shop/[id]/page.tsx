@@ -235,6 +235,12 @@ export default function ProductPage() {
                   "Monthly Reading": "/reports",
                   "Pattern Reading": "/reports",
                   "Dream AI Analysis": "/dreams",
+                  "Moon Workbook": "/workbooks/moon",
+                  "Saturn Workbook": "/workbooks/saturn",
+                  "Pluto Workbook": "/workbooks/pluto",
+                  "Chiron Workbook": "/workbooks/chiron",
+                  "Lilith Workbook": "/workbooks/lilith",
+                  "Lunar Nodes Workbook": "/workbooks/lunar-nodes",
                 };
                 const route = routes[product.name];
                 if (route) router.push(route + "?from=shop");
