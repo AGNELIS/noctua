@@ -393,19 +393,17 @@ export default function SaturnWorkbookPage() {
       <main className="max-w-lg mx-auto px-5 py-8 space-y-6">
 
         {/* Header */}
-        <div className="text-center space-y-2">
-          <button onClick={() => router.back()} className="text-sm text-left w-full" style={{ color: "var(--color-mauve)" }}>
-            {pl ? "← Wróć" : "← Back"}
-          </button>
-          <h1 className="text-2xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
+        <div className="space-y-2">
+          <button onClick={() => router.back()} className="text-sm" style={{ color: "var(--color-mauve)" }}>{pl ? "← Wróć" : "← Back"}</button>
+          <h1 className="text-2xl text-center" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
             {pl ? "Zeszyt Saturna" : "Saturn Workbook"}
           </h1>
           {natalSign && (
-            <p className="text-sm" style={{ color: "var(--color-plum)", fontWeight: 600 }}>
+            <p className="text-sm text-center" style={{ color: "var(--color-plum)", fontWeight: 600 }}>
               {pl ? `Saturn w ${natalSign}` : `Saturn in ${natalSign}`}
             </p>
           )}
-          <p className="text-xs leading-relaxed" style={{ color: "var(--color-mauve)" }}>
+          <p className="text-sm leading-relaxed text-center" style={{ color: "var(--color-mauve)", lineHeight: 1.7 }}>
             {natalDescription}
           </p>
         </div>

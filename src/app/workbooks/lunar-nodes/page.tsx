@@ -352,9 +352,9 @@ export default function LunarNodesWorkbookPage() {
   if (locked) return (
     <div className="min-h-screen" style={{ background: "var(--color-cream)" }}>
       <main className="max-w-lg mx-auto px-5 py-8 space-y-6">
-        <div className="text-center space-y-2">
+        <div className="space-y-2">
           <button onClick={() => router.back()} className="text-sm" style={{ color: "var(--color-mauve)" }}>{pl ? "← Wróć" : "← Back"}</button>
-          <h1 className="text-2xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
+          <h1 className="text-2xl text-center" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
             {pl ? "Zeszyt Węzłów Księżycowych" : "Lunar Nodes Workbook"}
           </h1>
         </div>
@@ -394,9 +394,9 @@ export default function LunarNodesWorkbookPage() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-cream)" }}>
       <main className="max-w-lg mx-auto px-5 py-8 space-y-6">
-        <div className="text-center space-y-2">
+        <div className="space-y-2">
           <button onClick={() => router.back()} className="text-sm" style={{ color: "var(--color-mauve)" }}>{pl ? "← Wróć" : "← Back"}</button>
-          <h1 className="text-2xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
+          <h1 className="text-2xl text-center" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
             {pl ? "Zeszyt Węzłów Księżycowych" : "Lunar Nodes Workbook"}
           </h1>
           {northSign && southSign && (
