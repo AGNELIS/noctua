@@ -401,7 +401,7 @@ export default function LunarNodesWorkbookPage() {
           </h1>
           {northSign && southSign && (
             <p className="text-sm" style={{ color: "var(--color-plum)", fontWeight: 600 }}>
-              {pl ? `☊ ${northSign} — ☋ ${southSign}` : `☊ ${northSign} — ☋ ${southSign}`}
+              {pl ? `☊ ${northSign} · ☋ ${southSign}` : `☊ ${northSign} · ☋ ${southSign}`}
             </p>
           )}
           <p className="text-xs leading-relaxed" style={{ color: "var(--color-mauve)" }}>{natalDescription}</p>

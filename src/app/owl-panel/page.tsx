@@ -617,36 +617,7 @@ export default function OwlPanelPage() {
           </div>
         </div>
 
-        {/* Referral Reward Tiers Info */}
-        <div style={sectionStyle}>
-          <p style={labelStyle}>Referral Reward Tiers</p>
-          <div className="space-y-2 mt-2">
-            {[
-              { tier: 3, reward: "Free dream analysis", icon: "🌙" },
-              { tier: 10, reward: "Free monthly report", icon: "📊" },
-              { tier: 20, reward: "30% discount code", icon: "💎" },
-            ].map(t => {
-              const completed = referrals.filter(r => r.status === "completed").length;
-              const unlocked = completed >= t.tier;
-              const claimed = rewards.some(r => r.reward_type === t.reward && r.claimed);
-              return (
-                <div key={t.tier} className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-2">
-                    <span>{t.icon}</span>
-                    <div>
-                      <p style={{ fontSize: "13px", color: unlocked ? "var(--color-plum)" : "var(--color-mauve)", fontWeight: unlocked ? 600 : 400 }}>
-                        {t.tier} referrals — {t.reward}
-                      </p>
-                      <p style={{ fontSize: "10px", color: "var(--color-dusty-rose)" }}>
-                        {completed}/{t.tier} {claimed ? "· Claimed" : unlocked ? "· Ready to claim" : ""}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        
 
       </main>
     </div>

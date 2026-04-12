@@ -394,7 +394,7 @@ export default function SaturnWorkbookPage() {
 
         {/* Header */}
         <div className="text-center space-y-2">
-          <button onClick={() => router.back()} className="text-sm" style={{ color: "var(--color-mauve)" }}>
+          <button onClick={() => router.back()} className="text-sm text-left w-full" style={{ color: "var(--color-mauve)" }}>
             {pl ? "← Wróć" : "← Back"}
           </button>
           <h1 className="text-2xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
