@@ -99,13 +99,15 @@ const CHIRON_SIGNS: { start: string; end: string; sign: string }[] = [
   { start: "2027-06-01", end: "2034-01-01", sign: "Taurus" },
 ];
 
-// Black Moon Lilith lookup (approximate, ~9 month per sign)
-const LILITH_CYCLE_DAYS = 3232; // ~8.85 years full cycle
+// Mean Black Moon Lilith (mean lunar apogee)
+// J2000.0 mean lunar perigee = 83.3532 deg, rate = 0.11140285 deg/day
+// Apogee = perigee + 180 deg
 function getLilithSign(date: Date): string {
-  const ref = new Date("2000-01-01");
-  const days = (date.getTime() - ref.getTime()) / (1000 * 60 * 60 * 24);
-  const cyclePos = ((days % LILITH_CYCLE_DAYS) + LILITH_CYCLE_DAYS) % LILITH_CYCLE_DAYS;
-  const signIndex = Math.floor((cyclePos / LILITH_CYCLE_DAYS) * 12) % 12;
+  const j2000 = new Date("2000-01-01T12:00:00Z");
+  const days = (date.getTime() - j2000.getTime()) / (1000 * 60 * 60 * 24);
+  let lon = 263.3532 + 0.11140285 * days;
+  lon = ((lon % 360) + 360) % 360;
+  const signIndex = Math.floor(lon / 30);
   return SIGNS[signIndex].sign;
 }
 
@@ -127,33 +129,33 @@ const NODE_SIGNS: { start: string; end: string; sign: string }[] = [
   { start: "1982-09-01", end: "1984-03-01", sign: "Cancer" },
   { start: "1984-03-01", end: "1985-09-01", sign: "Gemini" },
   { start: "1985-09-01", end: "1987-04-01", sign: "Taurus" },
-  { start: "1987-04-01", end: "1988-12-01", sign: "Aries" },
-  { start: "1988-12-01", end: "1990-08-01", sign: "Pisces" },
-  { start: "1990-08-01", end: "1992-02-01", sign: "Aquarius" },
-  { start: "1992-02-01", end: "1993-08-01", sign: "Capricorn" },
-  { start: "1993-08-01", end: "1995-02-01", sign: "Sagittarius" },
-  { start: "1995-02-01", end: "1996-08-01", sign: "Scorpio" },
-  { start: "1996-08-01", end: "1998-01-01", sign: "Libra" },
-  { start: "1998-01-01", end: "1999-10-01", sign: "Virgo" },
-  { start: "1999-10-01", end: "2001-04-01", sign: "Leo" },
-  { start: "2001-04-01", end: "2002-10-01", sign: "Cancer" },
-  { start: "2002-10-01", end: "2004-04-01", sign: "Gemini" },
-  { start: "2004-04-01", end: "2005-12-01", sign: "Taurus" },
-  { start: "2005-12-01", end: "2007-06-01", sign: "Aries" },
-  { start: "2007-06-01", end: "2009-01-01", sign: "Pisces" },
-  { start: "2009-01-01", end: "2009-08-01", sign: "Aquarius" },
-  { start: "2009-08-01", end: "2011-03-01", sign: "Capricorn" },
-  { start: "2011-03-01", end: "2012-09-01", sign: "Sagittarius" },
-  { start: "2012-09-01", end: "2014-02-01", sign: "Scorpio" },
-  { start: "2014-02-01", end: "2015-11-01", sign: "Libra" },
-  { start: "2015-11-01", end: "2017-05-01", sign: "Virgo" },
-  { start: "2017-05-01", end: "2018-11-01", sign: "Leo" },
-  { start: "2018-11-01", end: "2020-05-01", sign: "Cancer" },
-  { start: "2020-05-01", end: "2022-01-01", sign: "Gemini" },
-  { start: "2022-01-01", end: "2023-07-01", sign: "Taurus" },
-  { start: "2023-07-01", end: "2025-01-01", sign: "Aries" },
-  { start: "2025-01-01", end: "2026-07-01", sign: "Pisces" },
-  { start: "2026-07-01", end: "2028-01-01", sign: "Aquarius" },
+  { start: "1986-04-07", end: "1987-12-02", sign: "Aries" },
+  { start: "1987-12-02", end: "1989-05-23", sign: "Pisces" },
+  { start: "1989-05-23", end: "1990-11-19", sign: "Aquarius" },
+  { start: "1990-11-19", end: "1992-08-02", sign: "Capricorn" },
+  { start: "1992-08-02", end: "1994-02-02", sign: "Sagittarius" },
+  { start: "1994-02-02", end: "1995-08-01", sign: "Scorpio" },
+  { start: "1995-08-01", end: "1997-01-26", sign: "Libra" },
+  { start: "1997-01-26", end: "1998-10-21", sign: "Virgo" },
+  { start: "1998-10-21", end: "2000-04-10", sign: "Leo" },
+  { start: "2000-04-10", end: "2001-10-13", sign: "Cancer" },
+  { start: "2001-10-13", end: "2003-04-14", sign: "Gemini" },
+  { start: "2003-04-14", end: "2004-12-26", sign: "Taurus" },
+  { start: "2004-12-26", end: "2006-06-23", sign: "Aries" },
+  { start: "2006-06-23", end: "2007-12-19", sign: "Pisces" },
+  { start: "2007-12-19", end: "2009-08-22", sign: "Aquarius" },
+  { start: "2009-08-22", end: "2011-03-04", sign: "Capricorn" },
+  { start: "2011-03-04", end: "2012-09-01", sign: "Sagittarius" },
+  { start: "2012-09-01", end: "2014-02-19", sign: "Scorpio" },
+  { start: "2014-02-19", end: "2015-11-13", sign: "Libra" },
+  { start: "2015-11-13", end: "2017-05-10", sign: "Virgo" },
+  { start: "2017-05-10", end: "2018-11-07", sign: "Leo" },
+  { start: "2018-11-07", end: "2020-05-05", sign: "Cancer" },
+  { start: "2020-05-05", end: "2022-01-19", sign: "Gemini" },
+  { start: "2022-01-19", end: "2023-07-18", sign: "Taurus" },
+  { start: "2023-07-18", end: "2025-01-12", sign: "Aries" },
+  { start: "2025-01-12", end: "2026-07-27", sign: "Pisces" },
+  { start: "2026-07-27", end: "2028-01-13", sign: "Aquarius" },
 ];
 
 function lookupSign(date: Date, table: { start: string; end: string; sign: string }[]): string {
