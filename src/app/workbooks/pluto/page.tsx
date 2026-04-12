@@ -351,7 +351,7 @@ export default function PlutoWorkbookPage() {
             {pastSessions.length === 0 ? (
               <div className="text-center space-y-4">
                 <p className="text-sm" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-                  {pl ? "Pierwszy cykl. Cztery pytania. Bądź szczera." : "First cycle. Four questions. Be honest."}
+                  {pl ? "Pierwszy cykl. Cztery pytania. Cztery warstwy." : "First cycle. Four questions. Four layers."}
                 </p>
                 <button onClick={startSession} className="w-full py-3 rounded-xl text-sm"
                   style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))", color: "var(--color-cream)", fontWeight: 600 }}>
@@ -410,11 +410,11 @@ export default function PlutoWorkbookPage() {
             )}
 
             <div className="space-y-3">
-              <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.6 }}>{questions[currentStage]}</p>
+              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.7, fontSize: "0.95rem" }}>{questions[currentStage]}</p>
               <textarea value={response} onChange={e => setResponse(e.target.value)} rows={6}
                 className="w-full rounded-xl p-4 text-sm resize-none focus:outline-none"
                 style={{ background: "var(--color-blush)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.7 }}
-                placeholder={pl ? "Pisz szczerze..." : "Write honestly..."} />
+                placeholder={pl ? "Twoja odpowiedź..." : "Your response..."} />
               <button onClick={handleSubmit} disabled={saving || !response.trim()} className="w-full py-3 rounded-xl text-sm transition-all"
                 style={{
                   background: response.trim() ? "linear-gradient(135deg, var(--color-plum), var(--color-mauve))" : "var(--color-blush)",
