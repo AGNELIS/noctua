@@ -336,16 +336,35 @@ export default function PlutoWorkbookPage() {
   return (
     <div className="min-h-screen" style={{ background: "var(--color-cream)" }}>
       <main className="max-w-lg mx-auto px-5 py-8 space-y-6">
-        <div className="space-y-2">
-          <button onClick={() => router.back()} className="text-sm" style={{ color: "var(--color-mauve)" }}>{pl ? "← Wróć" : "← Back"}
-          </button>
-          <h1 className="text-2xl text-center" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
+        <div>
+          <div className="flex items-center justify-between">
+            <button onClick={() => router.back()} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+              ← {pl ? "Wróć" : "Back"}
+            </button>
+            <div className="w-12" />
+          </div>
+          <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
+            style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
             {pl ? "Zeszyt Plutona" : "Pluto Workbook"}
           </h1>
-          {natalSign && (
-            <p className="text-sm" style={{ color: "var(--color-plum)", fontWeight: 600 }}>{pl ? `Pluton w ${natalSign}` : `Pluto in ${natalSign}`}</p>
-          )}
-          <p className="text-xs leading-relaxed" style={{ color: "var(--color-mauve)" }}>{natalDescription}</p>
+        </div>
+
+        <section className="text-center space-y-2">
+          <p className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+            {pl ? "Twój Pluton" : "Your Pluto"}
+          </p>
+          <p className="text-2xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
+            {pl ? `Pluton w ${natalSignPl || natalSign}` : `Pluto in ${natalSign}`}
+          </p>
+          <p className="leading-relaxed max-w-md mx-auto" style={{ color: "var(--color-mauve)", fontSize: "0.95rem", lineHeight: 1.7 }}>
+            {natalDescription}
+          </p>
+        </section>
+
+        <div className="flex items-center justify-center gap-4">
+          <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
+          <span style={{ color: "var(--color-gold)", fontSize: "1.1rem" }}>♇</span>
+          <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 
         {!session && (
@@ -387,40 +406,42 @@ export default function PlutoWorkbookPage() {
 
         {session && !session.completed_at && (
           <div className="space-y-6">
-            <div className="flex justify-center gap-3">
-              {STAGE_LABELS[lang].map((label, i) => (
-                <div key={i} className="flex flex-col items-center gap-1">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs"
-                    style={{
-                      background: i < currentStage ? "var(--color-plum)" : i === currentStage ? "var(--color-gold)" : "var(--color-blush)",
-                      border: `1.5px solid ${i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
-                      color: i <= currentStage ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: 600,
-                    }}>{i + 1}</div>
-                  <span style={{ color: i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)", fontSize: "11px", fontWeight: 500 }}>{label}</span>
-                </div>
-              ))}
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                {STAGE_LABELS[lang].map((label, i) => (
+                  <div key={i} className="flex-1 h-1 rounded-full" style={{
+                    background: i < currentStage ? "var(--color-plum)" : i === currentStage ? "var(--color-gold)" : "var(--color-dusty-rose)",
+                    opacity: i > currentStage ? 0.3 : 1,
+                  }} />
+                ))}
+              </div>
+              <p className="text-center" style={{ color: "var(--color-plum)", fontSize: "0.85rem", fontWeight: 500, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                {pl ? `Etap ${currentStage + 1} z 4` : `Stage ${currentStage + 1} of 4`}
+                <span style={{ color: "var(--color-dusty-rose)", margin: "0 6px" }}>·</span>
+                {STAGE_LABELS[lang][currentStage]}
+              </p>
             </div>
 
-            <p className="text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.95rem", lineHeight: 1.7 }}>
+            <p className="text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", lineHeight: 1.8 }}>
               {STAGE_INTROS[lang][currentStage]}
             </p>
 
             {aiReaction && currentStage > 0 && currentStage <= 3 && (
               <div className="p-4 rounded-xl" style={{ background: "var(--color-blush)", borderLeft: "3px solid var(--color-gold)" }}>
-                <p className="text-sm" style={{ color: "var(--color-dark)", lineHeight: 1.7, textAlign: "justify" }}>{aiReaction}</p>
+                <p style={{ color: "var(--color-dark)", lineHeight: 1.8, textAlign: "justify", fontSize: "0.95rem" }}>{aiReaction}</p>
               </div>
             )}
 
             <div className="space-y-3">
-              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.7, fontSize: "0.95rem" }}>{questions[currentStage]}</p>
+              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.8, fontSize: "0.95rem" }}>{questions[currentStage]}</p>
               <textarea value={response} onChange={e => setResponse(e.target.value)} rows={6}
-                className="w-full rounded-xl p-4 text-sm resize-none focus:outline-none"
-                style={{ background: "var(--color-blush)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.7 }}
+                className="w-full rounded-xl p-4 resize-none focus:outline-none"
+                style={{ background: "var(--color-blush)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.7, fontSize: "0.95rem" }}
                 placeholder={pl ? "Twoja odpowiedź..." : "Your response..."} />
-              <button onClick={handleSubmit} disabled={saving || !response.trim()} className="w-full py-3 rounded-xl text-sm transition-all"
+              <button onClick={handleSubmit} disabled={saving || !response.trim()} className="w-full py-3 rounded-xl transition-all"
                 style={{
                   background: response.trim() ? "linear-gradient(135deg, var(--color-plum), var(--color-mauve))" : "var(--color-blush)",
-                  color: response.trim() ? "var(--color-cream)" : "var(--color-dusty-rose)", fontWeight: 600,
+                  color: response.trim() ? "var(--color-cream)" : "var(--color-dusty-rose)", fontWeight: 600, fontSize: "0.95rem",
                 }}>
                 {saving ? (pl ? "Zapisuję..." : "Saving...") : reacting ? (pl ? "Czytam..." : "Reading...") : (pl ? "Zapisz" : "Save")}
               </button>
