@@ -191,7 +191,7 @@ export default function OwlPanelPage() {
     for (let i = 0; i < count; i++) {
       await supabase.from("referrals").insert({
         referrer_id: myId,
-        referred_id: myId,
+        referred_id: crypto.randomUUID(),
         status: "completed",
         completed_at: new Date().toISOString(),
       });
