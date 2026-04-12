@@ -179,9 +179,10 @@ function getDescription(planet: string, sign: string): { en: string; pl: string 
 }
 
 export function calculateNatalChart(birthDate: string, birthTime: string | null, birthCity: string | null): NatalChart {
-  const time = birthTime || "12:00";
-  const [hours, minutes] = time.split(":").map(Number);
-  const date = new Date(birthDate + "T" + time + ":00Z");
+  const rawTime = birthTime || "12:00";
+  const timeParts = rawTime.split(":");
+  const cleanTime = timeParts[0] + ":" + timeParts[1];
+  const date = new Date(birthDate + "T" + cleanTime + ":00Z");
 
   // Moon (astronomy-engine)
   const moonLon = getEclipticLongitude(Astronomy.Body.Moon, date);
