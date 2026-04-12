@@ -219,6 +219,7 @@ export default function PlutoWorkbookPage() {
 
   const [loading, setLoading] = useState(true);
   const [natalSign, setNatalSign] = useState<string | null>(null);
+  const [natalSignPl, setNatalSignPl] = useState<string | null>(null);
   const [natalDescription, setNatalDescription] = useState("");
   const [session, setSession] = useState<Session | null>(null);
   const [currentStage, setCurrentStage] = useState(0);
@@ -230,7 +231,7 @@ export default function PlutoWorkbookPage() {
   const [pastSessions, setPastSessions] = useState<Session[]>([]);
   const [expandedPast, setExpandedPast] = useState<string | null>(null);
 
-  useEffect(() => { init(); }, []);
+  useEffect(() => { init(); }, [language]);
 
   const init = async () => {
     const supabase = createClient();
@@ -250,6 +251,7 @@ export default function PlutoWorkbookPage() {
 
     const chart = calculateNatalChart(profile.birth_date, profile.birth_time, profile.birth_city);
     setNatalSign(chart.pluto.sign);
+    setNatalSignPl(chart.pluto.signPl);
     setNatalDescription(pl ? chart.pluto.descriptionPl : chart.pluto.description);
     setQuestions(buildPlutoQuestions(chart.pluto.sign, lang));
 
@@ -394,12 +396,12 @@ export default function PlutoWorkbookPage() {
                       border: `1.5px solid ${i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
                       color: i <= currentStage ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: 600,
                     }}>{i + 1}</div>
-                  <span className="text-xs" style={{ color: i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)", fontSize: "9px" }}>{label}</span>
+                  <span style={{ color: i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)", fontSize: "11px", fontWeight: 500 }}>{label}</span>
                 </div>
               ))}
             </div>
 
-            <p className="text-sm text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+            <p className="text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.95rem", lineHeight: 1.7 }}>
               {STAGE_INTROS[lang][currentStage]}
             </p>
 

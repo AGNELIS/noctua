@@ -235,7 +235,7 @@ export default function LunarNodesWorkbookPage() {
   const [locked, setLocked] = useState(false);
   const [completedWorkbooks, setCompletedWorkbooks] = useState(0);
 
-  useEffect(() => { init(); }, []);
+  useEffect(() => { init(); }, [language]);
 
   const init = async () => {
     const supabase = createClient();

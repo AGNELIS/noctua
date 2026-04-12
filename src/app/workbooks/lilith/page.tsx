@@ -230,7 +230,7 @@ export default function LilithWorkbookPage() {
   const [pastSessions, setPastSessions] = useState<Session[]>([]);
   const [expandedPast, setExpandedPast] = useState<string | null>(null);
 
-  useEffect(() => { init(); }, []);
+  useEffect(() => { init(); }, [language]);
 
   const init = async () => {
     const supabase = createClient();

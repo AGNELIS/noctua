@@ -231,7 +231,7 @@ export default function SaturnWorkbookPage() {
   const [pastSessions, setPastSessions] = useState<Session[]>([]);
   const [expandedPast, setExpandedPast] = useState<string | null>(null);
 
-  useEffect(() => { init(); }, []);
+  useEffect(() => { init(); }, [language]);
 
   const init = async () => {
     const supabase = createClient();
@@ -415,14 +415,14 @@ export default function SaturnWorkbookPage() {
           <p className="text-2xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
             {pl ? `Saturn w ${natalSignPl || natalSign}` : `Saturn in ${natalSign}`}
           </p>
-          <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: "var(--color-mauve)" }}>
+          <p className="leading-relaxed max-w-md mx-auto" style={{ color: "var(--color-mauve)", fontSize: "0.95rem", lineHeight: 1.7 }}>
             {natalDescription}
           </p>
         </section>
 
         <div className="flex items-center justify-center gap-4">
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
-          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>♄</span>
+          <span style={{ color: "var(--color-gold)", fontSize: "1.1rem" }}>♄</span>
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 
@@ -468,59 +468,52 @@ export default function SaturnWorkbookPage() {
         {/* Active session */}
         {session && !session.completed_at && (
           <div className="space-y-6">
-            {/* Progress */}
-            <div className="flex justify-center gap-4">
-              {STAGE_LABELS[lang].map((label, i) => (
-                <div key={i} className="flex flex-col items-center gap-1.5">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm"
-                    style={{
-                      background: i < currentStage ? "var(--color-plum)" : i === currentStage ? "var(--color-gold)" : "var(--color-blush)",
-                      border: `1.5px solid ${i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
-                      color: i <= currentStage ? "var(--color-cream)" : "var(--color-mauve)",
-                      fontWeight: 600,
-                    }}>
-                    {i + 1}
-                  </div>
-                  <span className="text-xs" style={{ color: i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)", fontSize: "9px" }}>
-                    {label}
-                  </span>
-                </div>
-              ))}
+            {/* Progress bars */}
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                {STAGE_LABELS[lang].map((label, i) => (
+                  <div key={i} className="flex-1 h-1 rounded-full" style={{
+                    background: i < currentStage ? "var(--color-plum)" : i === currentStage ? "var(--color-gold)" : "var(--color-dusty-rose)",
+                    opacity: i > currentStage ? 0.3 : 1,
+                  }} />
+                ))}
+              </div>
+              <p className="text-center" style={{ color: "var(--color-plum)", fontSize: "0.85rem", fontWeight: 500, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                {pl ? `Etap ${currentStage + 1} z 4` : `Stage ${currentStage + 1} of 4`}
+                <span style={{ color: "var(--color-dusty-rose)", margin: "0 6px" }}>·</span>
+                {STAGE_LABELS[lang][currentStage]}
+              </p>
             </div>
 
             {/* Stage intro */}
-            <p className="text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.95rem", lineHeight: 1.7 }}>
+            <p className="text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", lineHeight: 1.8 }}>
               {STAGE_INTROS[lang][currentStage]}
             </p>
 
             {/* AI reaction from previous stage */}
             {aiReaction && currentStage > 0 && currentStage <= 3 && (
               <div className="p-4 rounded-xl" style={{ background: "var(--color-blush)", borderLeft: "3px solid var(--color-gold)" }}>
-                <p className="text-sm" style={{ color: "var(--color-dark)", lineHeight: 1.7, textAlign: "justify" }}>
-                  {aiReaction}
-                </p>
+                <p style={{ color: "var(--color-dark)", lineHeight: 1.8, textAlign: "justify", fontSize: "0.95rem" }}>{aiReaction}</p>
               </div>
             )}
 
             {/* Question */}
             <div className="space-y-3">
-              <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.6 }}>
-                {questions[currentStage]}
-              </p>
+              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.8, fontSize: "1.05rem" }}>{questions[currentStage]}</p>
               <textarea
                 value={response}
                 onChange={e => setResponse(e.target.value)}
                 rows={6}
-                className="w-full rounded-xl p-4 text-sm resize-none focus:outline-none"
-                style={{ background: "var(--color-blush)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.7 }}
+                className="w-full rounded-xl p-4 resize-none focus:outline-none"
+                style={{ background: "var(--color-blush)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.7, fontSize: "0.95rem" }}
                 placeholder={pl ? "Twoja odpowiedź..." : "Your response..."}
               />
               <button onClick={handleSubmit} disabled={saving || !response.trim()}
-                className="w-full py-3 rounded-xl text-sm transition-all"
+                className="w-full py-3 rounded-xl transition-all"
                 style={{
                   background: response.trim() ? "linear-gradient(135deg, var(--color-plum), var(--color-mauve))" : "var(--color-blush)",
                   color: response.trim() ? "var(--color-cream)" : "var(--color-dusty-rose)",
-                  fontWeight: 600,
+                  fontWeight: 600, fontSize: "0.95rem",
                 }}>
                 {saving ? (pl ? "Zapisuję..." : "Saving...") : reacting ? (pl ? "Czytam..." : "Reading...") : (pl ? "Zapisz" : "Save")}
               </button>
