@@ -219,6 +219,7 @@ export default function SaturnWorkbookPage() {
 
   const [loading, setLoading] = useState(true);
   const [natalSign, setNatalSign] = useState<string | null>(null);
+  const [natalSignPl, setNatalSignPl] = useState<string | null>(null);
   const [natalDescription, setNatalDescription] = useState("");
   const [session, setSession] = useState<Session | null>(null);
   const [currentStage, setCurrentStage] = useState(0);
@@ -264,6 +265,7 @@ export default function SaturnWorkbookPage() {
 
     const chart = calculateNatalChart(profile.birth_date, profile.birth_time, profile.birth_city);
     setNatalSign(chart.saturn.sign);
+    setNatalSignPl(chart.saturn.signPl);
     setNatalDescription(pl ? chart.saturn.descriptionPl : chart.saturn.description);
     setQuestions(buildSaturnQuestions(chart.saturn.sign, lang));
 
@@ -393,19 +395,35 @@ export default function SaturnWorkbookPage() {
       <main className="max-w-lg mx-auto px-5 py-8 space-y-6">
 
         {/* Header */}
-        <div className="space-y-2">
-          <button onClick={() => router.back()} className="text-sm block text-left" style={{ color: "var(--color-mauve)" }}>{pl ? "← Wróć" : "← Back"}</button>
-          <h1 className="text-2xl text-center" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", color: "var(--color-dark)", fontWeight: 700 }}>
+        <div>
+          <div className="flex items-center justify-between">
+            <button onClick={() => router.back()} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+              ← {pl ? "Wróć" : "Back"}
+            </button>
+            <div className="w-12" />
+          </div>
+          <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3"
+            style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
             {pl ? "Zeszyt Saturna" : "Saturn Workbook"}
           </h1>
-          {natalSign && (
-            <p className="text-sm text-center" style={{ color: "var(--color-plum)", fontWeight: 600 }}>
-              {pl ? `Saturn w ${natalSign}` : `Saturn in ${natalSign}`}
-            </p>
-          )}
-          <p className="text-sm leading-relaxed text-center" style={{ color: "var(--color-mauve)", lineHeight: 1.7 }}>
+        </div>
+
+        <section className="text-center space-y-2">
+          <p className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+            {pl ? "Twój Saturn" : "Your Saturn"}
+          </p>
+          <p className="text-2xl" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
+            {pl ? `Saturn w ${natalSignPl || natalSign}` : `Saturn in ${natalSign}`}
+          </p>
+          <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: "var(--color-mauve)" }}>
             {natalDescription}
           </p>
+        </section>
+
+        <div className="flex items-center justify-center gap-4">
+          <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
+          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>♄</span>
+          <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 
         {/* No active session */}
@@ -451,10 +469,10 @@ export default function SaturnWorkbookPage() {
         {session && !session.completed_at && (
           <div className="space-y-6">
             {/* Progress */}
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-4">
               {STAGE_LABELS[lang].map((label, i) => (
-                <div key={i} className="flex flex-col items-center gap-1">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs"
+                <div key={i} className="flex flex-col items-center gap-1.5">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm"
                     style={{
                       background: i < currentStage ? "var(--color-plum)" : i === currentStage ? "var(--color-gold)" : "var(--color-blush)",
                       border: `1.5px solid ${i <= currentStage ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
@@ -471,7 +489,7 @@ export default function SaturnWorkbookPage() {
             </div>
 
             {/* Stage intro */}
-            <p className="text-sm text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+            <p className="text-center" style={{ color: "var(--color-mauve)", fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.95rem", lineHeight: 1.7 }}>
               {STAGE_INTROS[lang][currentStage]}
             </p>
 
