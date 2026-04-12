@@ -503,7 +503,7 @@ export default function LunarNodesWorkbookPage() {
             )}
 
             <div className="space-y-3">
-              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.8, fontSize: "0.95rem" }}>{questions[currentStage]}</p>
+              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.8, fontSize: "0.9rem" }}>{questions[currentStage]}</p>
               <textarea value={response} onChange={e => setResponse(e.target.value)} rows={6}
                 className="w-full rounded-xl p-4 resize-none focus:outline-none"
                 style={{ background: "var(--color-blush)", color: "var(--color-dark)", border: "1px solid var(--color-dusty-rose)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.7, fontSize: "0.95rem" }}

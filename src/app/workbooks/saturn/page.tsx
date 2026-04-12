@@ -499,7 +499,7 @@ export default function SaturnWorkbookPage() {
 
             {/* Question */}
             <div className="space-y-3">
-              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.8, fontSize: "0.95rem" }}>{questions[currentStage]}</p>
+              <p style={{ color: "var(--color-dark)", fontWeight: 600, lineHeight: 1.8, fontSize: "0.9rem" }}>{questions[currentStage]}</p>
               <textarea
                 value={response}
                 onChange={e => setResponse(e.target.value)}
