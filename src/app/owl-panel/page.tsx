@@ -205,9 +205,12 @@ export default function OwlPanelPage() {
     await supabase
       .from("referrals")
       .delete()
-      .eq("referrer_id", myId)
-      .eq("referred_id", myId);
-    showMsg("Test referrals cleared");
+      .eq("referrer_id", myId);
+    await supabase
+      .from("referral_rewards")
+      .delete()
+      .eq("user_id", myId);
+    showMsg("All referrals + rewards cleared");
     load();
   };
 
@@ -545,6 +548,72 @@ export default function OwlPanelPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Planetary Workbook Testing */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Planetary Workbooks — Test & Reset</p>
+          <div className="space-y-3 mt-3">
+            {[
+              { name: "Moon Workbook", path: "/workbooks/moon", planet: "moon", emoji: "🌙" },
+              { name: "Saturn Workbook", path: "/workbooks/saturn", planet: "saturn", emoji: "🪐" },
+              { name: "Pluto Workbook", path: "/workbooks/pluto", planet: "pluto", emoji: "💀" },
+              { name: "Chiron Workbook", path: "/workbooks/chiron", planet: "chiron", emoji: "💫" },
+              { name: "Lilith Workbook", path: "/workbooks/lilith", planet: "lilith", emoji: "🔥" },
+              { name: "Lunar Nodes Workbook", path: "/workbooks/lunar-nodes", planet: "lunar-nodes", emoji: "☊" },
+            ].map(wb => {
+              const owned = purchases.some(p => (p.shop_products as any)?.name === wb.name);
+              return (
+                <div key={wb.planet} className="flex items-center justify-between py-2 px-3 rounded-xl" style={{ border: "1px solid var(--color-dusty-rose)" }}>
+                  <div className="flex items-center gap-2">
+                    <span>{wb.emoji}</span>
+                    <div>
+                      <p style={{ fontSize: "13px", color: "var(--color-dark)", fontWeight: 500 }}>{wb.name}</p>
+                      <p style={{ fontSize: "10px", color: owned ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>
+                        {owned ? "Owned" : "Not purchased"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => router.push(wb.path)} style={{ ...btnOutline, padding: "4px 10px", fontSize: "10px" }}>
+                      Open
+                    </button>
+                    <button onClick={async () => {
+                      const supabase = createClient();
+                      const { data: prod } = await supabase.from("shop_products").select("id").eq("name", wb.name).single();
+                      if (prod) {
+                        const alreadyOwned = purchases.some(p => p.product_id === prod.id);
+                        if (!alreadyOwned) {
+                          await supabase.from("user_purchases").insert({ user_id: myId, product_id: prod.id, stripe_session_id: "admin-test" });
+                          showMsg(`Unlocked: ${wb.name}`);
+                        } else {
+                          await supabase.from("user_purchases").delete().eq("user_id", myId).eq("product_id", prod.id);
+                          showMsg(`Removed: ${wb.name}`);
+                        }
+                        load();
+                      }
+                    }} style={{ ...btnOutline, padding: "4px 10px", fontSize: "10px", color: owned ? "var(--color-dusty-rose)" : "var(--color-plum)" }}>
+                      {owned ? "Remove" : "Unlock"}
+                    </button>
+                    <button onClick={async () => {
+                      const supabase = createClient();
+                      await supabase.from("workbook_progress").delete().eq("user_id", myId).eq("workbook_type", wb.planet);
+                      showMsg(`Reset progress: ${wb.name}`);
+                    }} style={{ ...btnOutline, padding: "4px 10px", fontSize: "10px", color: "var(--color-dusty-rose)" }}>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            <button onClick={async () => {
+              const supabase = createClient();
+              await supabase.from("workbook_progress").delete().eq("user_id", myId);
+              showMsg("All workbook progress reset");
+            }} style={{ ...btnOutline, color: "var(--color-dusty-rose)", width: "100%", marginTop: "8px" }}>
+              Reset ALL workbook progress
+            </button>
           </div>
         </div>
 
