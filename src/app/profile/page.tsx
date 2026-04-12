@@ -42,6 +42,9 @@ export default function ProfilePage() {
   const [birthCityInput, setBirthCityInput] = useState("");
   const [refTotal, setRefTotal] = useState(0);
   const [refActive, setRefActive] = useState(0);
+  const [notifMoon, setNotifMoon] = useState(true);
+  const [notifReport, setNotifReport] = useState(true);
+  const [notifWorkbook, setNotifWorkbook] = useState(true);
 
   useEffect(() => { loadProfile(); }, []);
 
@@ -87,6 +90,12 @@ export default function ProfilePage() {
       .select("product_id, purchased_at, shop_products(name, category, preview_emoji)")
       .order("purchased_at", { ascending: false });
     setPurchases((purch as any[]) || []);
+    const { data: notifPrefs } = await supabase.from("notification_prefs").select("moon_phase, report_ready, workbook_progress").eq("user_id", user.id).single();
+    if (notifPrefs) {
+      setNotifMoon(notifPrefs.moon_phase);
+      setNotifReport(notifPrefs.report_ready);
+      setNotifWorkbook(notifPrefs.workbook_progress);
+    }
     setLoading(false);
   };
 const saveBirthData = async () => {
@@ -380,7 +389,39 @@ const saveName = async () => {
           </section>
         )}
 
-{/* Premium */}
+{/* Notification Preferences */}
+        <section>
+          <p className="text-sm tracking-wide mb-3" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+            {language === "pl" ? "Powiadomienia" : "Notifications"}
+          </p>
+          <div className="space-y-3">
+            {[
+              { key: "moon", label: language === "pl" ? "Fazy księżyca" : "Moon phases", value: notifMoon, set: setNotifMoon },
+              { key: "report", label: language === "pl" ? "Raport gotowy" : "Report ready", value: notifReport, set: setNotifReport },
+              { key: "workbook", label: language === "pl" ? "Postęp w zeszycie" : "Workbook progress", value: notifWorkbook, set: setNotifWorkbook },
+            ].map(n => (
+              <div key={n.key} className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: "var(--color-mauve)" }}>{n.label}</span>
+                <button onClick={async () => {
+                  const next = !n.value;
+                  n.set(next);
+                  const supabase = createClient();
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (!user) return;
+                  const col = n.key === "moon" ? "moon_phase" : n.key === "report" ? "report_ready" : "workbook_progress";
+                  await supabase.from("notification_prefs").upsert({ user_id: user.id, [col]: next, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+                }}
+                  className="relative w-11 h-6 rounded-full transition-all"
+                  style={{ background: n.value ? "var(--color-plum)" : "var(--color-dusty-rose)", opacity: n.value ? 1 : 0.5 }}>
+                  <span className="absolute top-0.5 rounded-full w-5 h-5 transition-all"
+                    style={{ background: "var(--color-cream)", left: n.value ? "22px" : "2px" }} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Premium */}
         <section>
           {isPremium ? (
             <div className="space-y-2">
