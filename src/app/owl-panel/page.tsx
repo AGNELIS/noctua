@@ -192,10 +192,13 @@ export default function OwlPanelPage() {
       await supabase.from("referrals").insert({
         referrer_id: myId,
         referred_id: crypto.randomUUID(),
+        referral_code: `TEST-${myId.substring(0, 8)}`,
         status: "completed",
         completed_at: new Date().toISOString(),
       });
     }
+    // Trigger reward check
+    try { await fetch("/api/check-referral-rewards", { method: "POST" }); } catch {}
     showMsg(`+${count} referrals added`);
     load();
   };
