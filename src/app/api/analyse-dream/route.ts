@@ -103,6 +103,28 @@ export async function POST(req: NextRequest) {
     ? journalEntries.map(e => `[${e.entry_date}] Mood: ${(e.mood || []).join(", ")}. ${e.content.slice(0, 150)}`).join("\n")
     : "No recent journal entries.";
 
+  // Cross-referencing: workbook insights + phase
+  const { data: workbookData } = await supabase
+    .from("workbook_progress")
+    .select("workbook_type, responses, completed_at")
+    .eq("user_id", user.id)
+    .order("started_at", { ascending: false })
+    .limit(5);
+
+  const workbookContext = (workbookData || []).map(w => {
+    const responses = w.responses || [];
+    const lastResponse = responses[responses.length - 1];
+    if (lastResponse?.ai_reaction) return `${w.workbook_type} workbook: "${lastResponse.ai_reaction.substring(0, 150)}"`;
+    return null;
+  }).filter(Boolean).join(" | ");
+
+  const { count: totalEntries } = await supabase
+    .from("journal_entries")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  const phase = (totalEntries || 0) <= 15 ? "discovery" : (totalEntries || 0) <= 40 ? "deepening" : "integration";
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
@@ -144,6 +166,9 @@ Recurring: ${dream.is_recurring ? "Yes" : "No"}
 
 Recent journal context:
 ${journalContext}
+${workbookContext ? `\nInsights from self-work (workbooks):\n${workbookContext}` : ""}
+Phase: ${phase} (${totalEntries || 0} journal entries). ${phase === "discovery" ? "Early in self-work. Name things simply." : phase === "deepening" ? "Seeing patterns. Be more direct. Reference what repeats." : "Experienced. Do not explain what she already sees. Push integration."}
+${workbookContext ? "If you see connections between the dream and patterns from her workbooks, name them naturally. Do not force it." : ""}
 
 CRITICAL FORMATTING RULES:
 Keep the response under 500 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in Title Case on their own line. Never use the word "Droga" or "Dear" or any greeting.`;

@@ -89,6 +89,28 @@ export async function GET(req: NextRequest) {
   const dreamSummary = (dreams || []).map(d => `Dream: ${d.title || "Untitled"}. Emotions: ${(d.emotional_tone || []).join(", ")}. Symbols: ${(d.symbols || []).join(", ")}`).join("\n");
   const shadowSummary = (shadowEntries || []).map(s => `Prompt: ${s.prompt}. Response: ${s.response.slice(0, 100)}. Emotions: ${(s.emotions || []).join(", ")}`).join("\n");
 
+  // Cross-referencing: workbook insights + phase
+  const { data: workbookData } = await supabase
+    .from("workbook_progress")
+    .select("workbook_type, responses, completed_at")
+    .eq("user_id", user.id)
+    .order("started_at", { ascending: false })
+    .limit(5);
+
+  const workbookInsights = (workbookData || []).map(w => {
+    const responses = w.responses || [];
+    const lastResponse = responses[responses.length - 1];
+    if (lastResponse?.ai_reaction) return `${w.workbook_type}: "${lastResponse.ai_reaction.substring(0, 150)}"`;
+    return null;
+  }).filter(Boolean).join(" | ");
+
+  const { count: totalEntries } = await supabase
+    .from("journal_entries")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  const phase = (totalEntries || 0) <= 15 ? "discovery" : (totalEntries || 0) <= 40 ? "deepening" : "integration";
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
@@ -115,6 +137,9 @@ ${dreamSummary || "None"}
 
 Shadow work this week:
 ${shadowSummary || "None"}
+${workbookInsights ? `\nRecent workbook insights:\n${workbookInsights}` : ""}
+Phase: ${phase} (${totalEntries || 0} total entries). ${phase === "discovery" ? "Early in self-work. Be gentle but clear." : phase === "deepening" ? "Seeing patterns. Be direct. Name what repeats across journal, dreams and workbooks." : "Experienced. Do not summarize. Challenge. Connect dots she has not connected yet."}
+${workbookInsights ? "If patterns from workbooks connect to this week's journal or dreams, name the connection naturally." : ""}
 
 CRITICAL FORMATTING RULES:
 Under 300 words. No markdown. No asterisks. No bold. No bullet points. No dashes or em dashes. Use commas and full stops only. Never use "Dear" or "Droga" or any greeting. No section headings.`;
