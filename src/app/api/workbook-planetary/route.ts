@@ -50,22 +50,81 @@ export async function POST(req: NextRequest) {
   const pContext = planetContext[planet]?.[lang] || planetContext.moon[lang];
   const stageName = stageNames[stage]?.[lang] || "Recognition";
 
+  // Cross-referencing: fetch user's journal, dreams, and other workbook data
+  const [journalData, dreamData, workbookData, entryCount] = await Promise.all([
+    supabase.from("journal_entries").select("content, mood, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
+    supabase.from("dream_entries").select("content, symbols, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
+    supabase.from("workbook_progress").select("workbook_type, responses, completed_at").eq("user_id", user.id).not("workbook_type", "eq", planet).order("started_at", { ascending: false }).limit(5),
+    supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+  ]);
+
+  // Build cross-reference context
+  let crossContext = "";
+
+  // Journal patterns
+  const journals = journalData.data || [];
+  if (journals.length > 0) {
+    const moods = journals.map(j => j.mood).filter(Boolean);
+    const recentThemes = journals.slice(0, 5).map(j => j.content?.substring(0, 150)).filter(Boolean);
+    if (moods.length > 0) crossContext += `Recent moods from journal: ${moods.join(", ")}. `;
+    if (recentThemes.length > 0) crossContext += `Recent journal themes (excerpts): ${recentThemes.join(" | ")}. `;
+  }
+
+  // Dream patterns
+  const dreams = dreamData.data || [];
+  if (dreams.length > 0) {
+    const symbols = dreams.flatMap(d => {
+      if (Array.isArray(d.symbols)) return d.symbols;
+      if (typeof d.symbols === "string") return d.symbols.split(",").map((s: string) => s.trim());
+      return [];
+    }).filter(Boolean);
+    if (symbols.length > 0) crossContext += `Recurring dream symbols: ${[...new Set(symbols)].slice(0, 10).join(", ")}. `;
+    const dreamExcerpts = dreams.slice(0, 3).map(d => d.content?.substring(0, 100)).filter(Boolean);
+    if (dreamExcerpts.length > 0) crossContext += `Recent dreams (excerpts): ${dreamExcerpts.join(" | ")}. `;
+  }
+
+  // Other workbook insights
+  const otherWorkbooks = workbookData.data || [];
+  if (otherWorkbooks.length > 0) {
+    const insights = otherWorkbooks.map(w => {
+      const responses = w.responses || [];
+      const lastResponse = responses[responses.length - 1];
+      if (lastResponse?.ai_reaction) return `${w.workbook_type}: "${lastResponse.ai_reaction.substring(0, 150)}"`;
+      return null;
+    }).filter(Boolean);
+    if (insights.length > 0) crossContext += `Insights from other workbooks: ${insights.join(" | ")}. `;
+  }
+
+  // Phase awareness
+  const totalEntries = entryCount.count || 0;
+  const phase = totalEntries <= 15 ? "discovery" : totalEntries <= 40 ? "deepening" : "integration";
+  const phaseInstruction: Record<string, { en: string; pl: string }> = {
+    discovery: {
+      en: "This person is early in their self-work. They may not yet have language for what they feel. Name things simply. Do not assume depth they have not reached yet.",
+      pl: "Ta osoba jest na początku pracy z sobą. Może jeszcze nie mieć języka na to co czuje. Nazywaj rzeczy prosto. Nie zakładaj głębi do której jeszcze nie dotarła.",
+    },
+    deepening: {
+      en: "This person has been writing for a while. They are starting to see patterns. You can be more direct. Reference what repeats. Push gently past the surface.",
+      pl: "Ta osoba pisze od jakiegoś czasu. Zaczyna widzieć wzorce. Możesz być bardziej bezpośrednia. Odnoś się do tego co się powtarza. Delikatnie pchaj poza powierzchnię.",
+    },
+    integration: {
+      en: "This person has significant self-work behind them. They know their patterns. Do not explain what they already see. Ask what they are doing with what they know. Challenge integration, not awareness.",
+      pl: "Ta osoba ma za sobą znaczącą pracę z sobą. Zna swoje wzorce. Nie tłumacz tego co już widzi. Pytaj co robi z tym co wie. Kwestionuj integrację, nie świadomość.",
+    },
+  };
+
   const prompt = `You are a depth work guide for the app "Noctua" by AGNÉLIS. You respond to what someone wrote during their ${planetName} workbook, stage: ${stageName}.
-
 This person has their natal ${planetName} in ${natalSign}. The area of work is: ${pContext}.
-
+Phase: ${phase} (${totalEntries} total journal entries). ${phaseInstruction[phase][lang]}
+${crossContext ? `\nCross-reference data from this person's journal, dreams and other workbooks:\n${crossContext}` : ""}
 Your role: react to what she wrote. Name what you see. Be specific. Do not repeat her words back to her. Do not give advice. Do not say what she should do. Point to what she might not be seeing. Be direct but not cold. Short. 3 to 5 sentences maximum.
-
-${context ? `Context from her journal and previous entries:\n${context}` : ""}
-
+${crossContext ? "If you see connections between what she wrote now and patterns from her journal, dreams or other workbooks, name them. Do not force connections. Only mention them if they are real and specific." : ""}
+${context ? `Additional context:\n${context}` : ""}
 Write in ${lang === "pl" ? "Polish" : "English"}.
-
 She wrote:
 "${response}"
-
 CRITICAL RULES:
-No markdown. No asterisks. No bold. No bullet points. No dashes or em dashes. No greetings. No "Dear" or "Droga". Do not use the word "journey". Do not give advice. Name what you see.`;
-
+No markdown. No asterisks. No bold. No bullet points. No dashes or em dashes. No greetings. No "Dear" or "Droga". Do not use the word "journey". Do not give advice. Name what you see. If referencing her other data, do it naturally, not as a list.`;
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
