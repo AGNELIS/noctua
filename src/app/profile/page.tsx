@@ -30,6 +30,8 @@ export default function ProfilePage() {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [createdAt, setCreatedAt] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -497,6 +499,52 @@ const saveName = async () => {
             style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)", fontWeight: 500 }}>
             {loggingOut ? t("profile_signing_out") : t("sign_out")}
           </button>
+        </section>
+
+        {/* Delete account */}
+        <section>
+          {!showDeleteConfirm ? (
+            <button onClick={() => setShowDeleteConfirm(true)}
+              className="w-full py-2 text-xs tracking-wide transition-all"
+              style={{ color: "var(--color-dusty-rose)", opacity: 0.6 }}>
+              {language === "pl" ? "Usuń konto" : "Delete account"}
+            </button>
+          ) : (
+            <div className="p-4 rounded-xl space-y-3" style={{ background: "var(--color-blush)", border: "1px solid var(--color-dusty-rose)" }}>
+              <p className="text-sm" style={{ color: "var(--color-dark)", lineHeight: 1.6 }}>
+                {language === "pl"
+                  ? "To usunie wszystkie Twoje dane: dziennik, sny, workbooki, zakupy, wzorce, powiadomienia. Tej operacji nie można cofnąć."
+                  : "This will permanently delete all your data: journal, dreams, workbooks, purchases, patterns, notifications. This cannot be undone."}
+              </p>
+              <div className="flex gap-2">
+                <button onClick={async () => {
+                  setDeleting(true);
+                  try {
+                    const res = await fetch("/api/delete-account", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ confirmation: "DELETE" }),
+                    });
+                    if (res.ok) {
+                      const supabase = createClient();
+                      await supabase.auth.signOut();
+                      window.location.href = "/";
+                    }
+                  } catch {}
+                  setDeleting(false);
+                }} disabled={deleting}
+                  className="flex-1 py-2 rounded-xl text-xs"
+                  style={{ background: "var(--color-dusty-rose)", color: "var(--color-cream)", fontWeight: 600 }}>
+                  {deleting ? (language === "pl" ? "Usuwanie..." : "Deleting...") : (language === "pl" ? "Tak, usuń wszystko" : "Yes, delete everything")}
+                </button>
+                <button onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1 py-2 rounded-xl text-xs border"
+                  style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-mauve)" }}>
+                  {language === "pl" ? "Anuluj" : "Cancel"}
+                </button>
+              </div>
+            </div>
+          )}
         </section>
 
       </main>
