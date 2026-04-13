@@ -41,6 +41,7 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Pluto Workbook": "Zeszyt Plutona",
   "Chiron Workbook": "Zeszyt Chirona",
   "Lilith Workbook": "Zeszyt Lilith",
+  "Lunar Nodes Workbook": "Zeszyt Węzłów Księżycowych",
   "Depth Work Bundle": "Pakiet Go Deeper",
 };
 
