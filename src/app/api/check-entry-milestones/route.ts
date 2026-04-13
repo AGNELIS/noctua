@@ -66,5 +66,28 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Trigger evolving prompt every 5 entries (for premium)
+  if (total > 0 && total % 5 === 0) {
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+    const { count: recentPrompts } = await supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("type", "evolving_prompt")
+      .gte("created_at", threeDaysAgo);
+
+    if ((recentPrompts || 0) === 0) {
+      // Call evolving prompts endpoint asynchronously
+      try {
+        const baseUrl = req.nextUrl.origin;
+        const cookies = req.headers.get("cookie") || "";
+        fetch(`${baseUrl}/api/evolving-prompts`, {
+          method: "POST",
+          headers: { cookie: cookies },
+        }).catch(() => {});
+      } catch {}
+    }
+  }
+
   return NextResponse.json({ total, sinceLastReport: sinceDate });
 }
