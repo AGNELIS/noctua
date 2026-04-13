@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
@@ -14,7 +14,7 @@ const MOODS = [
   { value: "stormy", icon: <StarIcon size={20} />, label: "Stormy", pl: "Burzliwie" },
 ];
 
-export default function NewJournalEntry() {
+function NewJournalEntryContent() {
   const router = useRouter();
   const { t, language } = useLanguage();
   const [title, setTitle] = useState("");
@@ -143,5 +143,13 @@ export default function NewJournalEntry() {
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
       </main>
     </div>
+  );
+}
+
+export default function NewJournalEntry() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" style={{ background: "var(--color-cream)" }} />}>
+      <NewJournalEntryContent />
+    </Suspense>
   );
 }

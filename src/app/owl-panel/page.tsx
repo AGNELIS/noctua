@@ -325,42 +325,13 @@ export default function OwlPanelPage() {
           </div>
         </div>
 
-        {/* Quick actions */}
-        <div style={sectionStyle}>
-          <p style={labelStyle}>Quick Actions</p>
-          <div className="flex flex-wrap gap-2 mt-3">
-            <button onClick={unlockAllThemes} style={btnStyle}>Unlock all themes</button>
-            <button onClick={unlockAllProducts} style={btnStyle}>Unlock all products</button>
-            <button onClick={generateWeeklyInsight} style={btnOutline}>Generate weekly insight</button>
-          </div>
-        </div>
-
-        {/* Referrals */}
-        <div style={sectionStyle}>
-          <p style={labelStyle}>Referrals</p>
-          <p style={{ ...valueStyle, marginTop: "4px" }}>Code: <span style={{ fontWeight: 600 }}>{referralCode || "none"}</span></p>
-          <p style={{ ...valueStyle }}>Total: {referrals.length} — Completed: {referrals.filter(r => r.status === "completed").length}</p>
-
-          <p style={{ ...labelStyle, marginTop: "12px" }}>Rewards</p>
-          {rewards.length === 0 ? (
-            <p style={{ ...valueStyle, opacity: 0.5 }}>No rewards yet</p>
-          ) : (
-            rewards.map(r => (
-              <p key={r.id} style={valueStyle}>{r.reward_type} — {r.claimed ? "Claimed" : "Unclaimed"}</p>
-            ))
-          )}
-
-          <div className="flex flex-wrap gap-2 mt-3">
-            <button onClick={() => simulateReferrals(3)} style={btnOutline}>+3 referrals (free analysis)</button>
-            <button onClick={() => simulateReferrals(7)} style={btnOutline}>+7 more (=10, monthly report)</button>
-            <button onClick={() => simulateReferrals(10)} style={btnOutline}>+10 more (=20, 30% discount)</button>
-            <button onClick={clearTestReferrals} style={{ ...btnOutline, color: "var(--color-dusty-rose)" }}>Clear test referrals</button>
-          </div>
-        </div>
-
         {/* Purchases */}
         <div style={sectionStyle}>
           <p style={labelStyle}>My Purchases ({purchases.length})</p>
+          <div className="flex gap-2 mt-2 mb-3">
+            <button onClick={unlockAllThemes} style={{ ...btnStyle, flex: 1, fontSize: "10px", padding: "6px" }}>Unlock all themes</button>
+            <button onClick={unlockAllProducts} style={{ ...btnStyle, flex: 1, fontSize: "10px", padding: "6px" }}>Unlock all products</button>
+          </div>
           {purchases.length === 0 ? (
             <p style={{ ...valueStyle, opacity: 0.5 }}>No purchases</p>
           ) : (
@@ -393,6 +364,7 @@ export default function OwlPanelPage() {
           ) : (
             <p style={{ ...valueStyle, opacity: 0.5 }}>None generated yet</p>
           )}
+          <button onClick={generateWeeklyInsight} style={{ ...btnOutline, marginTop: "8px", width: "100%" }}>Generate weekly insight</button>
         </div>
 
         {/* Theme Preview + Activate */}
