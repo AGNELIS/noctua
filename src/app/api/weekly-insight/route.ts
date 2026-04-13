@@ -104,6 +104,18 @@ export async function GET(req: NextRequest) {
     return null;
   }).filter(Boolean).join(" | ");
 
+  const { data: patternData } = await supabase
+    .from("user_patterns")
+    .select("pattern_type, description, keywords, frequency")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .order("frequency", { ascending: false })
+    .limit(6);
+
+  const patternContext = (patternData || []).length > 0
+    ? (patternData || []).map(p => `[${p.pattern_type}, seen ${p.frequency}x] ${p.description}`).join(" | ")
+    : "";
+
   const { count: totalEntries } = await supabase
     .from("journal_entries")
     .select("id", { count: "exact", head: true })
@@ -140,6 +152,9 @@ ${shadowSummary || "None"}
 ${workbookInsights ? `\nRecent workbook insights:\n${workbookInsights}` : ""}
 Phase: ${phase} (${totalEntries || 0} total entries). ${phase === "discovery" ? "Early in self-work. Be gentle but clear." : phase === "deepening" ? "Seeing patterns. Be direct. Name what repeats across journal, dreams and workbooks." : "Experienced. Do not summarize. Challenge. Connect dots she has not connected yet."}
 ${workbookInsights ? "If patterns from workbooks connect to this week's journal or dreams, name the connection naturally." : ""}
+${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
+${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
+${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
 
 CRITICAL FORMATTING RULES:
 Under 300 words. No markdown. No asterisks. No bold. No bullet points. No dashes or em dashes. Use commas and full stops only. Never use "Dear" or "Droga" or any greeting. No section headings.`;

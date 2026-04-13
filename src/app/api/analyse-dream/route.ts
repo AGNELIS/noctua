@@ -118,6 +118,18 @@ export async function POST(req: NextRequest) {
     return null;
   }).filter(Boolean).join(" | ");
 
+  const { data: patternData } = await supabase
+    .from("user_patterns")
+    .select("pattern_type, description, keywords, frequency")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .order("frequency", { ascending: false })
+    .limit(6);
+
+  const patternContext = (patternData || []).length > 0
+    ? (patternData || []).map(p => `[${p.pattern_type}, seen ${p.frequency}x] ${p.description}`).join(" | ")
+    : "";
+
   const { count: totalEntries } = await supabase
     .from("journal_entries")
     .select("id", { count: "exact", head: true })
@@ -169,6 +181,7 @@ ${journalContext}
 ${workbookContext ? `\nInsights from self-work (workbooks):\n${workbookContext}` : ""}
 Phase: ${phase} (${totalEntries || 0} journal entries). ${phase === "discovery" ? "Early in self-work. Name things simply." : phase === "deepening" ? "Seeing patterns. Be more direct. Reference what repeats." : "Experienced. Do not explain what she already sees. Push integration."}
 ${workbookContext ? "If you see connections between the dream and patterns from her workbooks, name them naturally. Do not force it." : ""}
+${patternContext ? `\nKnown patterns Noctua has identified in this person:\n${patternContext}\nIf a pattern connects to this dream, weave it into your analysis naturally. Do not list patterns.` : ""}
 
 CRITICAL FORMATTING RULES:
 Keep the response under 500 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in Title Case on their own line. Never use the word "Droga" or "Dear" or any greeting.`;

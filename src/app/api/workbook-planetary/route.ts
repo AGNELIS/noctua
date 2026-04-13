@@ -50,12 +50,13 @@ export async function POST(req: NextRequest) {
   const pContext = planetContext[planet]?.[lang] || planetContext.moon[lang];
   const stageName = stageNames[stage]?.[lang] || "Recognition";
 
-  // Cross-referencing: fetch user's journal, dreams, and other workbook data
-  const [journalData, dreamData, workbookData, entryCount] = await Promise.all([
+  // Cross-referencing: fetch user's journal, dreams, other workbook data, and known patterns
+  const [journalData, dreamData, workbookData, entryCount, patternData] = await Promise.all([
     supabase.from("journal_entries").select("content, mood, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
     supabase.from("dream_entries").select("content, symbols, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
     supabase.from("workbook_progress").select("workbook_type, responses, completed_at").eq("user_id", user.id).not("workbook_type", "eq", planet).order("started_at", { ascending: false }).limit(5),
     supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("user_patterns").select("pattern_type, description, keywords, frequency, status").eq("user_id", user.id).eq("status", "active").order("frequency", { ascending: false }).limit(6),
   ]);
 
   // Build cross-reference context
@@ -95,6 +96,13 @@ export async function POST(req: NextRequest) {
     if (insights.length > 0) crossContext += `Insights from other workbooks: ${insights.join(" | ")}. `;
   }
 
+  // Known patterns
+  const patterns = patternData.data || [];
+  if (patterns.length > 0) {
+    const patternText = patterns.map(p => `[${p.pattern_type}, seen ${p.frequency}x] ${p.description}`).join(" | ");
+    crossContext += `Known patterns Noctua has identified: ${patternText}. `;
+  }
+
   // Phase awareness
   const totalEntries = entryCount.count || 0;
   const phase = totalEntries <= 15 ? "discovery" : totalEntries <= 40 ? "deepening" : "integration";
@@ -118,7 +126,7 @@ This person has their natal ${planetName} in ${natalSign}. The area of work is: 
 Phase: ${phase} (${totalEntries} total journal entries). ${phaseInstruction[phase][lang]}
 ${crossContext ? `\nCross-reference data from this person's journal, dreams and other workbooks:\n${crossContext}` : ""}
 Your role: react to what she wrote. Name what you see. Be specific. Do not repeat her words back to her. Do not give advice. Do not say what she should do. Point to what she might not be seeing. Be direct but not cold. Short. 3 to 5 sentences maximum.
-${crossContext ? "If you see connections between what she wrote now and patterns from her journal, dreams or other workbooks, name them. Do not force connections. Only mention them if they are real and specific." : ""}
+${crossContext ? "If you see connections between what she wrote now and patterns from her journal, dreams or other workbooks, name them. Do not force connections. Only mention them if they are real and specific. If a known pattern is directly relevant to what she wrote, reference it naturally. Do not list patterns. Weave them into your observation." : ""}
 ${context ? `Additional context:\n${context}` : ""}
 Write in ${lang === "pl" ? "Polish" : "English"}.
 She wrote:
