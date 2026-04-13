@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { SunIcon, CloudIcon, SphereIcon, BarbellIcon, StarIcon } from "@/components/NoctuaIcons";
@@ -18,7 +18,10 @@ export default function NewJournalEntry() {
   const router = useRouter();
   const { t, language } = useLanguage();
   const [title, setTitle] = useState("");
+  const searchParams = useSearchParams();
+  const promptFromUrl = searchParams.get("prompt");
   const [content, setContent] = useState("");
+  const [promptShown, setPromptShown] = useState(false);
   const [moods, setMoods] = useState<string[]>([]);
   const [patternTag, setPatternTag] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -125,7 +128,17 @@ export default function NewJournalEntry() {
           className="w-full text-lg font-light text-center outline-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "12px", fontFamily: "Georgia, 'Times New Roman', serif" }} />
 
-        <textarea placeholder={language === "pl" ? "Pisz tutaj..." : "What's alive in you today?"} value={content} onChange={(e) => setContent(e.target.value)} rows={12}
+        {promptFromUrl && !promptShown && (
+          <div className="p-4 rounded-xl" style={{ background: "var(--color-blush)", borderLeft: "3px solid var(--color-gold)" }}>
+            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+              {language === "pl" ? "Noctua pyta" : "Noctua asks"}
+            </p>
+            <p style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", lineHeight: 1.7 }}>
+              {decodeURIComponent(promptFromUrl)}
+            </p>
+          </div>
+        )}
+        <textarea placeholder={promptFromUrl ? (language === "pl" ? "Twoja odpowiedź..." : "Your response...") : (language === "pl" ? "Pisz tutaj..." : "What's alive in you today?")} value={content} onChange={(e) => { setContent(e.target.value); if (promptFromUrl) setPromptShown(false); }} rows={12}
           className="w-full text-sm leading-relaxed outline-none resize-none transition-colors duration-500"
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
       </main>
