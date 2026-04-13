@@ -362,6 +362,8 @@ export default function SaturnWorkbookPage() {
     if (!isComplete) {
       setSaving(false);
     } else {
+      // Extract patterns after cycle completion
+      try { fetch("/api/extract-patterns", { method: "POST" }); } catch {}
       setSaving(false);
     }
   };

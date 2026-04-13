@@ -340,6 +340,7 @@ export default function LunarNodesWorkbookPage() {
     setSession({ ...session, responses: updatedResponses, completed_at: isComplete ? new Date().toISOString() : null });
     setAiReaction(reaction);
     setResponse("");
+    if (currentStage === 3) { try { fetch("/api/extract-patterns", { method: "POST" }); } catch {} }
     setSaving(false);
   };
 
