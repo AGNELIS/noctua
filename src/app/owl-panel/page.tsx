@@ -187,6 +187,7 @@ export default function OwlPanelPage() {
   };
 
   const simulateReferrals = async (count: number) => {
+    alert(`Simulating ${count} referrals for ${myId}`);
     const supabase = createClient();
     for (let i = 0; i < count; i++) {
       await supabase.from("referrals").insert({
