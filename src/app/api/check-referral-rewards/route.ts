@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       await supabase.from("referral_rewards").insert({
         user_id: user.id,
         reward_type: t.reward_type,
-        claimed: false,
+        is_used: false,
       });
 
       await supabase.from("notifications").insert({
