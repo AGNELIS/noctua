@@ -96,7 +96,7 @@ export default function OwlPanelPage() {
 
     const { data: rews } = await supabase
       .from("referral_rewards")
-      .select("id, reward_type, claimed, created_at")
+      .select("id, reward_type, is_used, created_at")
       .eq("user_id", user.id);
     setRewards(rews || []);
 
@@ -485,7 +485,7 @@ export default function OwlPanelPage() {
                       <p style={{ fontSize: "13px", color: unlocked ? "var(--color-plum)" : "var(--color-mauve)", fontWeight: 600 }}>{t.label}</p>
                       <p style={{ fontSize: "10px", color: "var(--color-dusty-rose)", marginTop: "2px" }}>{t.desc}</p>
                       <p style={{ fontSize: "10px", color: "var(--color-mauve)", marginTop: "2px" }}>
-                        Status: {!unlocked ? `${completed}/${t.tier} referrals` : reward?.claimed ? "Claimed" : "Unlocked, not claimed"}
+                        Status: {!unlocked ? `${completed}/${t.tier} referrals` : reward?.is_used ? "Claimed" : "Unlocked, not claimed"}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1">
@@ -494,13 +494,13 @@ export default function OwlPanelPage() {
                           Simulate to {t.tier}
                         </button>
                       )}
-                      {unlocked && !reward?.claimed && (
+                      {unlocked && !reward?.is_used && (
                         <button onClick={async () => {
                           const supabase = createClient();
                           if (reward) {
-                            await supabase.from("referral_rewards").update({ claimed: true }).eq("id", reward.id);
+                            await supabase.from("referral_rewards").update({ is_used: true }).eq("id", reward.id);
                           } else {
-                            await supabase.from("referral_rewards").insert({ user_id: myId, reward_type: t.reward, claimed: true });
+                            await supabase.from("referral_rewards").insert({ user_id: myId, reward_type: t.reward, is_used: true });
                           }
                           showMsg(`Claimed: ${t.label}`);
                           load();
@@ -508,7 +508,7 @@ export default function OwlPanelPage() {
                           Claim
                         </button>
                       )}
-                      {reward?.claimed && (
+                      {reward?.is_used && (
                         <button onClick={async () => {
                           const supabase = createClient();
                           await supabase.from("referral_rewards").delete().eq("id", reward.id);
