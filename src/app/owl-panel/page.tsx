@@ -187,9 +187,20 @@ export default function OwlPanelPage() {
   };
 
   const simulateReferrals = async (count: number) => {
-    alert(`Simulating ${count} referrals for ${myId}`);
     const supabase = createClient();
-    for (let i = 0; i < count; i++) {
+    const { error } = await supabase.from("referrals").insert({
+      referrer_id: myId,
+      referred_id: crypto.randomUUID(),
+      referral_code: `TEST-${myId.substring(0, 8)}`,
+      status: "completed",
+      completed_at: new Date().toISOString(),
+    });
+    if (error) {
+      alert(`INSERT ERROR: ${error.message} | code: ${error.code} | details: ${error.details}`);
+      return;
+    }
+    alert("First insert OK! Adding rest...");
+    for (let i = 1; i < count; i++) {
       await supabase.from("referrals").insert({
         referrer_id: myId,
         referred_id: crypto.randomUUID(),
@@ -198,9 +209,8 @@ export default function OwlPanelPage() {
         completed_at: new Date().toISOString(),
       });
     }
-    // Trigger reward check
     try { await fetch("/api/check-referral-rewards", { method: "POST" }); } catch {}
-    showMsg(`+${count} referrals added`);
+    alert(`Done! ${count} referrals added`);
     load();
   };
 
