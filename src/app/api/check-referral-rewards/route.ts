@@ -1,71 +1,69 @@
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
-const CYCLE_1_THRESHOLDS = [
+const THRESHOLDS = [
   {
     threshold: 3,
-    reward_type: "dream_analysis",
+    reward_type: "dream_analysis_1",
     title_en: "Reward unlocked: free dream analysis",
     title_pl: "Nagroda odblokowana: darmowa analiza snu",
-    body_en: "3 friends joined. You earned a free AI dream analysis.",
-    body_pl: "3 osoby dołączyły. Otrzymujesz darmową analizę snu AI.",
+    body_en: "3 friends joined Noctua. You earned 1 free AI dream analysis.",
+    body_pl: "3 osoby dołączyły do Noctua. Otrzymujesz 1 darmową analizę snu AI.",
     link: "/referral",
   },
-  {
-    threshold: 10,
-    reward_type: "monthly_report",
-    title_en: "Reward unlocked: free monthly reading",
-    title_pl: "Nagroda odblokowana: darmowy odczyt miesięczny",
-    body_en: "10 friends joined. Your free monthly reading is ready.",
-    body_pl: "10 osób dołączyło. Twój darmowy odczyt miesięczny czeka.",
-    link: "/referral",
-  },
-  {
-    threshold: 20,
-    reward_type: "badge",
-    title_en: "Ambassador status unlocked",
-    title_pl: "Status Ambasadorki odblokowany",
-    body_en: "20 friends joined. You are now an Ambassador with 30% off Premium.",
-    body_pl: "20 osób dołączyło. Jesteś Ambasadorką z 30% zniżki na Premium.",
-    link: "/referral",
-  },
-];
-
-const CYCLE_2_THRESHOLDS = [
   {
     threshold: 5,
-    reward_type: "personal_letter",
-    title_en: "Reward unlocked: personal letter from AGNÉLIS",
-    title_pl: "Nagroda odblokowana: osobisty list od AGNÉLIS",
-    body_en: "A letter written for you based on your entire journey.",
-    body_pl: "List napisany dla Ciebie na podstawie całej Twojej podróży.",
+    reward_type: "theme_moonstone",
+    title_en: "Exclusive theme unlocked: Moonstone",
+    title_pl: "Ekskluzywny motyw odblokowany: Moonstone",
+    body_en: "5 friends joined. You unlocked the Moonstone theme, not available in the shop.",
+    body_pl: "5 osób dołączyło. Odblokowałaś motyw Moonstone, niedostępny w sklepie.",
     link: "/referral",
   },
   {
     threshold: 10,
-    reward_type: "exclusive_theme",
-    title_en: "Reward unlocked: exclusive animated theme",
-    title_pl: "Nagroda odblokowana: ekskluzywny animowany motyw",
-    body_en: "Choose from themes not available in the shop.",
-    body_pl: "Wybierz spośród motywów niedostępnych w sklepie.",
-    link: "/referral/themes",
+    reward_type: "workbook_discount_30",
+    title_en: "Reward unlocked: 30% off any workbook + 2 dream analyses",
+    title_pl: "Nagroda odblokowana: 30% zniżki na workbook + 2 analizy snów",
+    body_en: "10 friends joined. You earned 30% off any workbook and 2 extra dream analyses.",
+    body_pl: "10 osób dołączyło. Otrzymujesz 30% zniżki na dowolny workbook i 2 dodatkowe analizy snów.",
+    link: "/referral",
   },
   {
     threshold: 15,
-    reward_type: "deep_reading",
-    title_en: "Reward unlocked: deep reading",
-    title_pl: "Nagroda odblokowana: głęboki odczyt",
-    body_en: "A multi-month panorama of your patterns.",
-    body_pl: "Panorama Twoich wzorców z wielu miesięcy.",
+    reward_type: "theme_velvet_night",
+    title_en: "Exclusive theme unlocked: Velvet Night",
+    title_pl: "Ekskluzywny motyw odblokowany: Velvet Night",
+    body_en: "15 friends joined. You unlocked the Velvet Night theme, not available in the shop.",
+    body_pl: "15 osób dołączyło. Odblokowałaś motyw Velvet Night, niedostępny w sklepie.",
     link: "/referral",
   },
   {
     threshold: 20,
-    reward_type: "shadow_mirror",
-    title_en: "Reward unlocked: shadow mirror",
-    title_pl: "Nagroda odblokowana: lustro cienia",
-    body_en: "Your complete shadow work journey reflected back to you.",
-    body_pl: "Cała Twoja podróż z pracą z cieniem odbita jak w lustrze.",
+    reward_type: "premium_discount_30",
+    title_en: "Reward unlocked: 30% off Premium + 3 dream analyses",
+    title_pl: "Nagroda odblokowana: 30% zniżki na Premium + 3 analizy snów",
+    body_en: "20 friends joined. You earned 30% off Premium and 3 extra dream analyses.",
+    body_pl: "20 osób dołączyło. Otrzymujesz 30% zniżki na Premium i 3 dodatkowe analizy snów.",
+    link: "/referral",
+  },
+  {
+    threshold: 30,
+    reward_type: "theme_obsidian_rose",
+    title_en: "Exclusive theme unlocked: Obsidian Rose + Ambassador status",
+    title_pl: "Ekskluzywny motyw odblokowany: Obsidian Rose + status Ambasadorki",
+    body_en: "30 friends joined. You unlocked Obsidian Rose and earned Ambassador status. You now have the complete exclusive collection.",
+    body_pl: "30 osób dołączyło. Odblokowałaś Obsidian Rose i otrzymałaś status Ambasadorki. Masz kompletną ekskluzywną kolekcję.",
+    link: "/referral",
+  },
+  {
+    threshold: 50,
+    reward_type: "unlimited_dreams",
+    title_en: "Lifetime reward: unlimited dream analyses",
+    title_pl: "Nagroda dożywotnia: nieograniczone analizy snów",
+    body_en: "50 friends joined Noctua. You have earned unlimited AI dream analyses for life. No limits. Ever.",
+    body_pl: "50 osób dołączyło do Noctua. Otrzymujesz nieograniczone analizy snów AI na zawsze. Bez limitów. Na zawsze.",
     link: "/referral",
   },
 ];
@@ -82,10 +80,6 @@ export async function POST(req: NextRequest) {
     .eq("status", "completed");
 
   const completed = count || 0;
-  const cycleNumber = Math.floor(completed / 20);
-  const isFirstCycle = cycleNumber === 0;
-  const thresholds = isFirstCycle ? CYCLE_1_THRESHOLDS : CYCLE_2_THRESHOLDS;
-  const cycleCount = isFirstCycle ? completed : completed % 20;
 
   const { data: existingRewards } = await supabase
     .from("referral_rewards")
@@ -95,8 +89,8 @@ export async function POST(req: NextRequest) {
   const existingTypes = new Set((existingRewards || []).map(r => r.reward_type));
   const newRewards: string[] = [];
 
-  for (const t of thresholds) {
-    if (cycleCount >= t.threshold && !existingTypes.has(t.reward_type)) {
+  for (const t of THRESHOLDS) {
+    if (completed >= t.threshold && !existingTypes.has(t.reward_type)) {
       await supabase.from("referral_rewards").insert({
         user_id: user.id,
         reward_type: t.reward_type,
@@ -114,6 +108,40 @@ export async function POST(req: NextRequest) {
       });
 
       newRewards.push(t.reward_type);
+
+      // Notify admin when someone reaches 50 referrals
+      if (t.threshold === 50) {
+        const serviceSupabase = createServiceClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+        const { data: admins } = await serviceSupabase
+          .from("profiles")
+          .select("id")
+          .eq("is_admin", true);
+
+        const { data: referrerProfile } = await supabase
+          .from("profiles")
+          .select("display_name")
+          .eq("id", user.id)
+          .single();
+
+        const userName = referrerProfile?.display_name || user.email || "Unknown user";
+
+        if (admins) {
+          for (const admin of admins) {
+            await serviceSupabase.from("notifications").insert({
+              user_id: admin.id,
+              type: "admin_alert",
+              title_en: "Someone reached 50 referrals!",
+              title_pl: "Ktoś osiągnął 50 referrali!",
+              body_en: `${userName} has reached 50 completed referrals and earned unlimited dream analyses. Consider reaching out personally.`,
+              body_pl: `${userName} osiągnęła 50 ukończonych referrali i otrzymała nieograniczone analizy snów. Rozważ osobisty kontakt.`,
+              link: "/owl-panel",
+            });
+          }
+        }
+      }
     }
   }
 
