@@ -174,7 +174,7 @@ export default function DashboardPage() {
         .select("id, status")
         .eq("referred_id", user.id)
         .eq("status", "pending")
-        .single();
+        .maybeSingle();
 
       if (!myReferral) return;
 
