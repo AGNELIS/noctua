@@ -524,6 +524,9 @@ export default function OwlPanelPage() {
               );
             })}
           </div>
+          <button onClick={clearTestReferrals} className="w-full mt-3 py-2 rounded-xl text-xs" style={{ border: "1px solid var(--color-dusty-rose)", color: "var(--color-dusty-rose)" }}>
+            Clear all test referrals + rewards
+          </button>
         </div>
 
         {/* Planetary Workbook Testing */}
