@@ -471,9 +471,9 @@ export default function OwlPanelPage() {
           <p style={{ ...valueStyle, marginTop: "4px", opacity: 0.6 }}>Simulate referral milestones and test what unlocks at each tier.</p>
           <div className="space-y-3 mt-3">
             {[
-              { tier: 3, reward: "free_dream_analysis", label: "3 referrals — Free dream analysis", desc: "Adds 1 dream analysis credit" },
-              { tier: 10, reward: "free_monthly_report", label: "10 referrals — Free monthly report", desc: "Unlocks 1 monthly report" },
-              { tier: 20, reward: "discount_30", label: "20 referrals — 30% discount", desc: "Generates a 30% promo code" },
+              { tier: 3, reward: "dream_analysis", label: "3 referrals — Free dream analysis", desc: "Adds 1 dream analysis credit" },
+              { tier: 10, reward: "monthly_report", label: "10 referrals — Free monthly report", desc: "Unlocks 1 monthly report" },
+              { tier: 20, reward: "badge", label: "20 referrals — 30% discount", desc: "Generates a 30% promo code" },
             ].map(t => {
               const completed = referrals.filter(r => r.status === "completed").length;
               const unlocked = completed >= t.tier;
