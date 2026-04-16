@@ -168,7 +168,32 @@ export default function ReferralPage() {
                   </p>
                 </div>
                 <div className="shrink-0 ml-3">
-                  {earned ? (
+                  {earned && isTheme && !rewards.includes(r.type) ? (
+                    <button onClick={async () => {
+                      const supabase = createClient();
+                      const themeName = r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose";
+                      const { data: prod } = await supabase.from("shop_products").select("id").eq("name", themeName).single();
+                      if (prod) {
+                        await supabase.from("user_purchases").insert({ user_id: (await supabase.auth.getUser()).data.user?.id, product_id: prod.id });
+                        await supabase.from("referral_rewards").update({ is_used: true }).eq("reward_type", r.type);
+                        loadReferralData();
+                      }
+                    }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}>
+                      {pl ? "Aktywuj motyw" : "Activate theme"}
+                    </button>
+                  ) : earned && isTheme && rewards.includes(r.type) ? (
+                    <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                      {pl ? "Aktywowany" : "Activated"}
+                    </span>
+                  ) : earned && r.type === "dream_analysis_1" ? (
+                    <button onClick={() => router.push("/dreams")} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                      {pl ? "Przejdź do snów" : "Go to dreams"}
+                    </button>
+                  ) : earned && r.type === "unlimited_dreams" ? (
+                    <span className="text-xs px-3 py-1 rounded-full" style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-gold))", color: "var(--color-cream)", fontWeight: 500 }}>
+                      {pl ? "Aktywne na zawsze" : "Active forever"}
+                    </span>
+                  ) : earned ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Odblokowane" : "Unlocked"}
                     </span>
