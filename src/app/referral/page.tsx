@@ -5,25 +5,14 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 
-const CYCLE_1_REWARDS = [
-  { threshold: 3, type: "dream_analysis", en: "1 free AI dream analysis", pl: "1 darmowa analiza snu AI" },
-  { threshold: 10, type: "monthly_report", en: "1 free monthly reading", pl: "1 darmowy odczyt miesięczny" },
-  { threshold: 20, type: "badge", en: "Ambassador badge + 30% off Premium", pl: "Odznaka Ambasadorki + 30% zniżki na Premium" },
-];
-
-const CYCLE_2_REWARDS = [
-  { threshold: 5, type: "personal_letter", en: "Personal Letter from AGNÉLIS", pl: "Osobisty list od AGNÉLIS" },
-  { threshold: 10, type: "exclusive_theme", en: "Exclusive theme (referral only)", pl: "Ekskluzywny motyw (tylko przez zaproszenia)" },
-  { threshold: 15, type: "deep_reading", en: "Deep Reading (multi-month panorama)", pl: "Głęboki odczyt (panorama wielu miesięcy)" },
-  { threshold: 20, type: "shadow_mirror", en: "Shadow Mirror (your full journey)", pl: "Lustro cienia (cała Twoja podróż)" },
-];
-
-const BADGES = [
-  { threshold: 20, en: "Ambassador", pl: "Ambasadorka" },
-  { threshold: 40, en: "Guardian", pl: "Strażniczka" },
-  { threshold: 60, en: "Guide", pl: "Przewodniczka" },
-  { threshold: 80, en: "Mirror Bearer", pl: "Lustrzana" },
-  { threshold: 100, en: "The Owl", pl: "Sowa" },
+const REWARDS = [
+  { threshold: 3, type: "dream_analysis_1", en: "1 free AI dream analysis", pl: "1 darmowa analiza snu AI" },
+  { threshold: 5, type: "theme_moonstone", en: "Exclusive theme: Moonstone", pl: "Ekskluzywny motyw: Moonstone" },
+  { threshold: 10, type: "workbook_discount_30", en: "30% off any workbook + 2 dream analyses", pl: "30% zniżki na workbook + 2 analizy snów" },
+  { threshold: 15, type: "theme_velvet_night", en: "Exclusive theme: Velvet Night", pl: "Ekskluzywny motyw: Velvet Night" },
+  { threshold: 20, type: "premium_discount_30", en: "30% off Premium + 3 dream analyses", pl: "30% zniżki na Premium + 3 analizy snów" },
+  { threshold: 30, type: "theme_obsidian_rose", en: "Exclusive theme: Obsidian Rose + Ambassador", pl: "Ekskluzywny motyw: Obsidian Rose + Ambasadorka" },
+  { threshold: 50, type: "unlimited_dreams", en: "Lifetime unlimited dream analyses", pl: "Dożywotnie nieograniczone analizy snów" },
 ];
 
 export default function ReferralPage() {
@@ -78,11 +67,8 @@ export default function ReferralPage() {
   };
 
   const canRefer = journalCount >= 3;
-  const cycleNumber = Math.floor(completedCount / 20);
-  const cycleCount = completedCount % 20;
-  const isFirstCycle = cycleNumber === 0;
-  const currentRewards = isFirstCycle ? CYCLE_1_REWARDS : CYCLE_2_REWARDS;
-  const currentBadge = [...BADGES].reverse().find(b => completedCount >= b.threshold);
+  const currentRewards = REWARDS;
+  const isAmbassador = completedCount >= 30;
 
   if (loading) {
     return (
@@ -96,7 +82,7 @@ export default function ReferralPage() {
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/profile")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+          <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
             {pl ? "← Wróć" : "← Back"}
           </button>
           <div className="w-12" />
@@ -114,11 +100,10 @@ export default function ReferralPage() {
             : "Invite someone who needs this work. And Noctua will show you more about yourself."}
         </p>
 
-        {/* Badge */}
-        {currentBadge && (
+        {isAmbassador && (
           <div className="text-center py-3 rounded-2xl" style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))" }}>
             <p className="text-xs uppercase tracking-[0.3em]" style={{ color: "var(--color-cream)", fontWeight: 600 }}>
-              {pl ? currentBadge.pl : currentBadge.en}
+              {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
             </p>
           </div>
         )}
@@ -167,14 +152,11 @@ export default function ReferralPage() {
         <section className="space-y-3">
           <p className="text-xs uppercase tracking-widest text-center" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
             {pl ? "Nagrody" : "Rewards"}
-            {!isFirstCycle && (
-              <span style={{ opacity: 0.6 }}> ({pl ? `cykl ${cycleNumber + 1}` : `cycle ${cycleNumber + 1}`})</span>
-            )}
           </p>
 
-          {currentRewards.map((r) => {
-            const earned = isFirstCycle ? completedCount >= r.threshold : cycleCount >= r.threshold;
-            const isGenerable = ["personal_letter", "deep_reading", "shadow_mirror"].includes(r.type);
+          {currentRewards.map((r: { threshold: number; type: string; en: string; pl: string }) => {
+            const earned = completedCount >= r.threshold;
+            const isTheme = r.type.startsWith("theme_");
             return (
               <div key={r.type} className="flex items-center justify-between p-4 rounded-2xl border transition-all" style={{ background: "var(--color-blush)", borderColor: earned ? "var(--color-mauve)" : "var(--color-dusty-rose)", opacity: earned ? 1 : 0.6 }}>
                 <div className="flex-1">
@@ -186,29 +168,13 @@ export default function ReferralPage() {
                   </p>
                 </div>
                 <div className="shrink-0 ml-3">
-                  {earned && isGenerable ? (
-                    <button
-                      onClick={() => router.push(`/referral/reward?type=${r.type}`)}
-                      className="text-xs px-3 py-1.5 rounded-full transition-all"
-                      style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}
-                    >
-                      {pl ? "Otwórz" : "Open"}
-                    </button>
-                  ) : earned && r.type === "exclusive_theme" ? (
-                    <button
-                      onClick={() => router.push("/referral/themes")}
-                      className="text-xs px-3 py-1.5 rounded-full transition-all"
-                      style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}
-                    >
-                      {pl ? "Wybierz" : "Choose"}
-                    </button>
-                  ) : earned ? (
+                  {earned ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Odblokowane" : "Unlocked"}
                     </span>
                   ) : (
                     <span className="text-base" style={{ color: "var(--color-plum)", fontWeight: 600 }}>
-                      {isFirstCycle ? completedCount : cycleCount}/{r.threshold}
+                      {completedCount}/{r.threshold}
                     </span>
                   )}
                 </div>
@@ -218,26 +184,11 @@ export default function ReferralPage() {
         </section>
 
         {/* All badges progress */}
-        {completedCount >= 20 && (
-          <section className="space-y-2">
-            <p className="text-xs uppercase tracking-widest text-center" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
-              {pl ? "Odznaki" : "Badges"}
-            </p>
-            <div className="flex justify-center gap-3 flex-wrap">
-              {BADGES.map((b) => {
-                const earned = completedCount >= b.threshold;
-                return (
-                  <div key={b.threshold} className="text-center px-3 py-2 rounded-xl" style={{ background: earned ? "var(--color-plum)" : "var(--color-blush)", opacity: earned ? 1 : 0.4 }}>
-                    <p className="text-xs" style={{ color: earned ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: 500 }}>
-                      {pl ? b.pl : b.en}
-                    </p>
-                    <p className="text-xs mt-0.5" style={{ color: earned ? "var(--color-cream)" : "var(--color-mauve)", opacity: 0.6 }}>
-                      {b.threshold}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
+        {isAmbassador && (
+          <section className="text-center py-3">
+            <span className="inline-block px-4 py-2 rounded-full text-xs" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600, letterSpacing: "0.1em" }}>
+              {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
+            </span>
           </section>
         )}
 
