@@ -253,6 +253,8 @@ export default function ReferralPage() {
                             const data = await res.json();
                             setPromoCodes(prev => ({ ...prev, [r.type]: data.code }));
                             navigator.clipboard.writeText(data.code);
+                            setCopiedCode(r.type);
+                            setTimeout(() => setCopiedCode(null), 1500);
                           }
                         }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                           {pl ? "Pobierz kod" : "Get code"}
