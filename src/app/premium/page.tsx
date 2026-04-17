@@ -205,9 +205,9 @@ export default function PremiumPage() {
               </>
             )}
           </div>
-          {billingCycle === "yearly" && !appliedPromo && (
+          {billingCycle === "yearly" && (
             <p className="text-xs" style={{ color: "var(--color-plum)" }}>
-              £6.67{t("premium_per_month")}
+              £{(appliedPromo ? (79.99 * (1 - appliedPromo.discountPercent / 100) / 12) : 6.67).toFixed(2)}{t("premium_per_month")}
             </p>
           )}
 
