@@ -107,7 +107,7 @@ export default function AnimatedBackground() {
           position: absolute;
           width: 200%;
           height: 120px;
-          opacity: 0.5;
+          opacity: 0.25;
           border-radius: 50%;
           filter: blur(30px);
         }
@@ -139,25 +139,9 @@ export default function AnimatedBackground() {
           opacity: 0;
           animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
           animation-delay: var(--hdelay);
-        }
-        .noctua-heart::before,
-        .noctua-heart::after {
-          content: "";
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          border-radius: 50% 50% 0 0;
-          background: rgba(180, 130, 200, 0.5);
-        }
-        .noctua-heart::before {
-          left: -30%;
-          transform: rotate(-45deg);
-          transform-origin: bottom right;
-        }
-        .noctua-heart::after {
-          left: 30%;
-          transform: rotate(45deg);
-          transform-origin: bottom left;
+          color: rgba(155, 107, 205, 0.4);
+          font-size: var(--hsize);
+          line-height: 1;
         }
         @keyframes noctuaHeartRise {
           0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
@@ -326,7 +310,7 @@ export default function AnimatedBackground() {
               { x: "8%", dur: 15, delay: 7, size: 9 },
               { x: "72%", dur: 11, delay: 1, size: 11 },
             ].map((h, i) => (
-              <div key={i} className="noctua-heart" style={{ left: h.x, "--hdur": h.dur + "s", "--hdelay": h.delay + "s", width: h.size + "px", height: h.size + "px" } as React.CSSProperties} />
+              <div key={i} className="noctua-heart" style={{ left: h.x, "--hdur": h.dur + "s", "--hdelay": h.delay + "s", "--hsize": h.size * 2.5 + "px" } as React.CSSProperties}>♡</div>
             ))}
           </>
         )}
