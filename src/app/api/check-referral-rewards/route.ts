@@ -26,8 +26,8 @@ const THRESHOLDS = [
     reward_type: "workbook_discount_30",
     title_en: "Reward unlocked: 30% off any workbook + 2 dream analyses",
     title_pl: "Nagroda odblokowana: 30% zniżki na workbook + 2 analizy snów",
-    body_en: "10 friends joined. You earned 30% off any workbook and 2 extra dream analyses.",
-    body_pl: "10 osób dołączyło. Otrzymujesz 30% zniżki na dowolny workbook i 2 dodatkowe analizy snów.",
+    body_en: "10 friends joined. You earned 30% off any workbook and 2 extra dream analyses. Get your code on the Referral page and use it in the shop.",
+    body_pl: "10 osób dołączyło. Otrzymujesz 30% zniżki na dowolny workbook i 2 dodatkowe analizy snów. Pobierz kod na stronie Zaproszeń i użyj go w sklepie.",
     link: "/referral",
   },
   {
@@ -44,8 +44,8 @@ const THRESHOLDS = [
     reward_type: "premium_discount_30",
     title_en: "Reward unlocked: 30% off Premium + 3 dream analyses",
     title_pl: "Nagroda odblokowana: 30% zniżki na Premium + 3 analizy snów",
-    body_en: "20 friends joined. You earned 30% off Premium and 3 extra dream analyses.",
-    body_pl: "20 osób dołączyło. Otrzymujesz 30% zniżki na Premium i 3 dodatkowe analizy snów.",
+    body_en: "20 friends joined. You earned 30% off Premium and 3 extra dream analyses. Get your code on the Referral page and apply it when subscribing.",
+    body_pl: "20 osób dołączyło. Otrzymujesz 30% zniżki na Premium i 3 dodatkowe analizy snów. Pobierz kod na stronie Zaproszeń i użyj go przy subskrypcji.",
     link: "/referral",
   },
   {
