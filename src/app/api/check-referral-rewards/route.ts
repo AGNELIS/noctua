@@ -6,10 +6,10 @@ const THRESHOLDS = [
   {
     threshold: 3,
     reward_type: "dream_analysis_1",
-    title_en: "Reward unlocked: free dream analysis",
+    title_en: "Reward unlocked: free dream reading",
     title_pl: "Nagroda odblokowana: darmowy odczyt snu",
     body_en: "3 friends joined Noctua. You earned 1 free dream reading.",
-    body_pl: "3 osoby dołączyły do Noctua. Otrzymujesz 1 darmową analizę snu AI.",
+    body_pl: "3 osoby dołączyły do Noctua. Otrzymujesz 1 darmowy odczyt snu.",
     link: "/referral",
   },
   {
@@ -25,9 +25,9 @@ const THRESHOLDS = [
     threshold: 10,
     reward_type: "workbook_discount_30",
     title_en: "Reward unlocked: 30% off any workbook + 2 dream readings",
-    title_pl: "Nagroda odblokowana: 30% zniżki na workbook + 2 analizy snów",
+    title_pl: "Nagroda odblokowana: 30% zniżki na workbook + 2 odczyty snów",
     body_en: "10 friends joined. You earned 30% off any workbook and 2 extra dream readings. Get your code on the Referral page and use it in the shop.",
-    body_pl: "10 osób dołączyło. Otrzymujesz 30% zniżki na dowolny workbook i 2 dodatkowe analizy snów. Pobierz kod na stronie Zaproszeń i użyj go w sklepie.",
+    body_pl: "10 osób dołączyło. Otrzymujesz 30% zniżki na dowolny workbook i 2 dodatkowe odczyty snów. Pobierz kod na stronie Zaproszeń i użyj go w sklepie.",
     link: "/referral",
   },
   {
@@ -43,9 +43,9 @@ const THRESHOLDS = [
     threshold: 20,
     reward_type: "premium_discount_30",
     title_en: "Reward unlocked: 30% off Premium + 3 dream readings",
-    title_pl: "Nagroda odblokowana: 30% zniżki na Premium + 3 analizy snów",
+    title_pl: "Nagroda odblokowana: 30% zniżki na Premium + 3 odczyty snów",
     body_en: "20 friends joined. You earned 30% off Premium and 3 extra dream readings. Get your code on the Referral page and apply it when subscribing.",
-    body_pl: "20 osób dołączyło. Otrzymujesz 30% zniżki na Premium i 3 dodatkowe analizy snów. Pobierz kod na stronie Zaproszeń i użyj go przy subskrypcji.",
+    body_pl: "20 osób dołączyło. Otrzymujesz 30% zniżki na Premium i 3 dodatkowe odczyty snów. Pobierz kod na stronie Zaproszeń i użyj go przy subskrypcji.",
     link: "/referral",
   },
   {
@@ -61,9 +61,9 @@ const THRESHOLDS = [
     threshold: 50,
     reward_type: "unlimited_dreams",
     title_en: "Lifetime reward: unlimited dream readings",
-    title_pl: "Nagroda dożywotnia: nieograniczone analizy snów",
+    title_pl: "Nagroda dożywotnia: nieograniczone odczyty snów",
     body_en: "50 friends joined Noctua. You have earned unlimited dream readings for life. No limits. Ever.",
-    body_pl: "50 osób dołączyło do Noctua. Otrzymujesz nieograniczone analizy snów AI na zawsze. Bez limitów. Na zawsze.",
+    body_pl: "50 osób dołączyło do Noctua. Otrzymujesz nieograniczone odczyty snów na zawsze. Bez limitów. Na zawsze.",
     link: "/referral",
   },
 ];
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
               title_en: "Someone reached 50 referrals!",
               title_pl: "Ktoś osiągnął 50 referrali!",
               body_en: `${userName} has reached 50 completed referrals and earned unlimited dream readings. Consider reaching out personally.`,
-              body_pl: `${userName} osiągnęła 50 ukończonych referrali i otrzymała nieograniczone analizy snów. Rozważ osobisty kontakt.`,
+              body_pl: `${userName} osiągnęła 50 ukończonych referrali i otrzymała nieograniczone odczyty snów. Rozważ osobisty kontakt.`,
               link: "/owl-panel",
             });
           }

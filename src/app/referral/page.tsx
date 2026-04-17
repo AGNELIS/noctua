@@ -9,11 +9,11 @@ import { useTheme } from "@/context/ThemeContext";
 const REWARDS = [
   { threshold: 3, type: "dream_analysis_1", en: "1 free dream reading", pl: "1 darmowy odczyt snu" },
   { threshold: 5, type: "theme_moonstone", en: "Exclusive theme: Moonstone", pl: "Ekskluzywny motyw: Moonstone" },
-  { threshold: 10, type: "workbook_discount_30", en: "30% off any workbook + 2 dream analyses", pl: "30% zniżki na workbook + 2 analizy snów" },
+  { threshold: 10, type: "workbook_discount_30", en: "30% off any workbook + 2 dream readings", pl: "30% zniżki na workbook + 2 odczyty snów" },
   { threshold: 15, type: "theme_velvet_night", en: "Exclusive theme: Velvet Night", pl: "Ekskluzywny motyw: Velvet Night" },
-  { threshold: 20, type: "premium_discount_30", en: "30% off Premium + 3 dream analyses", pl: "30% zniżki na Premium + 3 analizy snów" },
+  { threshold: 20, type: "premium_discount_30", en: "30% off Premium + 3 dream readings", pl: "30% zniżki na Premium + 3 odczyty snów" },
   { threshold: 30, type: "theme_obsidian_rose", en: "Exclusive theme: Obsidian Rose + Ambassador", pl: "Ekskluzywny motyw: Obsidian Rose + Ambasadorka" },
-  { threshold: 50, type: "unlimited_dreams", en: "Lifetime unlimited dream analyses", pl: "Dożywotnie nieograniczone analizy snów" },
+  { threshold: 50, type: "unlimited_dreams", en: "Lifetime unlimited dream readings", pl: "Dożywotnie nieograniczone odczyty snów" },
 ];
 
 export default function ReferralPage() {
