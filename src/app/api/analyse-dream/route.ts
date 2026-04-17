@@ -46,7 +46,16 @@ export async function POST(req: NextRequest) {
 
   const usedThisMonth = count || 0;
 
-  if (!isAdmin && isPremium && usedThisMonth >= PREMIUM_MONTHLY_LIMIT) {
+  // Tier 50 bypass: check if user has unlimited_dreams reward
+  const { data: unlimitedReward } = await supabase
+    .from("referral_rewards")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("reward_type", "unlimited_dreams")
+    .maybeSingle();
+  const hasUnlimited = !!unlimitedReward;
+
+  if (!isAdmin && !hasUnlimited && isPremium && usedThisMonth >= PREMIUM_MONTHLY_LIMIT) {
     const { data: credits } = await supabase
       .from("user_purchases")
       .select("id")
@@ -64,7 +73,7 @@ export async function POST(req: NextRequest) {
         buyPrice: 1.49,
       }, { status: 403 });
     }
-  } else if (!isAdmin && !isPremium) {
+  } else if (!isAdmin && !hasUnlimited && !isPremium) {
     const { data: credits } = await supabase
       .from("user_purchases")
       .select("id")
