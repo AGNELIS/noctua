@@ -131,6 +131,10 @@ export default function ProductPage() {
   const [owned, setOwned] = useState(false);
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState(false);
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPercent: number } | null>(null);
+  const [promoError, setPromoError] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -146,6 +150,35 @@ export default function ProductPage() {
     load();
   }, [id]);
 
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) return;
+    setPromoLoading(true);
+    setPromoError("");
+    try {
+      const res = await fetch("/api/validate-promo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          promoCode: promoInput.trim(),
+          context: "shop",
+          productId: id,
+        }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setAppliedPromo({ code: data.code, discountPercent: data.discount_percent });
+        setPromoError("");
+      } else {
+        setPromoError(data.error || (language === "pl" ? "Nieprawidłowy kod" : "Invalid code"));
+        setAppliedPromo(null);
+      }
+    } catch {
+      setPromoError(language === "pl" ? "Błąd walidacji" : "Validation error");
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
   const handlePurchase = async () => {
     setBuying(true);
     const supabase = createClient();
@@ -159,6 +192,7 @@ export default function ProductPage() {
           productId: id,
           productName: product?.name,
           priceGbp: product?.price_gbp,
+          promoCode: appliedPromo?.code || null,
         }),
       });
       const data = await res.json();
@@ -221,9 +255,52 @@ export default function ProductPage() {
         )}
 
         <section className="text-center space-y-4">
-          <p className="text-3xl" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>
-            £{product.price_gbp.toFixed(2)}
-          </p>
+          {appliedPromo ? (
+            <div className="space-y-1">
+              <p className="text-sm line-through" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                £{product.price_gbp.toFixed(2)}
+              </p>
+              <p className="text-3xl" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>
+                £{(product.price_gbp * (1 - appliedPromo.discountPercent / 100)).toFixed(2)}
+              </p>
+              <p className="text-xs tracking-wide" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+                {language === "pl" ? "Kod zastosowany" : "Code applied"}: {appliedPromo.code} (-{appliedPromo.discountPercent}%)
+              </p>
+            </div>
+          ) : (
+            <p className="text-3xl" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>
+              £{product.price_gbp.toFixed(2)}
+            </p>
+          )}
+
+          {!owned && product.category === "self_work" && !appliedPromo && (
+            <div className="space-y-2 pt-2">
+              <p className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>
+                {language === "pl" ? "Masz kod promocyjny?" : "Have a promo code?"}
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                  placeholder={language === "pl" ? "Wpisz kod" : "Enter code"}
+                  className="flex-1 px-3 py-2 rounded-lg text-sm text-center tracking-wider"
+                  style={{ background: "var(--color-cream)", color: "var(--color-dark)", border: "1px solid var(--color-mauve)" }}
+                />
+                <button
+                  onClick={handleApplyPromo}
+                  disabled={promoLoading || !promoInput.trim()}
+                  className="px-4 py-2 rounded-lg text-xs tracking-wide transition-all disabled:opacity-50"
+                  style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600 }}
+                >
+                  {promoLoading ? "..." : (language === "pl" ? "Zastosuj" : "Apply")}
+                </button>
+              </div>
+              {promoError && (
+                <p className="text-xs" style={{ color: "#c04040" }}>{promoError}</p>
+              )}
+            </div>
+          )}
 
           {owned ? (
             <button
