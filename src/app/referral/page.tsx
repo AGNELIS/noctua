@@ -25,6 +25,7 @@ export default function ReferralPage() {
   const [rewards, setRewards] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => { loadReferralData(); }, []);
 
@@ -32,6 +33,7 @@ export default function ReferralPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
+    setUserId(user.id);
 
     const { data: profile } = await supabase.from("profiles").select("referral_code").eq("id", user.id).single();
     const { count: jCount } = await supabase.from("journal_entries").select("id", { count: "exact", head: true });
@@ -174,7 +176,7 @@ export default function ReferralPage() {
                       const themeName = r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose";
                       const { data: prod } = await supabase.from("shop_products").select("id").eq("name", themeName).single();
                       if (prod) {
-                        await supabase.from("user_purchases").insert({ user_id: (await supabase.auth.getUser()).data.user?.id, product_id: prod.id });
+                        await supabase.from("user_purchases").insert({ user_id: userId, product_id: prod.id });
                         await supabase.from("referral_rewards").update({ is_used: true }).eq("reward_type", r.type);
                         loadReferralData();
                       }
