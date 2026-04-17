@@ -139,15 +139,15 @@ export default function AnimatedBackground() {
           opacity: 0;
           animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
           animation-delay: var(--hdelay);
-          color: rgba(155, 107, 205, 0.4);
+          color: rgba(155, 107, 205, 0.7);
           font-size: var(--hsize);
           line-height: 1;
         }
         @keyframes noctuaHeartRise {
           0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
-          10% { opacity: 0.7; }
-          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.5; }
-          90% { opacity: 0.2; }
+          10% { opacity: 1; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.8; }
+          90% { opacity: 0.4; }
           100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
         }
         .noctua-star {
