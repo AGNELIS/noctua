@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  const { productId, productName, priceGbp } = await req.json();
+  const { productId, productName, priceGbp, promoCode } = await req.json();
   if (!productId || !productName || !priceGbp) {
     return NextResponse.json({ error: "Missing product data" }, { status: 400 });
   }
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
         },
         quantity: 1,
       }],
+      allow_promotion_codes: true,
       mode: "payment",
       success_url: `${req.nextUrl.origin}/shop/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
       cancel_url: `${req.nextUrl.origin}/shop/${productId}`,
