@@ -29,6 +29,8 @@ export default function ReferralPage() {
   const [copied, setCopied] = useState(false);
   const [userId, setUserId] = useState<string>("");
   const [ownedThemes, setOwnedThemes] = useState<string[]>([]);
+  const [promoCodes, setPromoCodes] = useState<Record<string, string>>({});
+  const [usedCodes, setUsedCodes] = useState<Set<string>>(new Set());
 
   useEffect(() => { loadReferralData(); }, []);
 
@@ -57,8 +59,14 @@ export default function ReferralPage() {
     // Auto-create rewards at thresholds
     try { await fetch("/api/check-referral-rewards", { method: "POST" }); } catch {}
 
-    const { data: rews } = await supabase.from("referral_rewards").select("reward_type").eq("user_id", user.id);
+    const { data: rews } = await supabase.from("referral_rewards").select("reward_type, stripe_promo_code, is_used").eq("user_id", user.id);
     setRewards((rews || []).map((r) => r.reward_type));
+    const codes: Record<string, string> = {};
+    (rews || []).forEach((r: any) => {
+      if (r.stripe_promo_code) codes[r.reward_type] = r.stripe_promo_code;
+    });
+    setPromoCodes(codes);
+    setUsedCodes(new Set((rews || []).filter((r: any) => r.stripe_promo_code && r.is_used).map((r: any) => r.reward_type)));
 
     const { data: purchases } = await supabase
       .from("user_purchases")
@@ -214,20 +222,35 @@ export default function ReferralPage() {
                     </button>
                   ) : earned && (r.type === "workbook_discount_30" || r.type === "premium_discount_30") ? (
                     <div className="flex flex-col items-end gap-1">
-                      <button onClick={async () => {
-                        const res = await fetch("/api/referral-discount", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ reward_type: r.type }),
-                        });
-                        if (res.ok) {
-                          const data = await res.json();
-                          navigator.clipboard.writeText(data.code);
-                          alert(pl ? `Kod skopiowany: ${data.code}` : `Code copied: ${data.code}`);
-                        }
-                      }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
-                        {pl ? "Pobierz kod" : "Get code"}
-                      </button>
+                      {usedCodes.has(r.type) ? (
+                        <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-dusty-rose)", color: "var(--color-cream)", fontWeight: 500, opacity: 0.7 }}>
+                          {pl ? "Wykorzystany" : "Used"}
+                        </span>
+                      ) : promoCodes[r.type] ? (
+                        <>
+                          <button onClick={() => { navigator.clipboard.writeText(promoCodes[r.type]); }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600, letterSpacing: "0.05em" }}>
+                            {promoCodes[r.type]}
+                          </button>
+                          <p className="text-xs" style={{ color: "var(--color-mauve)", opacity: 0.7 }}>
+                            {pl ? "Kliknij żeby skopiować" : "Click to copy"}
+                          </p>
+                        </>
+                      ) : (
+                        <button onClick={async () => {
+                          const res = await fetch("/api/referral-discount", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ reward_type: r.type }),
+                          });
+                          if (res.ok) {
+                            const data = await res.json();
+                            setPromoCodes(prev => ({ ...prev, [r.type]: data.code }));
+                            navigator.clipboard.writeText(data.code);
+                          }
+                        }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                          {pl ? "Pobierz kod" : "Get code"}
+                        </button>
+                      )}
                       <p className="text-xs" style={{ color: "var(--color-mauve)", opacity: 0.7 }}>
                         {pl
                           ? r.type === "workbook_discount_30" ? "Wklej kod przy zakupie w sklepie" : "Wklej kod przy subskrypcji Premium"
