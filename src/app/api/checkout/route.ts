@@ -13,9 +13,42 @@ export async function POST(req: NextRequest) {
   if (!productId || !productName || !priceGbp) {
     return NextResponse.json({ error: "Missing product data" }, { status: 400 });
   }
-
+  let promotionCodeId: string | null = null;
+  if (promoCode) {
+    try {
+      const promos = await (stripe.promotionCodes as any).list({ code: promoCode, limit: 1 });
+      const promo = promos.data[0];
+      if (!promo) {
+        return NextResponse.json({ error: "Code not found" }, { status: 404 });
+      }
+      if (!promo.active) {
+        return NextResponse.json({ error: "Code already used or inactive" }, { status: 400 });
+      }
+      if (promo.metadata?.user_id !== user.id) {
+        return NextResponse.json({ error: "This code is not assigned to you" }, { status: 403 });
+      }
+      if (promo.metadata?.reward_type !== "workbook_discount_30") {
+        return NextResponse.json({ error: "This code is not valid for shop products" }, { status: 400 });
+      }
+      const { data: product } = await supabase
+        .from("shop_products")
+        .select("category")
+        .eq("id", productId)
+        .single();
+      if (!product) {
+        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      }
+      if (product.category !== "self_work") {
+        return NextResponse.json({ error: "This code only works for Self Work workbooks" }, { status: 400 });
+      }
+      promotionCodeId = promo.id;
+    } catch (err) {
+      console.error("Promo validation error:", err);
+      return NextResponse.json({ error: "Promo code validation failed" }, { status: 500 });
+    }
+  }
   try {
-    const session = await stripe.checkout.sessions.create({
+    const sessionParams: any = {
       payment_method_types: ["card"],
       line_items: [{
         price_data: {
@@ -25,14 +58,17 @@ export async function POST(req: NextRequest) {
         },
         quantity: 1,
       }],
-      allow_promotion_codes: true,
+      allow_promotion_codes: false,
       mode: "payment",
       success_url: `${req.nextUrl.origin}/shop/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
       cancel_url: `${req.nextUrl.origin}/shop/${productId}`,
       client_reference_id: user.id,
       metadata: { product_id: productId, user_id: user.id },
-    });
-
+    };
+    if (promotionCodeId) {
+      sessionParams.discounts = [{ promotion_code: promotionCodeId }];
+    }
+    const session = await stripe.checkout.sessions.create(sessionParams);
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("Stripe checkout error:", err);
