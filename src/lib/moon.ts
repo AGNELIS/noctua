@@ -39,8 +39,10 @@ export function getMoonPhase(date: Date = new Date()): MoonPhaseInfo {
     return { phase: "Waning Gibbous", emoji: "🌖", illumination, daysIntoCycle, description: "Gratitude and sharing. Give back what you've received." };
   } else if (phaseAngle < 292.5) {
     return { phase: "Last Quarter", emoji: "🌗", illumination, daysIntoCycle, description: "Release and forgive. Let go of what no longer serves you." };
-  } else {
+  } else if (phaseAngle < 337.5) {
     return { phase: "Waning Crescent", emoji: "🌘", illumination, daysIntoCycle, description: "Rest and surrender. The dark holds wisdom." };
+  } else {
+    return { phase: "New Moon", emoji: "🌑", illumination, daysIntoCycle, description: "A time for new beginnings. Set intentions in the dark." };
   }
 }
 
