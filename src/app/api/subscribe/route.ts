@@ -52,10 +52,11 @@ export async function POST(req: NextRequest) {
       cancel_url: `${req.nextUrl.origin}/premium`,
       client_reference_id: user.id,
       metadata: { user_id: user.id, plan },
-      allow_promotion_codes: false,
     };
     if (promotionCodeId) {
       sessionParams.discounts = [{ promotion_code: promotionCodeId }];
+    } else {
+      sessionParams.allow_promotion_codes = false;
     }
     const session = await stripe.checkout.sessions.create(sessionParams);
 

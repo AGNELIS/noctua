@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
         },
         quantity: 1,
       }],
-      allow_promotion_codes: false,
       mode: "payment",
       success_url: `${req.nextUrl.origin}/shop/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
       cancel_url: `${req.nextUrl.origin}/shop/${productId}`,
@@ -67,6 +66,8 @@ export async function POST(req: NextRequest) {
     };
     if (promotionCodeId) {
       sessionParams.discounts = [{ promotion_code: promotionCodeId }];
+    } else {
+      sessionParams.allow_promotion_codes = false;
     }
     const session = await stripe.checkout.sessions.create(sessionParams);
     return NextResponse.json({ url: session.url });
