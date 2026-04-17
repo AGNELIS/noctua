@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { useTheme } from "@/context/ThemeContext";
 
 const REWARDS = [
   { threshold: 3, type: "dream_analysis_1", en: "1 free AI dream analysis", pl: "1 darmowa analiza snu AI" },
@@ -19,6 +20,7 @@ export default function ReferralPage() {
   const router = useRouter();
   const { language } = useLanguage();
   const pl = language === "pl";
+  const { switchTheme, activeThemeId } = useTheme();
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [completedCount, setCompletedCount] = useState(0);
   const [journalCount, setJournalCount] = useState(0);
@@ -191,11 +193,22 @@ export default function ReferralPage() {
                     }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}>
                       {pl ? "Aktywuj motyw" : "Activate theme"}
                     </button>
-                  ) : earned && isTheme && ownedThemes.includes(r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose") ? (
-                    <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
-                      {pl ? "Aktywowany" : "Activated"}
-                    </span>
-                  ) : earned && r.type === "dream_analysis_1" ? (
+                  ) : earned && isTheme && ownedThemes.includes(r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose") ? (() => {
+                    const themeName = r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose";
+                    const prod = ownedThemes.includes(themeName);
+                    return (
+                      <button onClick={async () => {
+                        const supabase = createClient();
+                        const { data: product } = await supabase.from("shop_products").select("id").eq("name", themeName).single();
+                        if (product) {
+                          await switchTheme(product.id, themeName);
+                        }
+                      }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                        {pl ? "Użyj motywu" : "Use theme"}
+                      </button>
+                    );
+                  })()
+                  : earned && r.type === "dream_analysis_1" ? (
                     <button onClick={() => router.push("/dreams")} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Przejdź do snów" : "Go to dreams"}
                     </button>
