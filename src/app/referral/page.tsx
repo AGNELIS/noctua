@@ -26,6 +26,7 @@ export default function ReferralPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const [ownedThemes, setOwnedThemes] = useState<string[]>([]);
 
   useEffect(() => { loadReferralData(); }, []);
 
@@ -56,6 +57,13 @@ export default function ReferralPage() {
 
     const { data: rews } = await supabase.from("referral_rewards").select("reward_type").eq("user_id", user.id);
     setRewards((rews || []).map((r) => r.reward_type));
+
+    const { data: purchases } = await supabase
+      .from("user_purchases")
+      .select("product_id, shop_products(name)")
+      .eq("user_id", user.id);
+    const themeNames = (purchases || []).map((p: any) => (p.shop_products as any)?.name).filter(Boolean);
+    setOwnedThemes(themeNames);
 
     setLoading(false);
   };
