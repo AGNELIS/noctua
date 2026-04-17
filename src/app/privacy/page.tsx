@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
             </h2>
             <p>{pl
               ? "Twoje dane są wykorzystywane wyłącznie do: wyświetlania Twoich wpisów i śledzenia postępów, generowania spersonalizowanych raportów i wglądów (jeśli masz Premium), analizy snów przez AI (Anthropic Claude API, dane są wysyłane w formie zanonimizowanej, bez Twojego imienia ani emaila), przetwarzania płatności (Stripe, nie przechowujemy danych karty). Nigdy nie sprzedajemy Twoich danych. Nigdy nie wyświetlamy reklam."
-              : "Your data is used solely to: display your entries and track your progress, generate personalised reports and insights (if you have Premium), AI dream analysis (via Anthropic Claude API, data is sent in anonymised form without your name or email), process payments (via Stripe, we do not store card details). We never sell your data. We never display advertisements."
+              : "Your data is used solely to: display your entries and track your progress, generate personalised reports and insights (if you have Premium), dream reading (processed via Anthropic Claude API in anonymised form without your name or email), process payments (via Stripe, we do not store card details). We never sell your data. We never display advertisements."
             }</p>
           </section>
 

@@ -30,7 +30,7 @@ const CATEGORY_ORDER = ["theme", "symbol_pack", "report", "interpretation", "sel
 const PRODUCT_NAME_PL: Record<string, string> = {
   "Extended Dream Symbols": "Rozszerzone symbole snów",
   "Shadow Work Workbook": "Zeszyt pracy z cieniem",
-  "Dream AI Analysis": "Analiza snu AI",
+  "Dream Reading": "Odczyt snu",
   "Dream Integration Workbook": "Zeszyt integracji snów",
   "Cycle Alignment Workbook": "Zeszyt harmonii cyklu",
   "Monthly Reading": "Odczyt miesięczny",

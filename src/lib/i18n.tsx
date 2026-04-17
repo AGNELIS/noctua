@@ -31,7 +31,7 @@ const translations = {
   premium_save: { en: "Save 33%", pl: "Oszczędź 33%" },
   premium_subscribe: { en: "Subscribe now", pl: "Subskrybuj" },
   premium_restore: { en: "Restore purchase", pl: "Przywróć zakup" },
-  pf_ai_dreams: { en: "5 AI dream analyses per month", pl: "5 analiz snów AI miesięcznie" },
+  pf_ai_dreams: { en: "5 dream readings per month", pl: "5 odczytów snów miesięcznie" },
   pf_symbols: { en: "All 50 dream symbols unlocked", pl: "Wszystkie 50 symboli snów odblokowane" },
   pf_weekly: { en: "Weekly insight", pl: "Tygodniowy wgląd" },
   pf_monthly: { en: "Monthly personal report", pl: "Miesięczny raport osobisty" },

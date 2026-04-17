@@ -471,13 +471,13 @@ export default function OwlPanelPage() {
           <p style={{ ...valueStyle, marginTop: "4px", opacity: 0.6 }}>Simulate referral milestones and test what unlocks at each tier.</p>
           <div className="space-y-3 mt-3">
             {[
-              { tier: 3, reward: "dream_analysis_1", label: "3 referrals — Free dream analysis", desc: "1 free AI dream analysis" },
+              { tier: 3, reward: "dream_analysis_1", label: "3 referrals — Free dream reading", desc: "1 free dream reading" },
               { tier: 5, reward: "theme_moonstone", label: "5 referrals — Moonstone theme", desc: "Exclusive animated theme (not in shop)" },
               { tier: 10, reward: "workbook_discount_30", label: "10 referrals — 30% off workbook + 2 analyses", desc: "30% off any workbook + 2 dream analyses" },
               { tier: 15, reward: "theme_velvet_night", label: "15 referrals — Velvet Night theme", desc: "Exclusive animated theme (not in shop)" },
               { tier: 20, reward: "premium_discount_30", label: "20 referrals — 30% off Premium + 3 analyses", desc: "30% off Premium + 3 dream analyses" },
               { tier: 30, reward: "theme_obsidian_rose", label: "30 referrals — Obsidian Rose + Ambassador", desc: "Exclusive theme + Ambassador status" },
-              { tier: 50, reward: "unlimited_dreams", label: "50 referrals — Unlimited dream analyses", desc: "Lifetime unlimited AI dream analyses" },
+              { tier: 50, reward: "unlimited_dreams", label: "50 referrals — Unlimited dream readings", desc: "Lifetime unlimited dream readings" },
             ].map(t => {
               const completed = referrals.filter(r => r.status === "completed").length;
               const unlocked = completed >= t.tier;

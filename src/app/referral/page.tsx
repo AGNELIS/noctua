@@ -7,7 +7,7 @@ import { useLanguage } from "@/lib/i18n";
 import { useTheme } from "@/context/ThemeContext";
 
 const REWARDS = [
-  { threshold: 3, type: "dream_analysis_1", en: "1 free AI dream analysis", pl: "1 darmowa analiza snu AI" },
+  { threshold: 3, type: "dream_analysis_1", en: "1 free dream reading", pl: "1 darmowy odczyt snu" },
   { threshold: 5, type: "theme_moonstone", en: "Exclusive theme: Moonstone", pl: "Ekskluzywny motyw: Moonstone" },
   { threshold: 10, type: "workbook_discount_30", en: "30% off any workbook + 2 dream analyses", pl: "30% zniżki na workbook + 2 analizy snów" },
   { threshold: 15, type: "theme_velvet_night", en: "Exclusive theme: Velvet Night", pl: "Ekskluzywny motyw: Velvet Night" },

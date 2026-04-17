@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       .from("user_purchases")
       .select("id")
       .eq("user_id", user.id)
-      .eq("product_id", (await supabase.from("shop_products").select("id").eq("name", "Dream AI Analysis").single()).data?.id)
+      .eq("product_id", (await supabase.from("shop_products").select("id").eq("name", "Dream Reading").single()).data?.id)
       .is("used_at", null);
 
     if (!credits || credits.length === 0) {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       .from("user_purchases")
       .select("id")
       .eq("user_id", user.id)
-      .eq("product_id", (await supabase.from("shop_products").select("id").eq("name", "Dream AI Analysis").single()).data?.id)
+      .eq("product_id", (await supabase.from("shop_products").select("id").eq("name", "Dream Reading").single()).data?.id)
       .is("used_at", null);
 
     if (!credits || credits.length === 0) {
@@ -223,7 +223,7 @@ Keep the response under 500 words. Do NOT use any markdown formatting. No asteri
     });
 
     // Mark one credit as used (for non-premium or over-limit premium)
-    const { data: productData } = await supabase.from("shop_products").select("id").eq("name", "Dream AI Analysis").single();
+    const { data: productData } = await supabase.from("shop_products").select("id").eq("name", "Dream Reading").single();
     if (productData) {
       const { data: unusedCredit } = await supabase
         .from("user_purchases")

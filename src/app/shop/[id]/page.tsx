@@ -17,7 +17,7 @@ type Product = {
 const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Extended Dream Symbols": { name: "Rozszerzone symbole snów", desc: "25+ dodatkowych symboli snów z głębokimi interpretacjami jungowskimi, znaczeniami archetypowymi i połączeniami z pracą z cieniem. Nowe symbole dodawane z każdą aktualizacją." },
   "Shadow Work Workbook": { name: "Zeszyt pracy z cieniem", desc: "Prowadzony interaktywny proces do głębokiej pracy wewnętrznej. Zawiera prompty konfrontacyjne, rozpoznawanie wzorców i ćwiczenia integracyjne dopasowane do faz księżyca." },
-  "Dream AI Analysis": { name: "Analiza snu AI", desc: "Pojedyncza interpretacja snu z wykorzystaniem AI. Symbolika jungowska, kontekst emocjonalny i połączenia z pracą z cieniem." },
+  "Dream Reading": { name: "Odczyt snu", desc: "Pogłębiona interpretacja snu, która nie traktuje go w izolacji. Łączy treść snu z Twoimi ostatnimi wpisami z dziennika, powtarzającymi się wzorcami emocjonalnymi i fazą, w której aktualnie jesteś. Analiza obejmuje symbolikę jungowską, pracę z cieniem, połączenie z fazą księżyca i jedno refleksyjne pytanie na koniec." },
   "Dream Integration Workbook": { name: "Zeszyt integracji snów", desc: "Interaktywna podróż przez powtarzające się symbole snów. Zrozum co Twoje sny próbują Ci powiedzieć poprzez uczucia, symbolikę i osobiste znaczenie." },
   "Cycle Alignment Workbook": { name: "Zeszyt harmonii cyklu", desc: "Prowadzony proces przez wszystkie cztery fazy cyklu. Odkryj czego potrzebujesz w każdej fazie, gdzie forsуjesz zamiast podążać i jak zsynchronizować się ze swoim ciałem." },
   "Your Monthly Insight": { name: "Twój miesięczny wgląd", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
@@ -311,7 +311,7 @@ export default function ProductPage() {
                   "Cycle Alignment Workbook": "/cycle/workbook",
                   "Monthly Reading": "/reports",
                   "Pattern Reading": "/reports",
-                  "Dream AI Analysis": "/dreams",
+                  "Dream Reading": "/dreams",
                   "Moon Workbook": "/workbooks/moon",
                   "Saturn Workbook": "/workbooks/saturn",
                   "Pluto Workbook": "/workbooks/pluto",
