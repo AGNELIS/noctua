@@ -236,7 +236,7 @@ export default function ReferralPage() {
                           }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600, letterSpacing: "0.05em" }}>
                             {promoCodes[r.type]}
                           </button>
-                          <p className="text-xs" style={{ color: copiedCode === r.type ? "var(--color-gold)" : "var(--color-mauve)", opacity: copiedCode === r.type ? 1 : 0.7, fontWeight: copiedCode === r.type ? 600 : 400 }}>
+                          <p className="text-xs" style={{ color: copiedCode === r.type ? "var(--color-plum)" : "var(--color-mauve)", opacity: copiedCode === r.type ? 1 : 0.7, fontWeight: copiedCode === r.type ? 700 : 400 }}>
                             {copiedCode === r.type
                               ? (pl ? "Skopiowano ✓" : "Copied ✓")
                               : (pl ? "Kliknij żeby skopiować" : "Click to copy")}
