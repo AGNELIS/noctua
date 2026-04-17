@@ -189,6 +189,21 @@ export default function ReferralPage() {
                     <button onClick={() => router.push("/dreams")} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Przejdź do snów" : "Go to dreams"}
                     </button>
+                  ) : earned && (r.type === "workbook_discount_30" || r.type === "premium_discount_30") ? (
+                    <button onClick={async () => {
+                      const res = await fetch("/api/referral-discount", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ reward_type: r.type }),
+                      });
+                      if (res.ok) {
+                        const data = await res.json();
+                        navigator.clipboard.writeText(data.code);
+                        alert(pl ? `Kod skopiowany: ${data.code}` : `Code copied: ${data.code}`);
+                      }
+                    }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                      {pl ? "Pobierz kod" : "Get code"}
+                    </button>
                   ) : earned && r.type === "unlimited_dreams" ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-gold))", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Aktywne na zawsze" : "Active forever"}

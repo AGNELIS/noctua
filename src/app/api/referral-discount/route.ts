@@ -10,11 +10,16 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  // Check if already has a code
+  const { reward_type } = await req.json();
+  if (!["workbook_discount_30", "premium_discount_30"].includes(reward_type)) {
+    return NextResponse.json({ error: "Invalid reward type" }, { status: 400 });
+  }
+
+  // Check if already has a code for this reward type
   const { data: existing } = await supabase.from("referral_rewards")
     .select("stripe_promo_code")
     .eq("user_id", user.id)
-    .eq("reward_type", "badge")
+    .eq("reward_type", reward_type)
     .not("stripe_promo_code", "is", null)
     .limit(1);
 
@@ -22,14 +27,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ code: existing[0].stripe_promo_code });
   }
 
-  // Verify 20 active referrals
-  const { count } = await supabase.from("referrals")
-    .select("id", { count: "exact", head: true })
-    .eq("referrer_id", user.id)
-    .eq("status", "completed");
+  // Verify reward exists and is earned
+  const { data: reward } = await supabase.from("referral_rewards")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("reward_type", reward_type)
+    .single();
 
-  if (!count || count < 20) {
-    return NextResponse.json({ error: "Not enough referrals" }, { status: 400 });
+  if (!reward) {
+    return NextResponse.json({ error: "Reward not earned yet" }, { status: 400 });
   }
 
   // Generate unique promo code
@@ -37,14 +43,13 @@ export async function POST(req: NextRequest) {
     const promoCode = await (stripe.promotionCodes as any).create({
       coupon: COUPON_ID,
       max_redemptions: 1,
-      metadata: { user_id: user.id },
+      metadata: { user_id: user.id, reward_type },
     });
 
-    // Save to database
     await supabase.from("referral_rewards")
       .update({ stripe_promo_code: promoCode.code })
       .eq("user_id", user.id)
-      .eq("reward_type", "badge");
+      .eq("reward_type", reward_type);
 
     return NextResponse.json({ code: promoCode.code });
   } catch (err) {
