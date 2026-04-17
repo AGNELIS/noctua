@@ -111,7 +111,7 @@ export default function TermsPage() {
               : "The free tier includes: journal, dream journal, cycle tracker, grounding, shadow work (basic prompts), and 8 dream symbols. The free tier does not include AI features, reports, or advanced tools."
             }</p>
             <p className="mt-2">{pl
-              ? "Subskrypcja Premium (9.99 GBP/miesiąc lub 79.99 GBP/rok) obejmuje: rozpoznawanie wzorców, miesięczny raport osobisty, 5 analiz snów AI miesięcznie (po limicie: 1.49 GBP za dodatkową), mapę emocjonalną cyklu i księżyca, sezonowe prompty pracy z cieniem, wszystkie 50 symboli snów oraz tygodniowy wgląd."
+              ? "Subskrypcja Premium (9.99 GBP/miesiąc lub 79.99 GBP/rok) obejmuje: rozpoznawanie wzorców, miesięczny raport osobisty, 5 odczytów snów miesięcznie (po limicie: 1.49 GBP za dodatkowy), mapę emocjonalną cyklu i księżyca, sezonowe prompty pracy z cieniem, wszystkie 50 symboli snów oraz tygodniowy wgląd."
               : "Premium subscription (GBP 9.99/month or GBP 79.99/year) includes: pattern recognition, monthly personal report, 5 dream readings per month (after limit: GBP 1.49 per additional), cycle and moon emotional map, seasonal shadow work prompts, all 50 dream symbols, and weekly insight."
             }</p>
             <p className="mt-2">{pl
