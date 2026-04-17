@@ -18,6 +18,31 @@ export async function POST(req: NextRequest) {
   const priceId = PRICES[plan];
   if (!priceId) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
 
+  let promotionCodeId: string | null = null;
+
+  if (promoCode) {
+    try {
+      const promos = await (stripe.promotionCodes as any).list({ code: promoCode, limit: 1 });
+      const promo = promos.data[0];
+      if (!promo) {
+        return NextResponse.json({ error: "Code not found" }, { status: 404 });
+      }
+      if (!promo.active) {
+        return NextResponse.json({ error: "Code already used or inactive" }, { status: 400 });
+      }
+      if (promo.metadata?.user_id !== user.id) {
+        return NextResponse.json({ error: "This code is not assigned to you" }, { status: 403 });
+      }
+      if (promo.metadata?.reward_type !== "premium_discount_30") {
+        return NextResponse.json({ error: "This code is not valid for Premium subscription" }, { status: 400 });
+      }
+      promotionCodeId = promo.id;
+    } catch (err) {
+      console.error("Promo validation error:", err);
+      return NextResponse.json({ error: "Promo code validation failed" }, { status: 500 });
+    }
+  }
+
   try {
     const sessionParams: any = {
       payment_method_types: ["card"],
@@ -27,11 +52,10 @@ export async function POST(req: NextRequest) {
       cancel_url: `${req.nextUrl.origin}/premium`,
       client_reference_id: user.id,
       metadata: { user_id: user.id, plan },
+      allow_promotion_codes: false,
     };
-    if (promoCode) {
-      sessionParams.discounts = [{ promotion_code: promoCode }];
-    } else {
-      sessionParams.allow_promotion_codes = true;
+    if (promotionCodeId) {
+      sessionParams.discounts = [{ promotion_code: promotionCodeId }];
     }
     const session = await stripe.checkout.sessions.create(sessionParams);
 
