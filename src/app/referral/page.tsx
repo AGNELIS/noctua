@@ -27,6 +27,7 @@ export default function ReferralPage() {
   const [rewards, setRewards] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [userId, setUserId] = useState<string>("");
   const [ownedThemes, setOwnedThemes] = useState<string[]>([]);
   const [promoCodes, setPromoCodes] = useState<Record<string, string>>({});
@@ -228,11 +229,17 @@ export default function ReferralPage() {
                         </span>
                       ) : promoCodes[r.type] ? (
                         <>
-                          <button onClick={() => { navigator.clipboard.writeText(promoCodes[r.type]); }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600, letterSpacing: "0.05em" }}>
+                          <button onClick={() => {
+                            navigator.clipboard.writeText(promoCodes[r.type]);
+                            setCopiedCode(r.type);
+                            setTimeout(() => setCopiedCode(null), 1500);
+                          }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600, letterSpacing: "0.05em" }}>
                             {promoCodes[r.type]}
                           </button>
-                          <p className="text-xs" style={{ color: "var(--color-mauve)", opacity: 0.7 }}>
-                            {pl ? "Kliknij żeby skopiować" : "Click to copy"}
+                          <p className="text-xs" style={{ color: copiedCode === r.type ? "var(--color-gold)" : "var(--color-mauve)", opacity: copiedCode === r.type ? 1 : 0.7, fontWeight: copiedCode === r.type ? 600 : 400 }}>
+                            {copiedCode === r.type
+                              ? (pl ? "Skopiowano ✓" : "Copied ✓")
+                              : (pl ? "Kliknij żeby skopiować" : "Click to copy")}
                           </p>
                         </>
                       ) : (
