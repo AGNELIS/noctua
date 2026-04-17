@@ -178,7 +178,7 @@ export default function ReferralPage() {
                   </p>
                 </div>
                 <div className="shrink-0 ml-3">
-                  {earned && isTheme && !rewards.includes(r.type) ? (
+                  {earned && isTheme && !ownedThemes.includes(r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose") ? (
                     <button onClick={async () => {
                       const supabase = createClient();
                       const themeName = r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose";
@@ -191,7 +191,7 @@ export default function ReferralPage() {
                     }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}>
                       {pl ? "Aktywuj motyw" : "Activate theme"}
                     </button>
-                  ) : earned && isTheme && rewards.includes(r.type) ? (
+                  ) : earned && isTheme && ownedThemes.includes(r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose") ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
                       {pl ? "Aktywowany" : "Activated"}
                     </span>
