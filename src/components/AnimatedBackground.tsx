@@ -134,6 +134,303 @@ export default function AnimatedBackground() {
           0%, 100% { transform: translateX(-10%) scaleY(1); }
           50% { transform: translateX(15%) scaleY(1.3); }
         }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
+        .noctua-heart {
+          position: absolute;
+          bottom: -20px;
+          opacity: 0;
+          animation: noctuaHeartRise var(--hdur) ease-in-out infinite;
+          animation-delay: var(--hdelay);
+        }
+        .noctua-heart::before,
+        .noctua-heart::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50% 50% 0 0;
+          background: rgba(180, 130, 200, 0.2);
+        }
+        .noctua-heart::before {
+          left: -30%;
+          transform: rotate(-45deg);
+          transform-origin: bottom right;
+        }
+        .noctua-heart::after {
+          left: 30%;
+          transform: rotate(45deg);
+          transform-origin: bottom left;
+        }
+        @keyframes noctuaHeartRise {
+          0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.35; }
+          50% { transform: translateY(-50vh) scale(1) rotate(15deg); opacity: 0.25; }
+          90% { opacity: 0.1; }
+          100% { transform: translateY(-110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+        }
         .noctua-star {
           position: absolute;
           background: #fff;
@@ -282,6 +579,20 @@ export default function AnimatedBackground() {
             <div className="noctua-aurora-wave noctua-aw1" />
             <div className="noctua-aurora-wave noctua-aw2" />
             <div className="noctua-aurora-wave noctua-aw3" />
+            {[
+              { x: "12%", dur: 12, delay: 0, size: 10 },
+              { x: "28%", dur: 15, delay: 3, size: 8 },
+              { x: "45%", dur: 11, delay: 6, size: 12 },
+              { x: "62%", dur: 14, delay: 2, size: 9 },
+              { x: "78%", dur: 13, delay: 8, size: 11 },
+              { x: "35%", dur: 16, delay: 5, size: 7 },
+              { x: "88%", dur: 12, delay: 10, size: 10 },
+              { x: "55%", dur: 14, delay: 4, size: 8 },
+              { x: "8%", dur: 15, delay: 7, size: 9 },
+              { x: "72%", dur: 11, delay: 1, size: 11 },
+            ].map((h, i) => (
+              <div key={i} className="noctua-heart" style={{ left: h.x, "--hdur": h.dur + "s", "--hdelay": h.delay + "s", width: h.size + "px", height: h.size + "px" } as React.CSSProperties} />
+            ))}
           </>
         )}
 
