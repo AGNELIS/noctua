@@ -10,7 +10,38 @@ export default function PremiumPage() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [loadingSubscribe, setLoadingSubscribe] = useState(false);
   const [loadingPack, setLoadingPack] = useState(false);
-  const [promoCode, setPromoCode] = useState<string | null>(null);
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPercent: number } | null>(null);
+  const [promoError, setPromoError] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
+
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) return;
+    setPromoLoading(true);
+    setPromoError("");
+    try {
+      const res = await fetch("/api/validate-promo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          promoCode: promoInput.trim(),
+          context: "premium",
+        }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setAppliedPromo({ code: data.code, discountPercent: data.discount_percent });
+        setPromoError("");
+      } else {
+        setPromoError(data.error || (language === "pl" ? "Nieprawidłowy kod" : "Invalid code"));
+        setAppliedPromo(null);
+      }
+    } catch {
+      setPromoError(language === "pl" ? "Błąd walidacji" : "Validation error");
+    } finally {
+      setPromoLoading(false);
+    }
+  };
 
   const handleSubscribe = async () => {
     setLoadingSubscribe(true);
@@ -18,7 +49,7 @@ export default function PremiumPage() {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: billingCycle, promoCode }),
+        body: JSON.stringify({ plan: billingCycle, promoCode: appliedPromo?.code || null }),
       });
       const data = await res.json();
       if (data.url) {
@@ -144,18 +175,69 @@ export default function PremiumPage() {
         {/* Price + CTA */}
         <section className="text-center space-y-5 pt-2">
           <div>
-            <span style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "3.5rem", fontWeight: 300 }}>
-              {billingCycle === "monthly" ? "£9.99" : "£79.99"}
-            </span>
-            <span className="text-sm ml-1" style={{ color: "var(--color-mauve)" }}>
-              {billingCycle === "monthly" ? t("premium_per_month") : t("premium_per_year")}
-            </span>
+            {appliedPromo ? (
+              <div className="space-y-1">
+                <div>
+                  <span className="line-through" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.5rem", fontWeight: 300 }}>
+                    {billingCycle === "monthly" ? "£9.99" : "£79.99"}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "3.5rem", fontWeight: 300 }}>
+                    £{((billingCycle === "monthly" ? 9.99 : 79.99) * (1 - appliedPromo.discountPercent / 100)).toFixed(2)}
+                  </span>
+                  <span className="text-sm ml-1" style={{ color: "var(--color-mauve)" }}>
+                    {billingCycle === "monthly" ? t("premium_per_month") : t("premium_per_year")}
+                  </span>
+                </div>
+                <p className="text-xs tracking-wide" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+                  {language === "pl" ? "Kod zastosowany" : "Code applied"}: {appliedPromo.code} (-{appliedPromo.discountPercent}%)
+                </p>
+              </div>
+            ) : (
+              <>
+                <span style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "3.5rem", fontWeight: 300 }}>
+                  {billingCycle === "monthly" ? "£9.99" : "£79.99"}
+                </span>
+                <span className="text-sm ml-1" style={{ color: "var(--color-mauve)" }}>
+                  {billingCycle === "monthly" ? t("premium_per_month") : t("premium_per_year")}
+                </span>
+              </>
+            )}
           </div>
-
-          {billingCycle === "yearly" && (
+          {billingCycle === "yearly" && !appliedPromo && (
             <p className="text-xs" style={{ color: "var(--color-plum)" }}>
               £6.67{t("premium_per_month")}
             </p>
+          )}
+
+          {!appliedPromo && (
+            <div className="space-y-2 pt-2">
+              <p className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>
+                {language === "pl" ? "Masz kod promocyjny?" : "Have a promo code?"}
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                  placeholder={language === "pl" ? "Wpisz kod" : "Enter code"}
+                  className="flex-1 px-3 py-2 rounded-lg text-sm text-center tracking-wider"
+                  style={{ background: "var(--color-cream)", color: "var(--color-dark)", border: "1px solid var(--color-mauve)" }}
+                />
+                <button
+                  onClick={handleApplyPromo}
+                  disabled={promoLoading || !promoInput.trim()}
+                  className="px-4 py-2 rounded-lg text-xs tracking-wide transition-all disabled:opacity-50"
+                  style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600 }}
+                >
+                  {promoLoading ? "..." : (language === "pl" ? "Zastosuj" : "Apply")}
+                </button>
+              </div>
+              {promoError && (
+                <p className="text-xs" style={{ color: "#c04040" }}>{promoError}</p>
+              )}
+            </div>
           )}
 
           <button
