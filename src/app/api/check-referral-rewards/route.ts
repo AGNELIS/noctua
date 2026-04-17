@@ -96,11 +96,12 @@ export async function POST(req: NextRequest) {
 
   for (const t of THRESHOLDS) {
     if (completed >= t.threshold && !existingTypes.has(t.reward_type)) {
-      await supabase.from("referral_rewards").insert({
+      const { error: rewardErr } = await supabase.from("referral_rewards").insert({
         user_id: user.id,
         reward_type: t.reward_type,
         is_used: false,
       });
+      if (rewardErr) console.error("Reward insert error:", rewardErr);
 
       await supabase.from("notifications").insert({
         user_id: user.id,
