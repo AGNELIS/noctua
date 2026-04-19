@@ -16,12 +16,14 @@ const REWARDS = [
   { threshold: 50, type: "unlimited_dreams", en: "Lifetime unlimited dream readings", pl: "Dożywotnie nieograniczone odczyty snów" },
 ];
 
-function odczytForm(n: number): string {
-  if (n === 1) return "odczyt";
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "odczyty";
-  return "odczytów";
+function availableReadingsPl(available: number, total: number): string {
+  if (available === 1) return `Dostępny odczyt: ${available}/${total}`;
+  const mod10 = available % 10;
+  const mod100 = available % 100;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+    return `Dostępne odczyty: ${available}/${total}`;
+  }
+  return `Dostępnych odczytów: ${available}/${total}`;
 }
 
 export default function ReferralPage() {
@@ -265,7 +267,7 @@ export default function ReferralPage() {
                       {tierCredits[3] && tierCredits[3].total > 0 && (
                         <p className="text-xs" style={{ color: tierCredits[3].available > 0 ? "var(--color-plum)" : "var(--color-dusty-rose)", opacity: tierCredits[3].available > 0 ? 1 : 0.7, fontWeight: 600 }}>
                           {pl
-                            ? `Dostępne ${odczytForm(tierCredits[3].available)}: ${tierCredits[3].available}/${tierCredits[3].total}`
+                            ? availableReadingsPl(tierCredits[3].available, tierCredits[3].total)
                             : `Available readings: ${tierCredits[3].available}/${tierCredits[3].total}`}
                         </p>
                       )}
@@ -321,7 +323,7 @@ export default function ReferralPage() {
                         return (
                           <p className="text-xs" style={{ color: credits.available > 0 ? "var(--color-plum)" : "var(--color-dusty-rose)", opacity: credits.available > 0 ? 1 : 0.7, fontWeight: 600 }}>
                             {pl
-                              ? `Dostępne ${odczytForm(credits.available)}: ${credits.available}/${credits.total}`
+                              ? availableReadingsPl(credits.available, credits.total)
                               : `Available readings: ${credits.available}/${credits.total}`}
                           </p>
                         );
