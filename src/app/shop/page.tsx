@@ -58,6 +58,9 @@ export default function ShopPage() {
   const [purchased, setPurchased] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState<string | null>(null);
+  const [credits, setCredits] = useState<Record<string, number>>({});
+  const [isPremium, setIsPremium] = useState(false);
+  const [hasUnlimited, setHasUnlimited] = useState(false);
   const { switchTheme, activeThemeId, resetTheme } = useTheme();
 
   useEffect(() => {
@@ -73,23 +76,35 @@ export default function ShopPage() {
       .in("category", ["theme", "symbol_pack", "report", "interpretation", "self_work", "depth_work"])
       .order("sort_order");
 
-   const { data: purch } = await supabase
+   const { data: { user } } = await supabase.auth.getUser();
+    const { data: purch } = await supabase
       .from("user_purchases")
       .select("product_id, used_at");
-
     const consumableCategories = ["interpretation", "report"];
     const ownedSet = new Set<string>();
+    const creditCounts: Record<string, number> = {};
     (purch || []).forEach((p: { product_id: string; used_at: string | null }) => {
       const prod = (prods || []).find((pr: { id: string }) => pr.id === p.product_id);
       if (prod && consumableCategories.includes(prod.category)) {
-        if (!p.used_at) ownedSet.add(p.product_id);
+        if (!p.used_at) creditCounts[p.product_id] = (creditCounts[p.product_id] || 0) + 1;
       } else {
         ownedSet.add(p.product_id);
       }
     });
-
+    let premium = false;
+    let unlimited = false;
+    if (user) {
+      const { data: profile } = await supabase.from("profiles").select("is_premium").eq("id", user.id).single();
+      premium = !!profile?.is_premium;
+      const { data: unlimitedReward } = await supabase
+        .from("referral_rewards").select("id").eq("user_id", user.id).eq("reward_type", "unlimited_dreams").maybeSingle();
+      unlimited = !!unlimitedReward;
+    }
     setProducts(prods || []);
     setPurchased(ownedSet);
+    setCredits(creditCounts);
+    setIsPremium(premium);
+    setHasUnlimited(unlimited);
     setLoading(false);
   };
 
@@ -246,11 +261,17 @@ export default function ShopPage() {
                   <div className="flex flex-col gap-px rounded-2xl overflow-hidden border transition-all duration-500" style={{ borderColor: "color-mix(in srgb, var(--color-dusty-rose) 30%, transparent)" }}>
                     {group.items.map((product, idx) => {
                       const owned = purchased.has(product.id);
+                      const isDreamReading = product.name === "Dream Reading";
+                      const creditCount = credits[product.id] || 0;
+                      const priceForUser = (isDreamReading && isPremium) ? 1.49 : product.price_gbp;
+                      const showUnlimited = isDreamReading && hasUnlimited;
+                      const showCreditCount = isDreamReading && !hasUnlimited && creditCount > 0;
                       return (
                         <div key={product.id}>
                           <button
-                            onClick={() => router.push(`/shop/${product.id}`)}
-                            className="w-full flex justify-between items-center px-4 py-3.5 transition-all duration-500 hover:opacity-80"
+                            onClick={() => { if (!showUnlimited) router.push(`/shop/${product.id}`); }}
+                            disabled={showUnlimited}
+                            className="w-full flex justify-between items-center px-4 py-3.5 transition-all duration-500 hover:opacity-80 disabled:opacity-70 disabled:cursor-default"
                             style={{
                               background: "linear-gradient(135deg, color-mix(in srgb, var(--color-blush) 80%, transparent), color-mix(in srgb, var(--color-cream) 60%, transparent))",
                             }}
@@ -266,12 +287,27 @@ export default function ShopPage() {
                               {language === "pl" ? (PRODUCT_NAME_PL[product.name] || product.name) : product.name}
                             </span>
                             <div className="flex items-center gap-2 shrink-0 ml-3">
-                              <span className="text-sm transition-colors duration-500" style={{
-                                color: owned ? "var(--color-mauve)" : "var(--color-plum)",
-                                fontWeight: owned ? 500 : 600,
-                              }}>
-                                {owned ? (language === "pl" ? "Posiadane" : "Owned") : `£${product.price_gbp.toFixed(2)}`}
-                              </span>
+                              {showUnlimited ? (
+                                <span className="text-sm italic" style={{ color: "var(--color-gold)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+                                  {language === "pl" ? "Nieograniczone" : "Unlimited"}
+                                </span>
+                              ) : showCreditCount ? (
+                                <span className="flex items-center gap-2">
+                                  <span className="text-xs" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+                                    {language === "pl" ? `${creditCount} dostępnych` : `${creditCount} available`}
+                                  </span>
+                                  <span className="text-sm" style={{ color: "var(--color-plum)", fontWeight: 600 }}>
+                                    £{priceForUser.toFixed(2)}
+                                  </span>
+                                </span>
+                              ) : (
+                                <span className="text-sm transition-colors duration-500" style={{
+                                  color: owned ? "var(--color-mauve)" : "var(--color-plum)",
+                                  fontWeight: owned ? 500 : 600,
+                                }}>
+                                  {owned ? (language === "pl" ? "Posiadane" : "Owned") : `£${priceForUser.toFixed(2)}`}
+                                </span>
+                              )}
                               <span className="text-xs transition-colors duration-500" style={{ color: "var(--color-dusty-rose)" }}>›</span>
                             </div>
                           </button>

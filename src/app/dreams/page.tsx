@@ -64,8 +64,7 @@ export default function DreamsPage() {
   const [analysedIds, setAnalysedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const [fromShop, setFromShop] = useState(false);
+  
   const [showTeaser, setShowTeaser] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [dreamCredits, setDreamCredits] = useState({ available: 0, total: 0 });
@@ -73,7 +72,6 @@ export default function DreamsPage() {
   useEffect(() => {
     loadEntries();
     if (typeof window !== "undefined") {
-      if (window.location.search.includes("from=shop")) setFromShop(true);
       if (window.location.search.includes("saved=true")) setShowTeaser(true);
     }
   }, []);
@@ -141,11 +139,7 @@ export default function DreamsPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
-            {fromShop && (
-              <button onClick={() => router.push("/shop")} className="text-sm tracking-wide" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
-                {language === "pl" ? "Wróć do sklepu" : "Back to shop"}
-              </button>
-            )}
+            
           </div>
           <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("dreams_new")}</button>
         </div>
