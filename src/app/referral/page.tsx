@@ -179,15 +179,15 @@ export default function ReferralPage() {
         </p>
 
         {isAmbassador && (
-          <div className="text-center py-4">
-            <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.02em" }}>
-              {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
-            </p>
-            <div className="flex justify-center items-center gap-4 mt-2" style={{ color: "var(--color-mauve)", fontSize: "0.875rem", opacity: 0.7 }}>
+          <div className="relative mx-auto my-6 px-8 py-8 text-center" style={{ maxWidth: "380px", border: "0.5px solid color-mix(in srgb, var(--color-gold) 45%, transparent)", borderRadius: "14px" }}>
+            <div className="absolute left-1/2 flex items-center gap-3" style={{ top: "-10px", transform: "translateX(-50%)", background: "var(--color-gradient)", padding: "0 12px", color: "var(--color-gold)", fontSize: "0.875rem", letterSpacing: "0.1em" }}>
               <span>♡</span>
               <span>♡</span>
               <span>♡</span>
             </div>
+            <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.03em", textShadow: "0 0 18px color-mix(in srgb, var(--color-gold) 35%, transparent)" }}>
+              {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
+            </p>
           </div>
         )}
 
@@ -370,15 +370,15 @@ export default function ReferralPage() {
 
         {/* All badges progress */}
         {isAmbassador && (
-          <section className="text-center py-4">
-            <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.02em" }}>
-              {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
-            </p>
-            <div className="flex justify-center items-center gap-4 mt-2" style={{ color: "var(--color-mauve)", fontSize: "0.875rem", opacity: 0.7 }}>
+          <section className="relative mx-auto my-6 px-8 py-8 text-center" style={{ maxWidth: "380px", border: "0.5px solid color-mix(in srgb, var(--color-gold) 45%, transparent)", borderRadius: "14px" }}>
+            <div className="absolute left-1/2 flex items-center gap-3" style={{ top: "-10px", transform: "translateX(-50%)", background: "var(--color-gradient)", padding: "0 12px", color: "var(--color-gold)", fontSize: "0.875rem", letterSpacing: "0.1em" }}>
               <span>♡</span>
               <span>♡</span>
               <span>♡</span>
             </div>
+            <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.03em", textShadow: "0 0 18px color-mix(in srgb, var(--color-gold) 35%, transparent)" }}>
+              {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
+            </p>
           </section>
         )}
 
