@@ -32,15 +32,27 @@ export async function POST(req: NextRequest) {
       const sessionId = session.id;
 
       if (userId && productId) {
-        const { data: existing } = await supabase.from("user_purchases")
-          .select("id").eq("user_id", userId).eq("product_id", productId).limit(1);
-
-        if (!existing || existing.length === 0) {
+        const { data: product } = await supabase.from("shop_products")
+          .select("is_consumable").eq("id", productId).single();
+        const isConsumable = !!product?.is_consumable;
+        if (isConsumable) {
+          // Always insert for consumables (each purchase = new credit)
           await supabase.from("user_purchases").insert({
             user_id: userId,
             product_id: productId,
             stripe_session_id: sessionId,
           });
+        } else {
+          // For permanent products, only insert if user does not already own
+          const { data: existing } = await supabase.from("user_purchases")
+            .select("id").eq("user_id", userId).eq("product_id", productId).limit(1);
+          if (!existing || existing.length === 0) {
+            await supabase.from("user_purchases").insert({
+              user_id: userId,
+              product_id: productId,
+              stripe_session_id: sessionId,
+            });
+          }
         }
 
         // If bundle purchased, unlock all included products
