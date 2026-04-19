@@ -42,6 +42,21 @@ function ConfirmModal({ message, onConfirm, onCancel }: { message: string; onCon
   );
 }
 
+function readingsStatusPl(available: number, total: number): string {
+  const used = total - available;
+  const availableForm = available === 1
+    ? "dostępny odczyt"
+    : (available % 10 >= 2 && available % 10 <= 4 && (available % 100 < 12 || available % 100 > 14))
+      ? "dostępne odczyty"
+      : "dostępnych odczytów";
+  const usedForm = used === 1
+    ? "wykorzystany"
+    : (used % 10 >= 2 && used % 10 <= 4 && (used % 100 < 12 || used % 100 > 14))
+      ? "wykorzystane"
+      : "wykorzystanych";
+  return `Masz ${available} ${availableForm}, ${used} ${usedForm}`;
+}
+
 export default function DreamsPage() {
   const router = useRouter();
   const { t, language } = useLanguage();
@@ -53,6 +68,7 @@ export default function DreamsPage() {
   const [fromShop, setFromShop] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [dreamCredits, setDreamCredits] = useState({ available: 0, total: 0 });
   useEffect(() => {
     loadEntries();
     if (typeof window !== "undefined") {
@@ -72,6 +88,26 @@ export default function DreamsPage() {
     const { data: analyses } = await supabase.from("dream_analyses").select("dream_entry_id");
     setAnalysedIds(new Set((analyses || []).map((a: { dream_entry_id: string }) => a.dream_entry_id)));
     setEntries(data || []);
+
+    // Count dream reading credits (total and available)
+    if (user) {
+      const { data: dreamProduct } = await supabase
+        .from("shop_products")
+        .select("id")
+        .eq("name", "Dream Reading")
+        .single();
+      if (dreamProduct) {
+        const { data: allCredits } = await supabase
+          .from("user_purchases")
+          .select("used_at")
+          .eq("user_id", user.id)
+          .eq("product_id", dreamProduct.id);
+        const total = allCredits?.length || 0;
+        const available = (allCredits || []).filter((c: any) => !c.used_at).length;
+        setDreamCredits({ available, total });
+      }
+    }
+
     setLoading(false);
   };
 
@@ -106,6 +142,13 @@ export default function DreamsPage() {
           <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("dreams_new")}</button>
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
+        {dreamCredits.total > 0 && (
+          <p className="text-center mt-2 text-sm" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+            {language === "pl"
+              ? readingsStatusPl(dreamCredits.available, dreamCredits.total)
+              : `You have ${dreamCredits.available} available ${dreamCredits.available === 1 ? "reading" : "readings"}, ${dreamCredits.total - dreamCredits.available} used`}
+          </p>
+        )}
       </header>
 
       {/* Paywall teaser after saving dream */}
