@@ -78,8 +78,21 @@ export default function ReferralPage() {
       if (r.stripe_promo_code) codes[r.reward_type] = r.stripe_promo_code;
     });
     setPromoCodes(codes);
-    setUsedCodes(new Set((rews || []).filter((r: any) => r.stripe_promo_code && r.is_used).map((r: any) => r.reward_type)));
-
+    try {
+      const statusRes = await fetch("/api/promo-codes-status");
+      if (statusRes.ok) {
+        const status = await statusRes.json();
+        const used = new Set<string>();
+        Object.entries(status).forEach(([rewardType, info]: [string, any]) => {
+          if (info?.redeemed) used.add(rewardType);
+        });
+        setUsedCodes(used);
+      } else {
+        setUsedCodes(new Set());
+      }
+    } catch {
+      setUsedCodes(new Set());
+    }
     const { data: purchases } = await supabase
       .from("user_purchases")
       .select("product_id, shop_products(name)")
