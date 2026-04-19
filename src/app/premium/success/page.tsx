@@ -12,6 +12,7 @@ function SuccessContent() {
   const searchParams = useSearchParams();
   const pl = language === "pl";
   const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
+  const [hasBirthData, setHasBirthData] = useState(false);
 
   useEffect(() => {
     const verify = async () => {
@@ -23,6 +24,8 @@ function SuccessContent() {
 
       // Webhook handles is_premium, but set it here too for immediate UI
       await supabase.from("profiles").update({ is_premium: true }).eq("id", user.id);
+      const { data: profile } = await supabase.from("profiles").select("birth_date").eq("id", user.id).single();
+      setHasBirthData(!!profile?.birth_date);
       setStatus("success");
     };
     verify();
@@ -42,11 +45,15 @@ function SuccessContent() {
             {pl ? "Witaj w Premium!" : "Welcome to Premium!"}
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
-            {pl ? "Masz teraz dostęp do wszystkich funkcji Noctua. Czas zacząć." : "You now have access to all Noctua features. Time to begin."}
+            {hasBirthData
+              ? (pl ? "Masz teraz dostęp do wszystkich funkcji Noctua." : "You now have access to all Noctua features.")
+              : (pl ? "Żeby odblokować workbooki planetarne, potrzebuję poznać twoją datę urodzenia." : "To unlock planetary workbooks, I need to know your birth date.")}
           </p>
-          <button onClick={() => router.push("/onboarding")} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
+          <button onClick={() => router.push(hasBirthData ? "/dashboard" : "/onboarding")} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
             style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
-            {pl ? "Rozpocznij konfigurację" : "Begin setup"}
+            {hasBirthData
+              ? (pl ? "Przejdź do aplikacji" : "Enter the app")
+              : (pl ? "Podaj datę urodzenia" : "Enter birth date")}
           </button>
         </>
       )}
