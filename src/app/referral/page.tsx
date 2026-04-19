@@ -55,15 +55,26 @@ export default function ReferralPage() {
 
     const { data: profile } = await supabase.from("profiles").select("referral_code, is_admin").eq("id", user.id).single();
     setIsAdmin(profile?.is_admin || false);
-    const { count: jCount } = await supabase.from("journal_entries").select("id", { count: "exact", head: true });
-    setJournalCount(jCount || 0);
-
+    const [{ count: jCount }, { count: dCount }, { count: sCount }] = await Promise.all([
+      supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    ]);
+    const totalEntries = (jCount || 0) + (dCount || 0) + (sCount || 0);
+    setJournalCount(totalEntries);
     if (profile?.referral_code) {
       setReferralCode(profile.referral_code);
-    } else if ((jCount || 0) >= 3) {
-      const code = user.id.slice(0, 8).toUpperCase();
-      await supabase.from("profiles").update({ referral_code: code }).eq("id", user.id);
-      setReferralCode(code);
+    } else if (totalEntries >= 3) {
+      let code = "";
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = Array.from({ length: 8 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
+        const { data: existing } = await supabase.from("profiles").select("id").eq("referral_code", candidate).maybeSingle();
+        if (!existing) { code = candidate; break; }
+      }
+      if (code) {
+        await supabase.from("profiles").update({ referral_code: code }).eq("id", user.id);
+        setReferralCode(code);
+      }
     }
 
     const { data: refs } = await supabase.from("referrals").select("status").eq("referrer_id", user.id);
@@ -195,8 +206,8 @@ export default function ReferralPage() {
           <section className="rounded-2xl border p-6 text-center space-y-3" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
               {pl
-                ? "Potrzebujesz min. 3 wpisy w dzienniku żeby zapraszać."
-                : "You need at least 3 journal entries to start inviting."}
+                ? "Potrzebujesz 3 wpisów w aplikacji żeby zapraszać."
+                : "You need 3 entries in the app to start inviting."}
             </p>
             <p className="text-lg mt-2" style={{ color: "var(--color-plum)", fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
               {pl ? `Masz: ${journalCount}/3` : `You have: ${journalCount}/3`}
