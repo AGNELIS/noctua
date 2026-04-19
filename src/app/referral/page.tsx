@@ -219,16 +219,16 @@ export default function ReferralPage() {
             const earned = completedCount >= r.threshold;
             const isTheme = r.type.startsWith("theme_");
             return (
-              <div key={r.type} className="flex items-center justify-between p-4 rounded-2xl border transition-all" style={{ background: "var(--color-blush)", borderColor: earned ? "var(--color-mauve)" : "var(--color-dusty-rose)", opacity: earned ? 1 : 0.6 }}>
+              <div key={r.type} className="flex items-start justify-between gap-6 py-6 border-b transition-all" style={{ borderColor: "rgba(167, 141, 171, 0.2)", opacity: earned ? 1 : 0.55 }}>
                 <div className="flex-1">
-                  <p className="text-sm" style={{ color: "var(--color-dark)", fontWeight: 500 }}>
-                    {pl ? r.pl : r.en}
-                  </p>
-                  <p className="text-sm mt-1" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
+                  <p className="text-xs uppercase mb-2.5" style={{ color: "var(--color-mauve)", fontWeight: 500, letterSpacing: "0.2em" }}>
                     {pl ? `${r.threshold} zaproszeń` : `${r.threshold} invitations`}
                   </p>
+                  <p style={{ color: "var(--color-dark)", fontWeight: 400, fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.375rem", lineHeight: 1.3 }}>
+                    {pl ? r.pl : r.en}
+                  </p>
                 </div>
-                <div className="shrink-0 ml-3">
+                <div className="shrink-0 text-right" style={{ paddingTop: "4px" }}>
                   {earned && isTheme && !ownedThemes.includes(r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose") ? (
                     <button onClick={async () => {
                       const supabase = createClient();
@@ -239,7 +239,7 @@ export default function ReferralPage() {
                         await supabase.from("referral_rewards").update({ is_used: true }).eq("reward_type", r.type);
                         loadReferralData();
                       }
-                    }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 500 }}>
+                    }} className="transition-all" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.1em", fontSize: "0.875rem", borderBottom: "0.5px solid var(--color-gold)", paddingBottom: "3px" }}>
                       {pl ? "Aktywuj motyw" : "Activate theme"}
                     </button>
                   ) : earned && isTheme && ownedThemes.includes(r.type === "theme_moonstone" ? "Moonstone" : r.type === "theme_velvet_night" ? "Velvet Night" : "Obsidian Rose") ? (() => {
@@ -252,14 +252,14 @@ export default function ReferralPage() {
                         if (product) {
                           await switchTheme(product.id, themeName);
                         }
-                      }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                      }} className="transition-all" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.1em", fontSize: "0.875rem", borderBottom: "0.5px solid var(--color-gold)", paddingBottom: "3px" }}>
                         {pl ? "Użyj motywu" : "Use theme"}
                       </button>
                     );
                   })()
                   : earned && r.type === "dream_analysis_1" ? (
                     <div className="flex flex-col items-end gap-1">
-                      <button onClick={() => router.push("/dreams")} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                      <button onClick={() => router.push("/dreams")} className="transition-all" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.1em", fontSize: "0.875rem", borderBottom: "0.5px solid var(--color-gold)", paddingBottom: "3px" }}>
                         {pl ? "Przejdź do snów" : "Go to dreams"}
                       </button>
                       {tierCredits[3] && tierCredits[3].total > 0 && (
@@ -282,7 +282,7 @@ export default function ReferralPage() {
                             navigator.clipboard.writeText(promoCodes[r.type]);
                             setCopiedCode(r.type);
                             setTimeout(() => setCopiedCode(null), 1500);
-                          }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600, letterSpacing: "0.05em" }}>
+                          }} className="rounded-full transition-all" style={{ background: "rgba(212, 165, 116, 0.12)", border: "0.5px solid var(--color-gold)", color: "var(--color-gold)", fontWeight: 600, letterSpacing: "0.25em", fontFamily: "'Courier New', monospace", fontSize: "0.875rem", padding: "8px 16px" }}>
                             {promoCodes[r.type]}
                           </button>
                           <p className="text-xs" style={{ color: copiedCode === r.type ? "var(--color-plum)" : "var(--color-mauve)", opacity: copiedCode === r.type ? 1 : 0.7, fontWeight: copiedCode === r.type ? 700 : 400 }}>
@@ -305,7 +305,7 @@ export default function ReferralPage() {
                             setCopiedCode(r.type);
                             setTimeout(() => setCopiedCode(null), 1500);
                           }
-                        }} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                        }} className="transition-all" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.1em", fontSize: "0.875rem", borderBottom: "0.5px solid var(--color-gold)", paddingBottom: "3px" }}>
                           {pl ? "Pobierz kod" : "Get code"}
                         </button>
                       )}
