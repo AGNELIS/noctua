@@ -69,6 +69,7 @@ export default function DreamsPage() {
   const [showTeaser, setShowTeaser] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [dreamCredits, setDreamCredits] = useState({ available: 0, total: 0 });
+  const [hasUnlimited, setHasUnlimited] = useState(false);
   useEffect(() => {
     loadEntries();
     if (typeof window !== "undefined") {
@@ -83,6 +84,13 @@ export default function DreamsPage() {
     if (user) {
       const { data: profile } = await supabase.from("profiles").select("is_premium").eq("id", user.id).single();
       setIsPremium(profile?.is_premium || false);
+      const { data: unlimitedReward } = await supabase
+        .from("referral_rewards")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("reward_type", "unlimited_dreams")
+        .maybeSingle();
+      setHasUnlimited(!!unlimitedReward);
     }
     const { data } = await supabase.from("dream_entries").select("*").order("dream_date", { ascending: false });
     const { data: analyses } = await supabase.from("dream_analyses").select("dream_entry_id");
@@ -142,7 +150,11 @@ export default function DreamsPage() {
           <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("dreams_new")}</button>
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-8" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
-        {dreamCredits.total > 0 && (
+        {hasUnlimited ? (
+          <p className="text-center mt-5 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.125rem", fontWeight: 500, letterSpacing: "0.02em", opacity: 0.85 }}>
+            {language === "pl" ? "Nieograniczone odczyty" : "Unlimited readings"}
+          </p>
+        ) : dreamCredits.total > 0 && (
           <p className="text-center mt-5 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.125rem", fontWeight: 500, letterSpacing: "0.02em", opacity: 0.85 }}>
             {language === "pl"
               ? readingsStatusPl(dreamCredits.available, dreamCredits.total)
@@ -152,7 +164,7 @@ export default function DreamsPage() {
       </header>
 
       {/* Paywall teaser after saving dream */}
-        {showTeaser && !isPremium && (
+        {showTeaser && !isPremium && !hasUnlimited && dreamCredits.available === 0 && (
           <div className="max-w-xl mx-auto px-6 pt-4">
             <div className="rounded-2xl border p-5 space-y-3" style={{ background: "var(--color-blush)", borderColor: "var(--color-mauve)" }}>
               <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
