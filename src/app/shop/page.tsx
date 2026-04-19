@@ -73,6 +73,7 @@ export default function ShopPage() {
       .from("shop_products")
       .select("*")
       .eq("is_active", true)
+      .eq("is_referral_only", false)
       .in("category", ["theme", "symbol_pack", "report", "interpretation", "self_work", "depth_work"])
       .order("sort_order");
 
@@ -288,8 +289,10 @@ export default function ShopPage() {
                             </span>
                             <div className="flex items-center gap-2 shrink-0 ml-3">
                               {showUnlimited ? (
-                                <span className="text-sm italic" style={{ color: "var(--color-gold)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+                                <span className="flex items-center gap-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", fontStyle: "italic", fontWeight: 700, letterSpacing: "0.02em" }}>
+                                  <span style={{ color: "var(--color-gold)", fontSize: "0.875rem" }}>♥</span>
                                   {language === "pl" ? "Nieograniczone" : "Unlimited"}
+                                  <span style={{ color: "var(--color-gold)", fontSize: "0.875rem" }}>♥</span>
                                 </span>
                               ) : showCreditCount ? (
                                 <span className="flex items-center gap-2">
