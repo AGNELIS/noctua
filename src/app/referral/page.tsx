@@ -179,10 +179,15 @@ export default function ReferralPage() {
         </p>
 
         {isAmbassador && (
-          <div className="text-center py-3 rounded-2xl" style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-mauve))" }}>
-            <p className="text-xs uppercase tracking-[0.3em]" style={{ color: "var(--color-cream)", fontWeight: 600 }}>
+          <div className="text-center py-4">
+            <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.02em" }}>
               {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
             </p>
+            <div className="flex justify-center items-center gap-4 mt-2" style={{ color: "var(--color-mauve)", fontSize: "0.875rem", opacity: 0.7 }}>
+              <span>♡</span>
+              <span>♡</span>
+              <span>♡</span>
+            </div>
           </div>
         )}
 
@@ -365,10 +370,15 @@ export default function ReferralPage() {
 
         {/* All badges progress */}
         {isAmbassador && (
-          <section className="text-center py-3">
-            <span className="inline-block px-4 py-2 rounded-full text-xs" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600, letterSpacing: "0.1em" }}>
+          <section className="text-center py-4">
+            <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.02em" }}>
               {pl ? "Ambasadorka Noctua" : "Noctua Ambassador"}
-            </span>
+            </p>
+            <div className="flex justify-center items-center gap-4 mt-2" style={{ color: "var(--color-mauve)", fontSize: "0.875rem", opacity: 0.7 }}>
+              <span>♡</span>
+              <span>♡</span>
+              <span>♡</span>
+            </div>
           </section>
         )}
 
