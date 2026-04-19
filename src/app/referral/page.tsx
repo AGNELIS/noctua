@@ -16,6 +16,14 @@ const REWARDS = [
   { threshold: 50, type: "unlimited_dreams", en: "Lifetime unlimited dream readings", pl: "Dożywotnie nieograniczone odczyty snów" },
 ];
 
+function odczytForm(n: number): string {
+  if (n === 1) return "odczyt";
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "odczyty";
+  return "odczytów";
+}
+
 export default function ReferralPage() {
   const router = useRouter();
   const { language } = useLanguage();
@@ -28,6 +36,7 @@ export default function ReferralPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [tierCredits, setTierCredits] = useState<Record<number, { available: number; total: number }>>({});
   const [userId, setUserId] = useState<string>("");
   const [ownedThemes, setOwnedThemes] = useState<string[]>([]);
   const [promoCodes, setPromoCodes] = useState<Record<string, string>>({});
@@ -75,6 +84,37 @@ export default function ReferralPage() {
       .eq("user_id", user.id);
     const themeNames = (purchases || []).map((p: any) => (p.shop_products as any)?.name).filter(Boolean);
     setOwnedThemes(themeNames);
+
+    // Count dream reading credits per tier
+    const { data: dreamProduct } = await supabase
+      .from("shop_products")
+      .select("id")
+      .eq("name", "Dream Reading")
+      .single();
+    if (dreamProduct) {
+      const { data: tierPurchases } = await supabase
+        .from("user_purchases")
+        .select("stripe_session_id, used_at")
+        .eq("user_id", user.id)
+        .eq("product_id", dreamProduct.id)
+        .in("stripe_session_id", ["referral_tier_3", "referral_tier_10", "referral_tier_20"]);
+      const creditsByTier: Record<number, { available: number; total: number }> = {
+        3: { available: 0, total: 0 },
+        10: { available: 0, total: 0 },
+        20: { available: 0, total: 0 },
+      };
+      (tierPurchases || []).forEach((p: any) => {
+        const match = p.stripe_session_id?.match(/^referral_tier_(\d+)$/);
+        if (match) {
+          const tier = parseInt(match[1]);
+          if (creditsByTier[tier]) {
+            creditsByTier[tier].total++;
+            if (!p.used_at) creditsByTier[tier].available++;
+          }
+        }
+      });
+      setTierCredits(creditsByTier);
+    }
 
     setLoading(false);
   };
@@ -218,9 +258,18 @@ export default function ReferralPage() {
                     );
                   })()
                   : earned && r.type === "dream_analysis_1" ? (
-                    <button onClick={() => router.push("/dreams")} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
-                      {pl ? "Przejdź do snów" : "Go to dreams"}
-                    </button>
+                    <div className="flex flex-col items-end gap-1">
+                      <button onClick={() => router.push("/dreams")} className="text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 500 }}>
+                        {pl ? "Przejdź do snów" : "Go to dreams"}
+                      </button>
+                      {tierCredits[3] && tierCredits[3].total > 0 && (
+                        <p className="text-xs" style={{ color: tierCredits[3].available > 0 ? "var(--color-plum)" : "var(--color-dusty-rose)", opacity: tierCredits[3].available > 0 ? 1 : 0.7, fontWeight: 600 }}>
+                          {pl
+                            ? `Dostępne ${odczytForm(tierCredits[3].available)}: ${tierCredits[3].available}/${tierCredits[3].total}`
+                            : `Available readings: ${tierCredits[3].available}/${tierCredits[3].total}`}
+                        </p>
+                      )}
+                    </div>
                   ) : earned && (r.type === "workbook_discount_30" || r.type === "premium_discount_30") ? (
                     <div className="flex flex-col items-end gap-1">
                       {usedCodes.has(r.type) ? (
@@ -265,6 +314,18 @@ export default function ReferralPage() {
                           ? r.type === "workbook_discount_30" ? "Wklej kod przy zakupie w sklepie" : "Wklej kod przy subskrypcji Premium"
                           : r.type === "workbook_discount_30" ? "Paste code at shop checkout" : "Paste code at Premium checkout"}
                       </p>
+                      {(() => {
+                        const tier = r.type === "workbook_discount_30" ? 10 : 20;
+                        const credits = tierCredits[tier];
+                        if (!credits || credits.total === 0) return null;
+                        return (
+                          <p className="text-xs" style={{ color: credits.available > 0 ? "var(--color-plum)" : "var(--color-dusty-rose)", opacity: credits.available > 0 ? 1 : 0.7, fontWeight: 600 }}>
+                            {pl
+                              ? `Dostępne ${odczytForm(credits.available)}: ${credits.available}/${credits.total}`
+                              : `Available readings: ${credits.available}/${credits.total}`}
+                          </p>
+                        );
+                      })()}
                     </div>
                   ) : earned && r.type === "unlimited_dreams" ? (
                     <span className="text-xs px-3 py-1 rounded-full" style={{ background: "linear-gradient(135deg, var(--color-plum), var(--color-gold))", color: "var(--color-cream)", fontWeight: 500 }}>

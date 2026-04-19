@@ -119,19 +119,28 @@ export async function POST(req: NextRequest) {
       const dreamBonusMap: Record<number, number> = { 3: 1, 10: 2, 20: 3 };
       const bonusCount = dreamBonusMap[t.threshold];
       if (bonusCount) {
-        const { data: dreamProduct } = await supabase
-          .from("shop_products")
+        // Check if credits for this tier already exist (prevents duplication)
+        const sessionTag = `referral_tier_${t.threshold}`;
+        const { data: existingCredits } = await supabase
+          .from("user_purchases")
           .select("id")
-          .eq("name", "Dream Reading")
-          .single();
-        if (dreamProduct) {
-          const credits = Array.from({ length: bonusCount }, () => ({
-            user_id: user.id,
-            product_id: dreamProduct.id,
-            stripe_session_id: `referral_tier_${t.threshold}`,
-          }));
-          const { error: creditsErr } = await supabase.from("user_purchases").insert(credits);
-          if (creditsErr) console.error("Dream credits insert error:", creditsErr);
+          .eq("user_id", user.id)
+          .eq("stripe_session_id", sessionTag);
+        if (!existingCredits || existingCredits.length === 0) {
+          const { data: dreamProduct } = await supabase
+            .from("shop_products")
+            .select("id")
+            .eq("name", "Dream Reading")
+            .single();
+          if (dreamProduct) {
+            const credits = Array.from({ length: bonusCount }, () => ({
+              user_id: user.id,
+              product_id: dreamProduct.id,
+              stripe_session_id: sessionTag,
+            }));
+            const { error: creditsErr } = await supabase.from("user_purchases").insert(credits);
+            if (creditsErr) console.error("Dream credits insert error:", creditsErr);
+          }
         }
       }
 
