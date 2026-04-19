@@ -157,7 +157,7 @@ export default function ReferralPage() {
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-8 pt-4">
 
-        <p className="text-center leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
+        <p className="text-center leading-relaxed" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.125rem", fontWeight: 500, opacity: 0.85 }}>
           {pl
             ? "Zaproś kogoś, kto potrzebuje tej pracy. A Noctua pokaże Ci więcej o Tobie samej."
             : "Invite someone who needs this work. And Noctua will show you more about yourself."}

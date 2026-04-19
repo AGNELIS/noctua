@@ -143,7 +143,7 @@ export default function DreamsPage() {
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
         {dreamCredits.total > 0 && (
-          <p className="text-center mt-5 mb-2" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.125rem", fontWeight: 400, letterSpacing: "0.02em" }}>
+          <p className="text-center mt-5 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.125rem", fontWeight: 500, letterSpacing: "0.02em", opacity: 0.85 }}>
             {language === "pl"
               ? readingsStatusPl(dreamCredits.available, dreamCredits.total)
               : `You have ${dreamCredits.available} available ${dreamCredits.available === 1 ? "reading" : "readings"}, ${dreamCredits.total - dreamCredits.available} used`}
@@ -198,34 +198,44 @@ export default function DreamsPage() {
             <button onClick={() => router.push("/dreams/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>{t("dreams_new")}</button>
           </div>
         ) : (
-          <div className="space-y-3 pt-4">
+          <div className="pt-4">
             {entries.map((entry) => (
-              <div key={entry.id} className="p-4 rounded-2xl border transition-all" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                <div className="flex items-start justify-between gap-3">
+              <div key={entry.id} className="py-6 transition-all" style={{ borderBottom: "0.5px solid rgba(167, 141, 171, 0.2)" }}>
+                <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 cursor-pointer" onClick={() => router.push(`/dreams/${entry.id}/edit`)}>
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                      <span className="text-xs uppercase" style={{ color: "var(--color-plum)", fontWeight: 500, letterSpacing: "0.15em", opacity: 0.75 }}>
                         {new Date(entry.dream_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
-                      {entry.emotional_tone?.map((t) => (<span key={t} className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--color-plum)" }}>{TONE_ICONS[t]?.icon}{TONE_ICONS[t]?.label || t}</span>))}
-                      {entry.is_recurring && (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{language === "pl" ? "powtarzający" : "recurring"}</span>)}
+                      {entry.emotional_tone?.length > 0 && (
+                        <span className="inline-flex items-center gap-2 text-xs" style={{ color: "var(--color-plum)", opacity: 0.75 }}>
+                          {entry.emotional_tone.map((t, i) => (
+                            <span key={t} className="inline-flex items-center gap-1">
+                              {TONE_ICONS[t]?.icon}
+                              <span>{TONE_ICONS[t]?.label || t}</span>
+                              {i < entry.emotional_tone.length - 1 && <span style={{ opacity: 0.5, marginLeft: "4px" }}>,</span>}
+                            </span>
+                          ))}
+                        </span>
+                      )}
+                      {entry.is_recurring && (<span className="text-xs uppercase" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.15em" }}>{language === "pl" ? "powtarzający" : "recurring"}</span>)}
                       {analysedIds.has(entry.id)
-                        ? (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>{language === "pl" ? "przeanalizowany" : "analysed"}</span>)
-                        : (<span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "var(--color-gold)", color: "var(--color-dark)" }}>{language === "pl" ? "do analizy" : "ready to analyse"}</span>)
+                        ? (<span className="text-xs uppercase" style={{ color: "var(--color-plum)", fontWeight: 500, letterSpacing: "0.15em", opacity: 0.75 }}>{language === "pl" ? "przeanalizowany" : "analysed"}</span>)
+                        : (<span className="text-xs uppercase" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.15em" }}>{language === "pl" ? "do analizy" : "ready to analyse"}</span>)
                       }
-                      {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-mauve)" }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
+                      {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-plum)", opacity: 0.6 }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
                     </div>
-                    {entry.title && (<h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>)}
-                    <p className="text-sm leading-relaxed line-clamp-2" style={{ color: "var(--color-mauve)" }}>{entry.content}</p>
+                    {entry.title && (<h3 className="mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: "1.5rem", lineHeight: 1.25 }}>{entry.title}</h3>)}
+                    <p className="leading-relaxed line-clamp-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.0625rem", opacity: 0.75 }}>{entry.content}</p>
                     {entry.symbols?.length > 0 && (
-                      <div className="flex gap-1.5 mt-2 flex-wrap">
-                        {entry.symbols.map((s) => (<span key={s} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--color-blush)", color: "var(--color-plum)" }}>{s}</span>))}
+                      <div className="flex gap-3 mt-3 flex-wrap">
+                        {entry.symbols.map((s) => (<span key={s} className="text-xs uppercase" style={{ color: "var(--color-plum)", fontWeight: 500, letterSpacing: "0.15em", opacity: 0.6 }}>{s}</span>))}
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1 shrink-0">
-                    <button onClick={() => toggleFavorite(entry.id, entry.is_favorite)} className="text-lg leading-none" style={{ color: entry.is_favorite ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>{entry.is_favorite ? "♥" : "♡"}</button>
-                    <button onClick={() => setDeleteId(entry.id)} className="text-sm leading-none" style={{ color: "var(--color-dusty-rose)" }}>✕</button>
+                  <div className="flex flex-col gap-2 shrink-0">
+                    <button onClick={() => toggleFavorite(entry.id, entry.is_favorite)} className="text-lg leading-none transition-all" style={{ color: entry.is_favorite ? "var(--color-plum)" : "var(--color-plum)", opacity: entry.is_favorite ? 1 : 0.4 }}>{entry.is_favorite ? "♥" : "♡"}</button>
+                    <button onClick={() => setDeleteId(entry.id)} className="text-sm leading-none transition-all" style={{ color: "var(--color-plum)", opacity: 0.4 }}>✕</button>
                   </div>
                 </div>
               </div>
