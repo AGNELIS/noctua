@@ -143,7 +143,7 @@ export default function DreamsPage() {
         </div>
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
         {dreamCredits.total > 0 && (
-          <p className="text-center mt-2 text-sm" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+          <p className="text-center mt-5 mb-2" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.125rem", fontWeight: 400, letterSpacing: "0.02em" }}>
             {language === "pl"
               ? readingsStatusPl(dreamCredits.available, dreamCredits.total)
               : `You have ${dreamCredits.available} available ${dreamCredits.available === 1 ? "reading" : "readings"}, ${dreamCredits.total - dreamCredits.available} used`}
