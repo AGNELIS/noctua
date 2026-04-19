@@ -43,6 +43,7 @@ export default function ReferralPage() {
   const [ownedThemes, setOwnedThemes] = useState<string[]>([]);
   const [promoCodes, setPromoCodes] = useState<Record<string, string>>({});
   const [usedCodes, setUsedCodes] = useState<Set<string>>(new Set());
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => { loadReferralData(); }, []);
 
@@ -52,7 +53,8 @@ export default function ReferralPage() {
     if (!user) { router.push("/login"); return; }
     setUserId(user.id);
 
-    const { data: profile } = await supabase.from("profiles").select("referral_code").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("referral_code, is_admin").eq("id", user.id).single();
+    setIsAdmin(profile?.is_admin || false);
     const { count: jCount } = await supabase.from("journal_entries").select("id", { count: "exact", head: true });
     setJournalCount(jCount || 0);
 
@@ -142,7 +144,7 @@ export default function ReferralPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const canRefer = journalCount >= 3;
+  const canRefer = isAdmin || journalCount >= 3;
   const currentRewards = REWARDS;
   const isAmbassador = completedCount >= 30;
 
