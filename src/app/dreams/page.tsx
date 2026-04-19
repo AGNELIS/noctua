@@ -141,7 +141,7 @@ export default function DreamsPage() {
           </div>
           <button onClick={() => router.push("/dreams/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("dreams_new")}</button>
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
+        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-8" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("dreams_title")}</h1>
         {dreamCredits.total > 0 && (
           <p className="text-center mt-5 mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.125rem", fontWeight: 500, letterSpacing: "0.02em", opacity: 0.85 }}>
             {language === "pl"
@@ -200,7 +200,7 @@ export default function DreamsPage() {
         ) : (
           <div className="pt-4">
             {entries.map((entry) => (
-              <div key={entry.id} className="py-6 transition-all" style={{ borderBottom: "0.5px solid rgba(167, 141, 171, 0.2)" }}>
+              <div key={entry.id} className="py-6 transition-all" style={{ borderBottom: "1px solid rgba(101, 74, 112, 0.35)" }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 cursor-pointer" onClick={() => router.push(`/dreams/${entry.id}/edit`)}>
                     <div className="flex items-center gap-3 mb-3 flex-wrap">

@@ -221,7 +221,7 @@ export default function ReferralPage() {
             const earned = completedCount >= r.threshold;
             const isTheme = r.type.startsWith("theme_");
             return (
-              <div key={r.type} className="flex items-start justify-between gap-6 py-6 border-b transition-all" style={{ borderColor: "rgba(167, 141, 171, 0.2)", opacity: earned ? 1 : 0.55 }}>
+              <div key={r.type} className="flex items-start justify-between gap-6 py-6 border-b transition-all" style={{ borderBottomWidth: "1px", borderColor: "rgba(101, 74, 112, 0.35)", opacity: earned ? 1 : 0.55 }}>
                 <div className="flex-1">
                   <p className="text-xs uppercase mb-2.5" style={{ color: "var(--color-mauve)", fontWeight: 500, letterSpacing: "0.2em" }}>
                     {pl ? `${r.threshold} zaproszeń` : `${r.threshold} invitations`}
