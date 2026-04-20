@@ -20,8 +20,8 @@ const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
   "Dream Reading": { name: "Odczyt snu", desc: "Pogłębiona interpretacja snu, która nie traktuje go w izolacji. Łączy treść snu z Twoimi ostatnimi wpisami z dziennika, powtarzającymi się wzorcami emocjonalnymi i fazą, w której aktualnie jesteś. Analiza obejmuje symbolikę jungowską, pracę z cieniem, połączenie z fazą księżyca i jedno refleksyjne pytanie na koniec." },
   "Dream Integration Workbook": { name: "Zeszyt integracji snów", desc: "Interaktywna podróż przez powtarzające się symbole snów. Zrozum co Twoje sny próbują Ci powiedzieć poprzez uczucia, symbolikę i osobiste znaczenie." },
   "Cycle Alignment Workbook": { name: "Zeszyt harmonii cyklu", desc: "Prowadzony proces przez wszystkie cztery fazy cyklu. Odkryj czego potrzebujesz w każdej fazie, gdzie forsуjesz zamiast podążać i jak zsynchronizować się ze swoim ciałem." },
-  "Your Monthly Insight": { name: "Twój miesięczny wgląd", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
-  "Pattern Recognition Report": { name: "Raport rozpoznawania wzorców", desc: "Jednorazowa głęboka analiza ujawniająca Twoje powtarzające się wzorce emocjonalne, cykle behawioralne i martwe punkty na podstawie dziennika, snów i danych cyklu." },
+  "Monthly Reading": { name: "Odczyt miesięczny", desc: "Głęboki osobisty raport analizujący wzorce z dziennika, symbole snów, dane cyklu i fazy księżyca. To nie jest raport. To jest czytanie Ciebie." },
+  "Pattern Reading": { name: "Odczyt wzorców", desc: "Jednorazowa głęboka analiza ujawniająca Twoje powtarzające się wzorce emocjonalne, cykle behawioralne i martwe punkty na podstawie dziennika, snów i danych cyklu. Dostępny po 14 wpisach, żeby analiza miała na czym się oprzeć." },
   "Weekly Insight": { name: "Tygodniowy wgląd", desc: "Osobisty odczyt AI z Twojego tygodnia. Na podstawie dziennika, snów i pracy z cieniem z ostatnich 7 dni. Nie podsumowanie. Czytanie." },
   "Moon Workbook": { name: "Zeszyt Księżyca", desc: "Jak reagujesz kiedy nikt nie patrzy. Czego naprawdę potrzebujesz żeby czuć się bezpiecznie. Co robisz z emocjami kiedy nie masz czasu ich przetwarzać. Cztery etapy prowadzonej pracy opartej na pozycji Twojego natalnego Księżyca. Noctua wraca do Twoich odpowiedzi, widzi co się zmienia i zadaje pytania których wcześniej nie byłaś gotowa usłyszeć. Jeden zakup. Praca bez końca." },
   "Saturn Workbook": { name: "Zeszyt Saturna", desc: "Gdzie stawiasz sobie wymagania których nikt nie postawił. Jakie struktury budujesz ze strachu a jakie z wyboru. Co by się stało gdybyś przestała dźwigać. Cztery etapy konfrontacji opartej na pozycji Twojego natalnego Saturna. Noctua prowadzi Cię przez to co trzymasz za mocno i pyta dlaczego. Jeden zakup. Co 30 dni nowy cykl. Pytania rosną razem z Tobą." },
@@ -343,11 +343,11 @@ export default function ProductPage() {
               {language === "pl" ? "Otwórz" : "Open"}
             </button>
           ) : product.name === "Pattern Reading" && !isAdmin && entryCount < 14 ? (
-            <div className="w-full py-4 rounded-xl text-center space-y-1" style={{ background: "var(--color-blush)", border: "1px solid var(--color-dusty-rose)" }}>
-              <p className="text-sm" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+            <div className="w-full py-6 rounded-xl text-center space-y-2" style={{ background: "var(--color-blush)", border: "1.5px solid var(--color-dusty-rose)" }}>
+              <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "0.02em" }}>
                 {language === "pl" ? `${entryCount} / 14 wpisów` : `${entryCount} / 14 entries`}
               </p>
-              <p className="text-xs" style={{ color: "var(--color-mauve)", fontStyle: "italic" }}>
+              <p className="px-4" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", fontStyle: "italic", fontWeight: 500, opacity: 0.85 }}>
                 {language === "pl" ? "Odblokuje się po zebraniu wystarczającej ilości danych" : "Unlocks once you have enough data to read"}
               </p>
             </div>
