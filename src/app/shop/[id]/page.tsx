@@ -135,16 +135,27 @@ export default function ProductPage() {
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPercent: number } | null>(null);
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
-
+  const [entryCount, setEntryCount] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     const load = async () => {
       const supabase = createClient();
       const { data: prod } = await supabase.from("shop_products").select("*").eq("id", id).single();
       if (!prod) { router.push("/shop"); return; }
       setProduct(prod);
-
       const { data: purch } = await supabase.from("user_purchases").select("product_id").eq("product_id", id);
       setOwned((purch || []).length > 0);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+        setIsAdmin(profile?.is_admin || false);
+        const [{ count: jCount }, { count: dCount }, { count: sCount }] = await Promise.all([
+          supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+          supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+          supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+        ]);
+        setEntryCount((jCount || 0) + (dCount || 0) + (sCount || 0));
+      }
       setLoading(false);
     };
     load();
@@ -331,6 +342,15 @@ export default function ProductPage() {
             >
               {language === "pl" ? "Otwórz" : "Open"}
             </button>
+          ) : product.name === "Pattern Reading" && !isAdmin && entryCount < 14 ? (
+            <div className="w-full py-4 rounded-xl text-center space-y-1" style={{ background: "var(--color-blush)", border: "1px solid var(--color-dusty-rose)" }}>
+              <p className="text-sm" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+                {language === "pl" ? `${entryCount} / 14 wpisów` : `${entryCount} / 14 entries`}
+              </p>
+              <p className="text-xs" style={{ color: "var(--color-mauve)", fontStyle: "italic" }}>
+                {language === "pl" ? "Odblokuje się po zebraniu wystarczającej ilości danych" : "Unlocks once you have enough data to read"}
+              </p>
+            </div>
           ) : (
             <button onClick={handlePurchase} disabled={buying}
               className="w-full py-3 rounded-xl text-sm tracking-wide transition-all disabled:opacity-50"
