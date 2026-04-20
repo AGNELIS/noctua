@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { gatherWorkbookContext } from "@/lib/workbook-context";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -89,20 +90,8 @@ export async function GET(req: NextRequest) {
   const dreamSummary = (dreams || []).map(d => `Dream: ${d.title || "Untitled"}. Emotions: ${(d.emotional_tone || []).join(", ")}. Symbols: ${(d.symbols || []).join(", ")}`).join("\n");
   const shadowSummary = (shadowEntries || []).map(s => `Prompt: ${s.prompt}. Response: ${s.response.slice(0, 100)}. Emotions: ${(s.emotions || []).join(", ")}`).join("\n");
 
-  // Cross-referencing: workbook insights + phase
-  const { data: workbookData } = await supabase
-    .from("workbook_progress")
-    .select("workbook_type, responses, completed_at")
-    .eq("user_id", user.id)
-    .order("started_at", { ascending: false })
-    .limit(5);
-
-  const workbookInsights = (workbookData || []).map(w => {
-    const responses = w.responses || [];
-    const lastResponse = responses[responses.length - 1];
-    if (lastResponse?.ai_reaction) return `${w.workbook_type}: "${lastResponse.ai_reaction.substring(0, 150)}"`;
-    return null;
-  }).filter(Boolean).join(" | ");
+  // Workbook context: self-work + planetary workbooks (via shared helper)
+  const workbookInsights = await gatherWorkbookContext(user.id, supabase);
 
   const { data: patternData } = await supabase
     .from("user_patterns")
@@ -152,8 +141,6 @@ ${shadowSummary || "None"}
 ${workbookInsights ? `\nRecent workbook insights:\n${workbookInsights}` : ""}
 Phase: ${phase} (${totalEntries || 0} total entries). ${phase === "discovery" ? "Early in self-work. Be gentle but clear." : phase === "deepening" ? "Seeing patterns. Be direct. Name what repeats across journal, dreams and workbooks." : "Experienced. Do not summarize. Challenge. Connect dots she has not connected yet."}
 ${workbookInsights ? "If patterns from workbooks connect to this week's journal or dreams, name the connection naturally." : ""}
-${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
-${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
 ${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
 
 CRITICAL FORMATTING RULES:
