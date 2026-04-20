@@ -320,8 +320,9 @@ export default function ProductPage() {
                   "Shadow Work Workbook": "/shadow-work/workbook",
                   "Dream Integration Workbook": "/dreams/workbook",
                   "Cycle Alignment Workbook": "/cycle/workbook",
-                  "Monthly Reading": "/reports",
-                  "Pattern Reading": "/reports",
+                  "Weekly Insight": "/reports?tab=weekly",
+                  "Monthly Reading": "/reports?tab=monthly",
+                  "Pattern Reading": "/reports?tab=pattern",
                   "Dream Reading": "/dreams",
                   "Moon Workbook": "/workbooks/moon",
                   "Saturn Workbook": "/workbooks/saturn",
@@ -331,7 +332,10 @@ export default function ProductPage() {
                   "Lunar Nodes Workbook": "/workbooks/lunar-nodes",
                 };
                 const route = routes[product.name];
-                if (route) router.push(route + "?from=shop");
+                if (route) {
+                  const separator = route.includes("?") ? "&" : "?";
+                  router.push(route + separator + "from=shop");
+                }
               }}
               className="w-full py-3 rounded-xl text-sm tracking-wide transition-all"
               style={{

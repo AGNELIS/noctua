@@ -20,7 +20,10 @@ type SavedReport = {
   report_data: ReportData | null;
   reflection_response: string | null;
   created_at: string;
+  reading_type: "weekly" | "monthly" | "pattern";
 };
+
+type TabType = "weekly" | "monthly" | "pattern";
 
 function getReportLabel(reportMonth: string, pl: boolean): { month: string; type: string } {
   const parts = reportMonth.split("-");
@@ -48,10 +51,18 @@ export default function ReportsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPremium, setIsPremium] = useState(false);
   const [hasCredit, setHasCredit] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabType>("monthly");
 
   useEffect(() => {
     loadReports();
-    if (typeof window !== "undefined" && window.location.search.includes("from=shop")) setFromShop(true);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("from") === "shop") setFromShop(true);
+      const tabParam = params.get("tab");
+      if (tabParam === "weekly" || tabParam === "monthly" || tabParam === "pattern") {
+        setActiveTab(tabParam);
+      }
+    }
   }, []);
 
   const loadReports = async () => {
@@ -62,20 +73,51 @@ export default function ReportsPage() {
     const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
     setIsPremium(profile?.is_premium || profile?.is_admin || false);
 
-    const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Monthly Reading").single();
-    if (reportProduct) {
-      const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", reportProduct.id).is("used_at", null).limit(1);
-      setHasCredit((credit || []).length > 0);
+    // Check for any unused credit across the 3 reading products
+    const productNames = ["Monthly Reading", "Weekly Insight", "Pattern Reading"];
+    const { data: products } = await supabase.from("shop_products").select("id, name").in("name", productNames);
+    const productIds = (products || []).map(p => p.id);
+    if (productIds.length > 0) {
+      const { data: credits } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).in("product_id", productIds).is("used_at", null).limit(1);
+      setHasCredit((credits || []).length > 0);
     }
 
-    const { data } = await supabase
+    // Load monthly + pattern reports from smart_reports
+    const { data: smartRows } = await supabase
       .from("smart_reports")
       .select("*")
       .eq("user_id", user.id)
       .eq("language", language)
       .order("created_at", { ascending: false });
 
-    setReports((data as SavedReport[]) || []);
+    const monthlyReports: SavedReport[] = (smartRows || []).map((r: SavedReport & { reading_type?: string }) => ({
+      ...r,
+      reading_type: (r.reading_type === "pattern" ? "pattern" : "monthly") as TabType,
+    }));
+
+    // Load weekly insights from weekly_insights
+    const { data: weeklyRows } = await supabase
+      .from("weekly_insights")
+      .select("id, insight_text, week_start, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    const weeklyReports: SavedReport[] = (weeklyRows || []).map((w: { id: string; insight_text: string; week_start: string; created_at: string }) => ({
+      id: w.id,
+      report_month: w.week_start,
+      report_text: w.insight_text,
+      report_data: null,
+      reflection_response: null,
+      created_at: w.created_at,
+      reading_type: "weekly" as TabType,
+    }));
+
+    // Merge and sort by created_at
+    const allReports = [...monthlyReports, ...weeklyReports].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    setReports(allReports);
     setLoading(false);
   };
 
@@ -83,10 +125,19 @@ export default function ReportsPage() {
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch("/api/generate-report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ language }),
+      let endpoint = "/api/generate-report";
+      let method = "POST";
+      if (activeTab === "weekly") {
+        endpoint = "/api/weekly-insight";
+        method = "GET";
+      } else if (activeTab === "pattern") {
+        endpoint = "/api/generate-report";
+        method = "POST";
+      }
+      const res = await fetch(endpoint, {
+        method,
+        headers: method === "POST" ? { "Content-Type": "application/json" } : undefined,
+        body: method === "POST" ? JSON.stringify({ language, reading_type: activeTab }) : undefined,
       });
       const data = await res.json();
       if (res.ok) {
@@ -153,6 +204,27 @@ export default function ReportsPage() {
           style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>
           {pl ? "Odczyty" : "Readings"}
         </h1>
+        <div className="flex justify-center gap-6 mt-6">
+          {([
+            { key: "weekly", labelPl: "Tygodniowy", labelEn: "Weekly", color: "var(--color-gold)" },
+            { key: "monthly", labelPl: "Miesięczny", labelEn: "Monthly", color: "var(--color-plum)" },
+            { key: "pattern", labelPl: "Wzorce", labelEn: "Patterns", color: "var(--color-mauve)" },
+          ] as const).map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className="text-xs uppercase tracking-[0.2em] pb-1 transition-all"
+              style={{
+                color: activeTab === tab.key ? tab.color : "var(--color-mauve)",
+                fontWeight: activeTab === tab.key ? 700 : 400,
+                borderBottom: activeTab === tab.key ? `1.5px solid ${tab.color}` : "1.5px solid transparent",
+                opacity: activeTab === tab.key ? 1 : 0.6,
+              }}
+            >
+              {pl ? tab.labelPl : tab.labelEn}
+            </button>
+          ))}
+        </div>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-16">
@@ -203,8 +275,9 @@ export default function ReportsPage() {
           </p>
         )}
 
+        {(() => { const filteredReports = reports.filter(r => r.reading_type === activeTab); return (<>
         {/* Empty state */}
-        {!loading && reports.length === 0 && (
+        {!loading && filteredReports.length === 0 && (
           <div className="text-center pt-12 space-y-4">
             <div className="text-4xl" style={{ color: "var(--color-plum)", opacity: 0.3 }}>◈</div>
             <p className="text-base" style={{ color: "var(--color-dark)" }}>
@@ -214,9 +287,9 @@ export default function ReportsPage() {
         )}
 
         {/* Reports list */}
-        {!loading && reports.length > 0 && (
+        {!loading && filteredReports.length > 0 && (
           <div className="space-y-3">
-            {reports.map((r) => {
+            {filteredReports.map((r) => {
               const label = getReportLabel(r.report_month, pl);
               const isExpanded = expandedId === r.id;
               const createdDate = new Date(r.created_at).toLocaleDateString(pl ? "pl-PL" : "en-GB", {
@@ -384,6 +457,7 @@ export default function ReportsPage() {
             })}
           </div>
         )}
+        </>); })()}
       </main>
     </div>
   );
