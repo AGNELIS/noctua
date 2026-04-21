@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
+import { NOCTUA_VOICE_SYSTEM_PROMPT } from "@/lib/noctua-voice";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -157,6 +158,7 @@ Under 300 words. No markdown. No asterisks. No bold. No bullet points. No dashes
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 800,
+        system: NOCTUA_VOICE_SYSTEM_PROMPT,
         messages: [{ role: "user", content: prompt }],
       }),
     });
