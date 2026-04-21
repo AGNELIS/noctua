@@ -262,8 +262,12 @@ export default function ReportsPage() {
           ) : (
             <p className="text-xs mt-3" style={{ color: "var(--color-mauve)", opacity: 0.6 }}>
               {pl
-                ? "Minimum 8 wpisów od ostatniego odczytu. Pełny odczyt od 15 wpisów."
-                : "Minimum 8 entries since your last reading. Full reading from 15 entries."}
+                ? activeTab === "weekly" 
+                  ? "Refleksja odblokowuje się po 5 wpisach w sumie." 
+                  : "Pełen odczyt i Odczyt wzorców odblokowują się po 15 wpisach w sumie."
+                : activeTab === "weekly"
+                  ? "Reflection unlocks after 5 entries in total."
+                  : "Full Reading and Pattern Reading unlock after 15 entries in total."}
             </p>
           )}
         </div>
