@@ -359,9 +359,9 @@ export default function OwlPanelPage() {
           )}
         </div>
 
-        {/* Weekly Insight */}
+        {/* First Reflection */}
         <div style={sectionStyle}>
-          <p style={labelStyle}>Latest Weekly Insight</p>
+          <p style={labelStyle}>Latest First Reflection</p>
           {weeklyInsight ? (
             <p style={{ ...valueStyle, lineHeight: "1.6", marginTop: "8px", textAlign: "justify" }}>{weeklyInsight}</p>
           ) : (

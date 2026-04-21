@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
   if (!isAdmin && !isPremium) {
     // Check if user has a purchased report credit
-    const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Monthly Reading").single();
+    const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Full Reading").single();
     if (reportProduct) {
       const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", reportProduct.id).is("used_at", null).limit(1);
       if (!credit || credit.length === 0) {
@@ -230,7 +230,7 @@ Keep the response under 600 words. Do NOT use any markdown formatting. No asteri
 
     // Use report credit if not premium
     if (!isAdmin && !isPremium) {
-      const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Monthly Reading").single();
+      const { data: reportProduct } = await supabase.from("shop_products").select("id").eq("name", "Full Reading").single();
       if (reportProduct) {
         const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", reportProduct.id).is("used_at", null).limit(1);
         if (credit && credit.length > 0) {
