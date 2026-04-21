@@ -65,14 +65,14 @@ export async function GET(req: NextRequest) {
 
   const { data: dreams } = await supabase
     .from("dream_entries")
-    .select("title, content, emotional_tone, symbols")
+    .select("title, content, emotional_tone, symbols, dream_date, created_at")
     .eq("user_id", user.id)
     .gte("created_at", weekAgo)
     .order("created_at", { ascending: false });
 
   const { data: shadowEntries } = await supabase
     .from("shadow_work_entries")
-    .select("prompt, response, emotions")
+    .select("prompt, response, emotions, created_at")
     .eq("user_id", user.id)
     .gte("created_at", weekAgo)
     .order("created_at", { ascending: false });
@@ -87,9 +87,9 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const journalSummary = (journals || []).map(j => `[${j.entry_date}] Mood: ${(j.mood || []).join(", ")}. ${j.content.slice(0, 120)}`).join("\n");
-  const dreamSummary = (dreams || []).map(d => `Dream: ${d.title || "Untitled"}. Emotions: ${(d.emotional_tone || []).join(", ")}. Symbols: ${(d.symbols || []).join(", ")}`).join("\n");
-  const shadowSummary = (shadowEntries || []).map(s => `Prompt: ${s.prompt}. Response: ${s.response.slice(0, 100)}. Emotions: ${(s.emotions || []).join(", ")}`).join("\n");
+  const journalSummary = (journals || []).map(j => `[${j.entry_date}] Mood: ${(j.mood || []).join(", ")}. Wrote: "${(j.content || "").slice(0, 800)}"`).join("\n\n");
+  const dreamSummary = (dreams || []).map(d => `[${d.dream_date || d.created_at?.slice(0, 10) || "unknown date"}] Dream "${d.title || "Untitled"}". Emotions: ${(d.emotional_tone || []).join(", ")}. Symbols: ${(d.symbols || []).join(", ")}. Content: "${(d.content || "").slice(0, 800)}"`).join("\n\n");
+  const shadowSummary = (shadowEntries || []).map(s => `[${s.created_at?.slice(0, 10) || "unknown date"}] Prompt: "${s.prompt}". She wrote: "${(s.response || "").slice(0, 800)}". Emotions: ${(s.emotions || []).join(", ")}`).join("\n\n");
 
   // Workbook context: self-work + planetary workbooks (via shared helper)
   const workbookInsights = await gatherWorkbookContext(user.id, supabase);
@@ -118,34 +118,41 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const prompt = `You are the insight engine for "Noctua" by AGNÉLIS. You write the way a wise, direct woman speaks to another woman. No spiritual bypassing. No generic wellness. Warm but honest. You see what others miss.
+  const prompt = `This is a weekly reading. You are looking at the specific material she put down this week and reflecting it back to her.
 
-Write entirely in ${lang === "pl" ? "Polish" : "English"}.
+Write in ${lang === "pl" ? "Polish" : "English"}.
 
-Generate a weekly insight for this person. This is not a summary. This is a reading. You are telling them what you see.
+What she wrote this week:
 
-Structure (no headings, just flowing text, 3 to 5 paragraphs):
-Paragraph 1: What this week was really about (the theme underneath the surface)
-Paragraph 2: The pattern you noticed (something recurring, something they might not see)
-Paragraph 3: The tension (what they are doing vs what they actually need)
-Paragraph 4 (optional): One observation that might be uncomfortable but true
-Last line: One sentence. Direct. Something that stays.
+Journal entries:
+${journalSummary || "None this week."}
 
-Journal entries this week:
-${journalSummary || "None"}
+Dreams:
+${dreamSummary || "None this week."}
 
-Dreams this week:
-${dreamSummary || "None"}
+Shadow work:
+${shadowSummary || "None this week."}
 
-Shadow work this week:
-${shadowSummary || "None"}
-${workbookInsights ? `\nRecent workbook insights:\n${workbookInsights}` : ""}
-Phase: ${phase} (${totalEntries || 0} total entries). ${phase === "discovery" ? "Early in self-work. Be gentle but clear." : phase === "deepening" ? "Seeing patterns. Be direct. Name what repeats across journal, dreams and workbooks." : "Experienced. Do not summarize. Challenge. Connect dots she has not connected yet."}
-${workbookInsights ? "If patterns from workbooks connect to this week's journal or dreams, name the connection naturally." : ""}
-${patternContext ? `\nKnown patterns Noctua has identified over time:\n${patternContext}\nIf these patterns are visible in this week's data, reference them. Show her that Noctua sees the thread across weeks. Do not list patterns. Weave them in.` : ""}
+${workbookInsights ? `\n${workbookInsights}\n` : ""}
+${patternContext ? `\nPatterns Noctua has noticed earlier:\n${patternContext}\nIf any of these show up in this week's material, reference them concretely, using what she wrote this week.\n` : ""}
 
-CRITICAL FORMATTING RULES:
-Under 300 words. No markdown. No asterisks. No bold. No bullet points. No dashes or em dashes. Use commas and full stops only. Never use "Dear" or "Droga" or any greeting. No section headings.`;
+Total entries across her time in the app: ${totalEntries || 0}.
+
+How to write this reading:
+
+Quote or paraphrase her own specific words. When something matters, name when she wrote it. "On [date] you wrote X" is stronger than "you mentioned a feeling." Use the dates that appear in square brackets in the data above.
+
+Name two or three things that appeared together. Not interpretations. Observations of what co-occurred. "On the same day you wrote X, you also dreamed Y."
+
+When you connect to patterns Noctua noticed before, anchor it in this week's actual material, not in abstractions.
+
+Do not philosophise. Do not write aphorisms. Do not say things like "sometimes what is absent is most meaningful" or "silence speaks louder than words." No poetry. No wellness-speak.
+
+Do not diagnose. Do not tell her what her pattern means. Name what happened, using her own language. She draws conclusions herself.
+
+Three or four short flowing paragraphs. Under 350 words. No headings, no lists, no markdown, no em dashes.
+
+The last line is short and concrete. It names something specific from this week that stays with her. Not a command, not a call to action, not an aphorism. A single observation about what she actually wrote or dreamed or worked on this week.`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
