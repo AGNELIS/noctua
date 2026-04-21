@@ -166,7 +166,7 @@ const translations = {
   auth_set_password: { en: "Set new password", pl: "Ustaw nowe hasło" },
   auth_setting_password: { en: "Saving...", pl: "Zapisywanie..." },
 
-  weekly_insight_title: { en: "First Reflection", pl: "Pierwsza refleksja" },
+  weekly_insight_title: { en: "Reflection", pl: "Refleksja" },
   weekly_insight_empty: { en: "Journal and record dreams. Your insight appears on Monday.", pl: "Pisz dziennik i zapisuj sny. Twój wgląd pojawi się w poniedziałek." },
   weekly_insight_more: { en: "Read more", pl: "Czytaj dalej" },
   premium_hero_line1: { en: "I see your patterns.", pl: "Widzę twoje wzorce." },

@@ -35,7 +35,7 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Cycle Alignment Workbook": "Zeszyt harmonii cyklu",
   "Full Reading": "Pełen odczyt",
   "Pattern Reading": "Odczyt wzorców",
-  "First Reflection": "Pierwsza refleksja",
+  "Reflection": "Refleksja",
   "Moon Workbook": "Zeszyt Księżyca",
   "Saturn Workbook": "Zeszyt Saturna",
   "Pluto Workbook": "Zeszyt Plutona",

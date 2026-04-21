@@ -50,14 +50,25 @@ export async function POST(req: NextRequest) {
     }
   }
   const reportType = totalSinceLastReading >= 15 ? "full" : "mid";
-  if (!isAdmin && totalSinceLastReading < 8) {
+
+  // Gate: 15 entries total across all sources (journal + dreams + shadow_work)
+  // Cycle entries do not count toward the gate because Full Reading is about depth of written work
+  const [{ count: totalJ }, { count: totalD }, { count: totalS }] = await Promise.all([
+    supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+  ]);
+  const totalEntriesAllTime = (totalJ || 0) + (totalD || 0) + (totalS || 0);
+  const GATE = 15;
+
+  if (!isAdmin && totalEntriesAllTime < GATE) {
     return NextResponse.json({
       error: "not_enough_entries",
       message: lang === "pl"
-        ? `Potrzebujesz minimum 8 wpisów od ostatniego odczytu. Masz: ${totalSinceLastReading}.`
-        : `You need at least 8 entries since your last reading. You have: ${totalSinceLastReading}.`,
-      current: totalSinceLastReading,
-      required: 8,
+        ? `Pełen odczyt potrzebuje co najmniej ${GATE} wpisów w sumie, żeby Noctua miała z czego czytać. Masz teraz ${totalEntriesAllTime}. Refleksja jest dostępna już po 5 wpisach.`
+        : `A Full Reading needs at least ${GATE} entries in total, so Noctua has something to read from. You have ${totalEntriesAllTime}. Reflection is available after 5 entries.`,
+      current: totalEntriesAllTime,
+      required: GATE,
     }, { status: 400 });
   }
 
@@ -105,6 +116,18 @@ export async function POST(req: NextRequest) {
     .gte("entry_date", startOfMonth.slice(0, 10))
     .order("entry_date", { ascending: false });
 const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0) + (cycleData?.length || 0);
+
+  // Load recent Reflections to provide continuity for the Full Reading
+  const { data: recentReflections } = await supabase
+    .from("weekly_insights")
+    .select("insight_text, week_start, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  const reflectionContext = (recentReflections && recentReflections.length > 0)
+    ? recentReflections.map(r => `[${r.week_start || r.created_at?.slice(0, 10)}] ${(r.insight_text || "").slice(0, 600)}`).join("\n\n")
+    : "";
 
   // Build context
   const journalSummary = journalData?.map(e => `[${new Date(e.created_at).toLocaleDateString()}] Mood: ${e.mood || "none"}. ${(e.content || "").slice(0, 200)}`).join("\n") || "No journal entries.";
@@ -168,8 +191,12 @@ This is the heart of the reading. Name the tension between what she feels and wh
 ${sectionHeadings.timing}
 Where is she in her cycle? How does the lunar energy connect? Describe the rhythm, not what she should do about it.
 
-DATA:
+${reflectionContext ? `CONTINUITY FROM HER RECENT REFLECTIONS:
+These are the last short readings Noctua wrote for her. Use them as context. If patterns from them are returning this month, name that. If something has shifted since those readings, name that. Do not repeat them verbatim, but treat them as the voice she has already heard from Noctua. Your Full Reading is a deeper, slower look at what those Reflections were pointing toward.
 
+${reflectionContext}
+
+` : ""}DATA:
 Journal entries (${journalData?.length || 0}):
 ${journalSummary}
 

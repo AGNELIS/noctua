@@ -213,7 +213,7 @@ The last line is short and concrete. It names something specific from this week 
 
     // Use credit if not premium
     if (!profile?.is_premium) {
-      const { data: product } = await supabase.from("shop_products").select("id").eq("name", "First Reflection").single();
+      const { data: product } = await supabase.from("shop_products").select("id").eq("name", "Reflection").single();
       if (product) {
         const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", product.id).is("used_at", null).limit(1);
         if (credit && credit.length > 0) {

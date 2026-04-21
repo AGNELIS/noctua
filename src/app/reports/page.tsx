@@ -74,7 +74,7 @@ export default function ReportsPage() {
     setIsPremium(profile?.is_premium || profile?.is_admin || false);
 
     // Check for any unused credit across the 3 reading products
-    const productNames = ["Full Reading", "First Reflection", "Pattern Reading"];
+    const productNames = ["Full Reading", "Reflection", "Pattern Reading"];
     const { data: products } = await supabase.from("shop_products").select("id, name").in("name", productNames);
     const productIds = (products || []).map(p => p.id);
     if (productIds.length > 0) {
@@ -206,7 +206,7 @@ export default function ReportsPage() {
         </h1>
         <div className="flex justify-center gap-6 mt-6">
           {([
-            { key: "weekly", labelPl: "Pierwsza refleksja", labelEn: "First Reflection", color: "var(--color-gold)" },
+            { key: "weekly", labelPl: "Refleksja", labelEn: "Reflection", color: "var(--color-gold)" },
             { key: "monthly", labelPl: "Pełen odczyt", labelEn: "Full Reading", color: "var(--color-plum)" },
             { key: "pattern", labelPl: "Wzorce", labelEn: "Patterns", color: "var(--color-mauve)" },
           ] as const).map(tab => (
