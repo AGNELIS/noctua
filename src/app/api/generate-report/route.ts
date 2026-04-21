@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { gatherWorkbookContext } from "@/lib/workbook-context";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  const { language: userLang } = await req.json();
+  const { language: userLang, reading_type: readingTypeRaw } = await req.json();
   const lang = userLang === "pl" ? "pl" : "en";
+  const readingType = readingTypeRaw === "pattern" ? "pattern" : "monthly";
 
   const now = new Date();
   const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -117,6 +119,22 @@ export async function POST(req: NextRequest) {
     .order("entry_date", { ascending: false });
 const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (shadowData?.length || 0) + (cycleData?.length || 0);
 
+  // Workbook context: self-work + planetary workbooks (via shared helper)
+  const workbookInsights = await gatherWorkbookContext(user.id, supabase);
+
+  // Historical patterns Noctua has tracked over time
+  const { data: patternData } = await supabase
+    .from("user_patterns")
+    .select("pattern_type, description, keywords, frequency")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .order("frequency", { ascending: false })
+    .limit(6);
+
+  const patternContext = (patternData || []).length > 0
+    ? (patternData || []).map(p => `[${p.pattern_type}, seen ${p.frequency}x] ${p.description}`).join(" | ")
+    : "";
+
   // Load recent Reflections to provide continuity for the Full Reading
   const { data: recentReflections } = await supabase
     .from("weekly_insights")
@@ -127,6 +145,27 @@ const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (sh
 
   const reflectionContext = (recentReflections && recentReflections.length > 0)
     ? recentReflections.map(r => `[${r.week_start || r.created_at?.slice(0, 10)}] ${(r.insight_text || "").slice(0, 600)}`).join("\n\n")
+    : "";
+
+  // Load previous Pattern Readings with user's reflection responses
+  // Only relevant when generating a Pattern Reading (continuity between readings)
+  const { data: previousPatterns } = await supabase
+    .from("smart_reports")
+    .select("report_text, reflection_response, created_at")
+    .eq("user_id", user.id)
+    .eq("reading_type", "pattern")
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  const patternReadingContext = (previousPatterns && previousPatterns.length > 0)
+    ? previousPatterns.map(p => {
+        const dateLabel = p.created_at?.slice(0, 10) || "earlier";
+        const reportExcerpt = (p.report_text || "").slice(0, 700);
+        const response = p.reflection_response
+          ? `\nHer reflection afterwards: "${p.reflection_response.slice(0, 400)}"`
+          : "";
+        return `[${dateLabel}] ${reportExcerpt}${response}`;
+      }).join("\n\n")
     : "";
 
   // Build context
@@ -165,7 +204,7 @@ const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (sh
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "API key not configured" }, { status: 500 });
 
-  const prompt = `You are a personal insight analyst for the app "Noctua" by AGNÉLIS. You read patterns, not lives. You write the way a wise, perceptive woman would observe another woman's inner world. No spiritual bypassing. No generic wellness language. Warm but honest. You see what others miss.
+  const fullPrompt = `You are a personal insight analyst for the app "Noctua" by AGNÉLIS. You read patterns, not lives. You write the way a wise, perceptive woman would observe another woman's inner world. No spiritual bypassing. No generic wellness language. Warm but honest. You see what others miss.
 
 Write entirely in ${lang === "pl" ? "Polish" : "English"}.
 
@@ -216,6 +255,52 @@ Top dream symbols: ${topSymbols.map(([k, v]) => `${k}(${v})`).join(", ") || "non
 CRITICAL FORMATTING RULES:
 Keep the response under 600 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in Title Case on their own line. Never use the word "Droga" or "Dear" or any greeting.`;
 
+  const patternPrompt = `This is a Pattern Reading. A different kind of reading from the Full Reading. You are not describing her month. You are naming what repeats in her material. Forensic, concrete, specific.
+
+Write in ${lang === "pl" ? "Polish" : "English"}.
+
+Your task: identify the three strongest patterns that recur across her journal entries, dreams, shadow work and cycle entries. For each pattern, give concrete evidence with dates, and show what co-occurs with it.
+
+Structure:
+
+Pattern One.
+Name the most dominant pattern that repeats. Be concrete. Quote or paraphrase her specific words. Name dates. Example: "Three times this month you wrote 'I do not know' in your journal. On 3 April, 11 April, and 19 April. On 11 April you also recorded a dream where you were looking through a small window."
+
+Pattern Two.
+Name the second pattern. Same rules. Specific, dated, quoted.
+
+Pattern Three.
+Name the third pattern. Same rules.
+
+Then in one short paragraph, name one thing these three patterns have in common. What connects them. Not as interpretation. As observation of what co-occurs. Example: "All three appear more strongly in the first half of your cycle than in the second."
+
+End with exactly this question, on its own line, nothing else:
+${lang === "pl" ? "Co porusza się w Tobie po przeczytaniu tego?" : "What moves in you after reading this?"}
+
+${reflectionContext ? `Recent Reflections from Noctua for context:\n${reflectionContext}\n\n` : ""}${patternReadingContext ? `Her previous Pattern Readings and her responses to them:\n${patternReadingContext}\n\nIf patterns you see now were also named in previous Pattern Readings, say so concretely. If her reflection responses reveal something about how she relates to these patterns, use that knowledge without quoting her back to herself.\n\n` : ""}${workbookInsights ? `${workbookInsights}\n\n` : ""}${patternContext ? `Patterns Noctua has tracked historically: ${patternContext}\n\n` : ""}
+
+DATA:
+Journal entries (${journalData?.length || 0}):
+${journalSummary}
+
+Dreams (${dreamData?.length || 0}):
+${dreamSummary}
+
+Shadow work (${shadowData?.length || 0}):
+${shadowSummary}
+
+Cycle (${cycleData?.length || 0}):
+${cycleSummary}
+
+Top moods: ${topMoods.map(([k, v]) => `${k}(${v})`).join(", ") || "none"}
+Top shadow emotions: ${topEmotions.map(([k, v]) => `${k}(${v})`).join(", ") || "none"}
+Top dream symbols: ${topSymbols.map(([k, v]) => `${k}(${v})`).join(", ") || "none"}
+
+CRITICAL FORMATTING RULES:
+Keep the response under 500 words. No markdown. No asterisks. No bullet points. Never use dashes or em dashes. Use commas and full stops only. Section labels "Pattern One.", "Pattern Two.", "Pattern Three." on their own lines. Never use "Dear" or "Droga" or any greeting. Do not add a closing paragraph. The question at the end is the final line.`;
+
+  const prompt = readingType === "pattern" ? patternPrompt : fullPrompt;
+
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -251,8 +336,9 @@ Keep the response under 600 words. Do NOT use any markdown formatting. No asteri
       user_id: user.id,
       report_month: `${monthKey}-${reportType}`,
       report_text: reportText,
-      report_data: reportData,
+      report_data: readingType === "pattern" ? null : reportData,
       language: lang,
+      reading_type: readingType,
     });
 
     // Use report credit if not premium
