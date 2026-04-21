@@ -77,11 +77,31 @@ export async function GET(req: NextRequest) {
     .gte("created_at", weekAgo)
     .order("created_at", { ascending: false });
 
+  // Check total entries across all sources (not just this week) against entry_gate
+  const [{ count: totalJ }, { count: totalD }, { count: totalS }] = await Promise.all([
+    supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+  ]);
+  const totalEntriesAllSources = (totalJ || 0) + (totalD || 0) + (totalS || 0);
+  const GATE = 5;
+
+  if (totalEntriesAllSources < GATE) {
+    return NextResponse.json({
+      error: lang === "pl"
+        ? `Potrzebujesz co najmniej ${GATE} wpisów, żeby Noctua mogła napisać Ci pierwszą refleksję. Masz teraz ${totalEntriesAllSources}.`
+        : `You need at least ${GATE} entries before Noctua can write your first reflection. You have ${totalEntriesAllSources}.`,
+      notEnoughEntries: true,
+      current: totalEntriesAllSources,
+      required: GATE,
+    }, { status: 400 });
+  }
+
   if ((!journals || journals.length === 0) && (!dreams || dreams.length === 0) && (!shadowEntries || shadowEntries.length === 0)) {
     return NextResponse.json({
       insight: lang === "pl"
-        ? "Za mało danych z tego tygodnia. Pisz dziennik, zapisuj sny, pracuj z cieniem. Wtedy będę miała co ci powiedzieć."
-        : "Not enough data from this week. Journal, record dreams, do shadow work. Then I will have something to tell you.",
+        ? "Masz już wpisy w aplikacji, ale żaden nie jest z tego tygodnia. Zrób jakiś wpis w tym tygodniu, to wtedy będę miała o czym z Tobą porozmawiać."
+        : "You have entries in the app, but none from this week. Add something this week and I will have material to reflect on.",
       cached: false,
       noData: true,
     });

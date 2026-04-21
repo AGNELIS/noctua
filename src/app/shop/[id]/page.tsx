@@ -12,6 +12,7 @@ type Product = {
   description: string;
   category: string;
   price_gbp: number;
+  entry_gate: number | null;
 };
 
 const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
@@ -346,10 +347,10 @@ export default function ProductPage() {
             >
               {language === "pl" ? "Otwórz" : "Open"}
             </button>
-          ) : product.name === "Pattern Reading" && !isAdmin && entryCount < 14 ? (
+          ) : product.entry_gate && !isAdmin && entryCount < product.entry_gate ? (
             <div className="w-full py-6 rounded-xl text-center space-y-2" style={{ background: "var(--color-blush)", border: "1.5px solid var(--color-dusty-rose)" }}>
               <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "0.02em" }}>
-                {language === "pl" ? `${entryCount} / 14 wpisów` : `${entryCount} / 14 entries`}
+                {language === "pl" ? `${entryCount} / ${product.entry_gate} wpisów` : `${entryCount} / ${product.entry_gate} entries`}
               </p>
               <p className="px-4" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", fontStyle: "italic", fontWeight: 500, opacity: 0.85 }}>
                 {language === "pl" ? "Odblokuje się po zebraniu wystarczającej ilości danych" : "Unlocks once you have enough data to read"}
