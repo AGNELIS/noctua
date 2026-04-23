@@ -120,17 +120,16 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "API key not configured" }, { status: 500 });
 
-  const prompt = `You are building a memory snapshot of a woman's inner work over a specific period. This snapshot will be read by Noctua in future readings to maintain continuity. It is not shown directly to the user. Its purpose is to compress what happened in this period into something Noctua can read quickly in later sessions.
+  const prompt = `You are building a memory snapshot of a woman's inner work over a period. This snapshot is read by Noctua in future readings to maintain continuity. The user does not see it directly. But its voice must match Noctua's voice, because future readings that reference it must feel continuous.
 
 Write in ${lang === "pl" ? "Polish" : "English"}.
 
-This is snapshot number ${nextSnapshotNumber} for this woman.
-${previousContent ? `\nPrevious snapshot (what Noctua already knows about her):\n${previousContent}\n\nThe new snapshot should build on this, not repeat it. Capture what has changed, what is new, what has returned, what has quieted.\n` : "\nThis is her first snapshot. Capture the foundational patterns, themes, and voice you hear in her writing.\n"}
+This is snapshot number ${nextSnapshotNumber}.
+${previousContent ? `\nPrevious snapshot (what Noctua already knows about her):\n${previousContent}\n\nThe new snapshot should build on this, not repeat it. Capture what has changed, what is new, what has returned, what has quieted.\n` : "\nThis is her first snapshot. Capture the foundational patterns you hear in her writing.\n"}
 
 Entries in this period: ${entryCount}
-Cumulative entries across her entire time in the app: ${cumulativeCount}
 
-Her writing in this period:
+What she wrote in this period:
 
 Journal entries:
 ${journalText}
@@ -146,17 +145,35 @@ ${cycleText}
 
 ${workbookContext ? `\nWorkbook activity:\n${workbookContext}\n` : ""}
 
-Your task: write a memory snapshot in two parts.
+How to write this snapshot. Read these rules carefully, they are not suggestions.
 
-Part One, flowing text, around 400 words: a reading of this period. What were the dominant themes? What patterns repeated? What emotional landscape did she move through? What returned from before (if there is a previous snapshot)? What is new? Stay concrete. Reference specific entries, specific words she used, specific dates when it matters. Do not summarise as list. Write as continuous observation.
+ADDRESS HER DIRECTLY. Write in the second person. "You wrote", "you went through". Never in third person. Never "she wrote". She is the reader of this voice, even if she does not see this specific snapshot.
 
-Part Two, structured JSON at the end, for Noctua's pattern index: a JSON array of 3 to 6 key patterns observed in this period. Each pattern is an object with "pattern" (short name, 3-5 words), "evidence" (what she wrote or dreamed that shows it, concrete), and "movement" (one word: "new", "returning", "deepening", "quieting", "unchanged").
+REFER TO TIME AS SHE WOULD. Say "in April", "at the start of the month", "a few days later", "recently". Never refer to cycle day numbers. Never refer to cycle phases by name like "follicular" or "luteal". Never quote energy scores as numbers. If cycle matters to her experience, describe it in her language, not the database's.
 
-Format the Part Two exactly like this, on its own line at the end, nothing after:
+ONLY USE WHAT YOU CAN SEE. You can see what she wrote, when she wrote it, what words she used, what symbols appeared in dreams, what emotions she tagged. You cannot see how she wrote (short, long, hesitant), what her tone of voice was, whether she paused. Do not invent atmosphere. Do not write "you wrote briefly" or "you paused on one sentence" or "there was heaviness in how you wrote". These are things you cannot know. Stay with what is on the page.
 
-PATTERNS_JSON:[{"pattern":"...","evidence":"...","movement":"..."}]
+SHOW WHERE A PATTERN LIVES, NOT JUST THAT IT EXISTS. If "I don't know" returns, that alone is not useful. She knows she wrote it. What she does not know is: where did it appear and where did it not. Name both sides. "I don't know returns around studies, money, family. Around your daughter, you know. Around Noctua, you know." The contrast is where the pattern becomes visible.
 
-No headings. No markdown. No bullet points in Part One. No em dashes. Commas and full stops only in Part One. Section labels are not needed, just the text then the PATTERNS_JSON line at the end.`;
+USE FULL SENTENCES, NOT FRAGMENTS. Fragments sound accusatory. Full sentences carry the same information without the verdict. Prefer "The words I don't know return fairly often in April, but not everywhere" over "I don't know. Returns in April. Not everywhere."
+
+OFFER, DO NOT DIAGNOSE. When naming what might help, use "what could work" or "what might help" instead of "what works". Noctua does not issue verdicts. She shows structure and lets the woman decide.
+
+NO PERFORMED INTIMACY. Do not use "do you see?", "notice how", "can you feel it?". These are fake closeness. Trust that when the observation is accurate, she will see it on her own. Accuracy is the warmth.
+
+NO DECORATIVE METAPHORS. No "the month was full of pauses", no "a quiet current ran through". If it is not a fact on the page, do not write it.
+
+STRUCTURE IS WHAT CREATES DEPTH. Name the pattern, then name what it does not touch, then name what the woman has probably already tried, then offer one possibility of what could help instead. That structure, used concretely with her specific material, is what makes the reading feel true.
+
+NO GREETINGS. No "dear", no "droga". No closing line like "I am with you".
+
+Length around 400 to 500 words. Continuous text. No headings. No bullet points. No em dashes. Commas and full stops only.
+
+After the main text, on its own line at the end, append a JSON array of 3 to 6 patterns for Noctua's internal index. Each pattern is an object with "pattern" (short name, 3-5 words in English, for internal indexing), "evidence" (concrete, one sentence, in the same language as the text above), and "movement" (one word: new, returning, deepening, quieting, unchanged).
+
+Format exactly like this, nothing after:
+
+PATTERNS_JSON:[{"pattern":"...","evidence":"...","movement":"..."}]`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
