@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { gatherWorkbookContext } from "@/lib/workbook-context";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -21,14 +22,10 @@ export async function POST(req: NextRequest) {
   const { data: cycleData } = await supabase.from("cycle_entries").select("cycle_phase, symptoms, energy_level")
     .eq("user_id", user.id).order("entry_date", { ascending: false }).limit(30);
 
-  const { data: workbookData } = await supabase.from("workbook_sessions")
-    .select("workbook_type, stage_1_response, stage_2_response, stage_3_response, stage_4_response, summary, completed")
-    .eq("user_id", user.id).eq("completed", true).order("created_at", { ascending: false }).limit(10);
-
   const journalSummary = journalData?.map(e => `Mood: ${e.mood || "none"}. ${(e.content || "").slice(0, 200)}`).join("\n") || "No entries.";
   const dreamSummary = dreamData?.map(d => `Symbols: ${(d.symbols as string[] || []).join(", ")}. ${(d.content || "").slice(0, 150)}`).join("\n") || "No dreams.";
   const shadowSummary = shadowData?.map(s => `Emotions: ${(s.emotions as string[] || []).join(", ")}. ${(s.response || "").slice(0, 150)}`).join("\n") || "No shadow work.";
-  const workbookSummary = workbookData?.map(w => `Type: ${w.workbook_type}. Summary: ${(w.summary || "").slice(0, 200)}`).join("\n") || "No completed workbooks.";
+  const workbookSummary = await gatherWorkbookContext(user.id, supabase) || "No workbook activity yet.";
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return NextResponse.json({ error: "API key not configured" }, { status: 500 });
@@ -56,9 +53,8 @@ Data:
 Journal (${journalData?.length || 0} entries): ${journalSummary}
 Dreams (${dreamData?.length || 0}): ${dreamSummary}
 Shadow work (${shadowData?.length || 0}): ${shadowSummary}
-Completed workbooks (${workbookData?.length || 0}): ${workbookSummary}
+Workbook activity: ${workbookSummary}
 Cycle entries: ${cycleData?.length || 0}
-
 CRITICAL RULES:
 Keep under 800 words. No markdown. No asterisks. Never use dashes, hyphens, em dashes or en dashes anywhere. No greetings. No section headings. Commas and full stops only. Use colons where you would use a dash. Separate thoughts with blank lines. Be direct, warm, confrontational where needed. This should feel like the most honest conversation she has ever had with herself.`;
   } else if (type === "deep_reading") {
@@ -97,8 +93,7 @@ Data from her entire journey in Noctua:
 Journal (${journalData?.length || 0} entries): ${journalSummary}
 Dreams (${dreamData?.length || 0}): ${dreamSummary}
 Shadow work (${shadowData?.length || 0}): ${shadowSummary}
-Completed workbooks (${workbookData?.length || 0}): ${workbookSummary}
-
+Workbook activity: ${workbookSummary}
 CRITICAL RULES:
 Keep under 600 words. No markdown. No asterisks. Never use dashes, hyphens, em dashes or en dashes anywhere. No section headings. No greetings like "Droga" or "Dear". Write in second person. Commas and full stops only. Use colons where you would use a dash. Sign the letter simply: AGNELIS`;
   }

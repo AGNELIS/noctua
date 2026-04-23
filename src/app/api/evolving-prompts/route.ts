@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createClient } from "@supabase/supabase-js";
+import { gatherWorkbookContext } from "@/lib/workbook-context";
 
 export async function POST(req: NextRequest) {
   const serverSupabase = await createServerClient();
@@ -43,25 +44,18 @@ export async function POST(req: NextRequest) {
   const lang = hasPolish ? "pl" : "en";
 
   // Gather data
-  const [journals, dreams, workbooks, shadow, patterns, entryCount] = await Promise.all([
+  const [journals, dreams, shadow, patterns, entryCount] = await Promise.all([
     supabase.from("journal_entries").select("content, mood, entry_date").eq("user_id", user.id).order("created_at", { ascending: false }).limit(15),
     supabase.from("dream_entries").select("content, symbols, emotional_tone").eq("user_id", user.id).order("created_at", { ascending: false }).limit(8),
-    supabase.from("workbook_progress").select("workbook_type, responses, completed_at").eq("user_id", user.id).order("started_at", { ascending: false }).limit(8),
     supabase.from("shadow_work_entries").select("prompt, response, emotions").eq("user_id", user.id).order("created_at", { ascending: false }).limit(8),
     supabase.from("user_patterns").select("pattern_type, description, keywords, frequency").eq("user_id", user.id).eq("status", "active").order("frequency", { ascending: false }).limit(6),
     supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
   ]);
-
   const totalEntries = entryCount.count || 0;
   const phase = totalEntries <= 15 ? "discovery" : totalEntries <= 40 ? "deepening" : "integration";
-
   const journalText = (journals.data || []).map(j => `Mood: ${(j.mood || []).join(", ")}. ${j.content?.substring(0, 150)}`).join("\n");
   const dreamText = (dreams.data || []).map(d => `Symbols: ${(d.symbols || []).join(", ")}. Tone: ${(d.emotional_tone || []).join(", ")}. ${d.content?.substring(0, 100)}`).join("\n");
-  const workbookText = (workbooks.data || []).map(w => {
-    const resps = w.responses || [];
-    const last = resps[resps.length - 1];
-    return last ? `${w.workbook_type}: "${last.response?.substring(0, 120)}" AI: "${last.ai_reaction?.substring(0, 120)}"` : null;
-  }).filter(Boolean).join("\n");
+  const workbookText = await gatherWorkbookContext(user.id, supabase);
   const shadowText = (shadow.data || []).map(s => `Emotions: ${(s.emotions || []).join(", ")}. ${s.response?.substring(0, 100)}`).join("\n");
   const patternText = (patterns.data || []).map(p => `[${p.pattern_type}, ${p.frequency}x] ${p.description}`).join("\n");
 

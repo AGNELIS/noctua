@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { gatherWorkbookContext } from "@/lib/workbook-context";
 
 const PREMIUM_MONTHLY_LIMIT = 5;
 
@@ -112,20 +113,8 @@ export async function POST(req: NextRequest) {
     ? journalEntries.map(e => `[${e.entry_date}] Mood: ${(e.mood || []).join(", ")}. ${e.content.slice(0, 150)}`).join("\n")
     : "No recent journal entries.";
 
-  // Cross-referencing: workbook insights + phase
-  const { data: workbookData } = await supabase
-    .from("workbook_progress")
-    .select("workbook_type, responses, completed_at")
-    .eq("user_id", user.id)
-    .order("started_at", { ascending: false })
-    .limit(5);
-
-  const workbookContext = (workbookData || []).map(w => {
-    const responses = w.responses || [];
-    const lastResponse = responses[responses.length - 1];
-    if (lastResponse?.ai_reaction) return `${w.workbook_type} workbook: "${lastResponse.ai_reaction.substring(0, 150)}"`;
-    return null;
-  }).filter(Boolean).join(" | ");
+  // Workbook context: self-work + planetary workbooks (via shared helper)
+  const workbookContext = await gatherWorkbookContext(user.id, supabase);
 
   const { data: patternData } = await supabase
     .from("user_patterns")

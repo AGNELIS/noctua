@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/lib/supabase/server";
+import { gatherWorkbookContext } from "@/lib/workbook-context";
 
 export async function POST(req: NextRequest) {
   const serverSupabase = await createServerClient();
@@ -17,21 +18,15 @@ export async function POST(req: NextRequest) {
   if (!apiKey) return NextResponse.json({ error: "API key not configured" }, { status: 500 });
 
   // Gather all user data
-  const [journals, dreams, workbooks, shadow] = await Promise.all([
+  const [journals, dreams, shadow] = await Promise.all([
     supabase.from("journal_entries").select("content, mood, entry_date").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
     supabase.from("dream_entries").select("content, symbols, emotional_tone").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
-    supabase.from("workbook_progress").select("workbook_type, responses, completed_at").eq("user_id", user.id).not("completed_at", "is", null).order("started_at", { ascending: false }).limit(10),
     supabase.from("shadow_work_entries").select("prompt, response, emotions").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
   ]);
-
   const journalText = (journals.data || []).map(j => `Mood: ${(j.mood || []).join(", ")}. ${j.content?.substring(0, 200)}`).join("\n");
   const dreamText = (dreams.data || []).map(d => `Symbols: ${(d.symbols || []).join(", ")}. ${d.content?.substring(0, 150)}`).join("\n");
-  const workbookText = (workbooks.data || []).map(w => {
-    const resps = w.responses || [];
-    return `${w.workbook_type}: ${resps.map((r: any) => r.response?.substring(0, 100)).join(" | ")}`;
-  }).join("\n");
+  const workbookText = await gatherWorkbookContext(user.id, supabase);
   const shadowText = (shadow.data || []).map(s => `Q: ${s.prompt?.substring(0, 80)} A: ${s.response?.substring(0, 120)} Emotions: ${(s.emotions || []).join(", ")}`).join("\n");
-
   const prompt = `You are the pattern recognition engine for "Noctua" by AGNÉLIS. You analyse a woman's journal entries, dreams, shadow work and workbook responses to find recurring patterns in her inner world.
 
 Your task: identify 3 to 6 distinct patterns. Each pattern has:
