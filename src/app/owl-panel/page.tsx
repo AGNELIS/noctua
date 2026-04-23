@@ -29,6 +29,8 @@ export default function OwlPanelPage() {
   const [dreamAnalysesUsed, setDreamAnalysesUsed] = useState(0);
   const [dreamAnalysesLimit] = useState(5);
   const [weeklyInsight, setWeeklyInsight] = useState<string | null>(null);
+  const [snapshots, setSnapshots] = useState<Array<{ id: string; snapshot_number: number; content: string; entry_count_in_period: number; cumulative_entry_count: number; key_patterns: unknown; created_at: string }>>([]);
+  const [snapshotGenerating, setSnapshotGenerating] = useState(false);
   const [journalCount, setJournalCount] = useState(0);
   const [dreamCount, setDreamCount] = useState(0);
   const [shadowCount, setShadowCount] = useState(0);
@@ -45,7 +47,7 @@ export default function OwlPanelPage() {
   const [premiumStatus, setPremiumStatus] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); loadSnapshots(); }, []);
 
   const showMsg = (msg: string) => {
     setActionMsg(msg);
@@ -217,6 +219,41 @@ export default function OwlPanelPage() {
     load();
   };
 
+  const loadSnapshots = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data } = await supabase
+      .from("ai_memory_snapshots")
+      .select("id, snapshot_number, content, entry_count_in_period, cumulative_entry_count, key_patterns, created_at")
+      .eq("user_id", user.id)
+      .order("snapshot_number", { ascending: false });
+    setSnapshots(data || []);
+  };
+
+  const generateSnapshot = async () => {
+    setSnapshotGenerating(true);
+    showMsg("Generating snapshot...");
+    try {
+      const res = await fetch("/api/create-snapshot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showMsg(`Snapshot #${data.snapshot?.snapshot_number} created`);
+        await loadSnapshots();
+      } else {
+        showMsg(`Failed: ${data.message || data.error || "unknown"}`);
+      }
+    } catch (e) {
+      showMsg("Error generating snapshot");
+      console.error(e);
+    }
+    setSnapshotGenerating(false);
+  };
+
   const generateWeeklyInsight = async () => {
     showMsg("Generating...");
     try {
@@ -369,7 +406,45 @@ export default function OwlPanelPage() {
           )}
           <button onClick={generateWeeklyInsight} style={{ ...btnOutline, marginTop: "8px", width: "100%" }}>Generate weekly insight</button>
         </div>
-
+        {/* Memory Snapshots */}
+        <div style={sectionStyle}>
+          <p style={labelStyle}>Memory Snapshots</p>
+          <p style={{ ...valueStyle, opacity: 0.6, fontSize: "11px", marginTop: "4px" }}>
+            Cumulative memory layers Noctua uses for continuity across readings.
+          </p>
+          <button
+            onClick={generateSnapshot}
+            disabled={snapshotGenerating}
+            style={{ ...btnStyle, marginTop: "8px", width: "100%", opacity: snapshotGenerating ? 0.5 : 1 }}
+          >
+            {snapshotGenerating ? "Generating..." : `Generate snapshot #${(snapshots[0]?.snapshot_number || 0) + 1}`}
+          </button>
+          {snapshots.length > 0 && (
+            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+              {snapshots.map(s => (
+                <details key={s.id} style={{ background: "var(--color-blush)", border: "1px solid var(--color-dusty-rose)", borderRadius: "12px", padding: "10px" }}>
+                  <summary style={{ cursor: "pointer", fontWeight: 600, color: "var(--color-plum)" }}>
+                    Snapshot #{s.snapshot_number} — {s.entry_count_in_period} entries in period, {s.cumulative_entry_count} cumulative
+                  </summary>
+                  <p style={{ fontSize: "10px", color: "var(--color-mauve)", marginTop: "4px" }}>
+                    {new Date(s.created_at).toLocaleString()}
+                  </p>
+                  <p style={{ fontSize: "12px", color: "var(--color-dark)", marginTop: "8px", lineHeight: "1.5", whiteSpace: "pre-wrap" }}>
+                    {s.content}
+                  </p>
+                  {Array.isArray(s.key_patterns) && s.key_patterns.length > 0 && (
+                    <div style={{ marginTop: "8px", padding: "8px", background: "var(--color-cream)", borderRadius: "8px" }}>
+                      <p style={{ fontSize: "10px", fontWeight: 600, color: "var(--color-plum)", marginBottom: "4px" }}>Key patterns:</p>
+                      <pre style={{ fontSize: "10px", color: "var(--color-dark)", overflow: "auto", whiteSpace: "pre-wrap" }}>
+                        {JSON.stringify(s.key_patterns, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </details>
+              ))}
+            </div>
+          )}
+        </div>
         {/* Theme Preview + Activate */}
         <div style={sectionStyle}>
           <p style={labelStyle}>Themes — Preview & Activate</p>
