@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
+import { getUserMemory } from "@/lib/memory-context";
 import { NOCTUA_VOICE_SYSTEM_PROMPT } from "@/lib/noctua-voice";
 
 export async function GET(req: NextRequest) {
@@ -13,98 +14,124 @@ export async function GET(req: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_premium, preferred_language")
+    .select("is_premium, is_admin, preferred_language")
     .eq("id", user.id)
     .single();
 
-  if (!profile?.is_premium) {
-    // Check for purchased credit
-    const { data: product } = await supabase.from("shop_products").select("id").eq("name", "First Reflection").single();
-    if (product) {
-      const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", product.id).is("used_at", null).limit(1);
-      if (credit && credit.length > 0) {
-        // Will mark as used after generation
-      } else {
-        return NextResponse.json({ error: "Premium or purchase required" }, { status: 403 });
-      }
-    } else {
-      return NextResponse.json({ error: "Premium required" }, { status: 403 });
+  const isAdmin = profile?.is_admin || false;
+
+  // Access check: everyone (free and premium) needs to have purchased a Reflection credit
+  // Admin bypasses this for testing
+  if (!isAdmin) {
+    const { data: product } = await supabase
+      .from("shop_products")
+      .select("id")
+      .eq("name", "Reflection")
+      .maybeSingle();
+
+    if (!product) {
+      return NextResponse.json({ error: "Reflection product not found" }, { status: 500 });
+    }
+
+    const { data: credit } = await supabase
+      .from("user_purchases")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("product_id", product.id)
+      .is("used_at", null)
+      .limit(1);
+
+    if (!credit || credit.length === 0) {
+      return NextResponse.json({
+        error: "purchase_required",
+        message: "A Reflection credit is required to generate a reading.",
+      }, { status: 403 });
     }
   }
 
   const lang = profile?.preferred_language === "pl" ? "pl" : "en";
 
-  // Check for cached insight this week
   const now = new Date();
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay());
-  startOfWeek.setHours(0, 0, 0, 0);
 
-  const { data: cached } = await supabase
+  // Find the date of her last Reflection (to count entries added since then)
+  const { data: lastReflection } = await supabase
     .from("weekly_insights")
-    .select("insight_text")
+    .select("created_at, snapshot_number_at_generation")
     .eq("user_id", user.id)
-    .gte("created_at", startOfWeek.toISOString())
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (cached) {
-    return NextResponse.json({ insight: cached.insight_text, cached: true });
-  }
+  const sinceDate = lastReflection?.created_at
+    ? lastReflection.created_at
+    : new Date(0).toISOString();
 
-  // Gather data from last 7 days
-  const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
-
+  // Gather data since her last Reflection (not last 7 days)
   const { data: journals } = await supabase
     .from("journal_entries")
     .select("content, mood, entry_date")
     .eq("user_id", user.id)
-    .gte("entry_date", weekAgo.split("T")[0])
-    .order("entry_date", { ascending: false });
+    .gte("created_at", sinceDate)
+    .order("created_at", { ascending: false });
 
   const { data: dreams } = await supabase
     .from("dream_entries")
     .select("title, content, emotional_tone, symbols, dream_date, created_at")
     .eq("user_id", user.id)
-    .gte("created_at", weekAgo)
+    .gte("created_at", sinceDate)
     .order("created_at", { ascending: false });
 
   const { data: shadowEntries } = await supabase
     .from("shadow_work_entries")
     .select("prompt, response, emotions, created_at")
     .eq("user_id", user.id)
-    .gte("created_at", weekAgo)
+    .gte("created_at", sinceDate)
     .order("created_at", { ascending: false });
 
-  // Check total entries across all sources (not just this week) against entry_gate
-  const [{ count: totalJ }, { count: totalD }, { count: totalS }] = await Promise.all([
-    supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-  ]);
-  const totalEntriesAllSources = (totalJ || 0) + (totalD || 0) + (totalS || 0);
+  // Count entries since her last Reflection (not total, not per-week)
+  const entriesSinceLastReflection = (journals?.length || 0) + (dreams?.length || 0) + (shadowEntries?.length || 0);
   const GATE = 5;
 
-  if (totalEntriesAllSources < GATE) {
+  // Gate 1: minimum 5 entries since last Reflection (or 5 total if no previous Reflection)
+  // Admin bypasses this for testing
+  if (!isAdmin && entriesSinceLastReflection < GATE) {
     return NextResponse.json({
-      error: lang === "pl"
-        ? `Potrzebujesz co najmniej ${GATE} wpisów, żeby Noctua mogła napisać Ci pierwszą refleksję. Masz teraz ${totalEntriesAllSources}.`
-        : `You need at least ${GATE} entries before Noctua can write your first reflection. You have ${totalEntriesAllSources}.`,
-      notEnoughEntries: true,
-      current: totalEntriesAllSources,
+      error: "not_enough_entries",
+      message: lang === "pl"
+        ? `Refleksja potrzebuje co najmniej ${GATE} wpisów od ostatniej Refleksji. Masz teraz ${entriesSinceLastReflection}.`
+        : `A Reflection needs at least ${GATE} entries since your last Reflection. You have ${entriesSinceLastReflection}.`,
+      current: entriesSinceLastReflection,
       required: GATE,
     }, { status: 400 });
   }
 
-  if ((!journals || journals.length === 0) && (!dreams || dreams.length === 0) && (!shadowEntries || shadowEntries.length === 0)) {
+  // Gate 2: snapshot-gate (cumulative memory)
+  // Get current snapshot number to compare with the one saved at the last Reflection
+  const { data: latestSnapshot } = await supabase
+    .from("ai_memory_snapshots")
+    .select("snapshot_number")
+    .eq("user_id", user.id)
+    .order("snapshot_number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const currentSnapshotNumber = latestSnapshot?.snapshot_number || 0;
+  const lastReflectionSnapshotNumber = lastReflection?.snapshot_number_at_generation;
+
+  if (
+    !isAdmin &&
+    lastReflectionSnapshotNumber !== null &&
+    lastReflectionSnapshotNumber !== undefined &&
+    lastReflectionSnapshotNumber >= currentSnapshotNumber
+  ) {
     return NextResponse.json({
-      insight: lang === "pl"
-        ? "Masz już wpisy w aplikacji, ale żaden nie jest z tego tygodnia. Zrób jakiś wpis w tym tygodniu, to wtedy będę miała o czym z Tobą porozmawiać."
-        : "You have entries in the app, but none from this week. Add something this week and I will have material to reflect on.",
-      cached: false,
-      noData: true,
-    });
+      error: "no_new_snapshot",
+      message: lang === "pl"
+        ? "Noctua nie widzi jeszcze nowego materiału od ostatniej Refleksji. Pisz dalej, a kolejna Refleksja będzie głębsza."
+        : "Noctua has not yet gathered new material since your last Reflection. Write more, and the next one will be deeper.",
+      current_snapshot: currentSnapshotNumber,
+      last_reflection_snapshot: lastReflectionSnapshotNumber,
+    }, { status: 400 });
   }
 
   const journalSummary = (journals || []).map(j => `[${j.entry_date}] Mood: ${(j.mood || []).join(", ")}. Wrote: "${(j.content || "").slice(0, 800)}"`).join("\n\n");
@@ -113,6 +140,17 @@ export async function GET(req: NextRequest) {
 
   // Workbook context: self-work + planetary workbooks (via shared helper)
   const workbookInsights = await gatherWorkbookContext(user.id, supabase);
+
+  // Cumulative memory snapshot (Noctua's continuous knowledge of this user)
+  const memory = await getUserMemory(user.id, supabase);
+  const memoryContext = memory.lastSnapshotContent
+    ? `CONTINUITY FROM HER CUMULATIVE MEMORY:
+This is what Noctua has already seen about her across ${memory.lastSnapshotNumber} previous snapshot${memory.lastSnapshotNumber === 1 ? "" : "s"} of her inner work. Treat this as what you already know. Build on it. Do not repeat it.
+
+${memory.lastSnapshotContent}
+
+`
+    : "";
 
   const { data: patternData } = await supabase
     .from("user_patterns")
@@ -138,33 +176,33 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const prompt = `This is a weekly reading. You are looking at the specific material she put down this week and reflecting it back to her.
+  const prompt = `This is a Reflection. A short, grounded reading of the material she has put down since her last Reflection. You reflect her own words back to her without diagnosing or philosophising.
 
 Write in ${lang === "pl" ? "Polish" : "English"}.
 
-What she wrote this week:
+${memoryContext}CRITICAL VOICE RULES:
+Never name cycle phases by clinical label. No "follicular", no "luteal", no "folikularna", no "lutealna". Speak of the body as she would: "when you were bleeding", "as your energy was returning", "the inward time".
+Never quote energy scores as numbers. No "energy level 4 of 5". Instead: "a day when energy was present", "the low-energy days".
+Never quote exact dates. Do not write "3 April" or "15 kwietnia". Speak in rhythm: "at the beginning", "within the same few days", "twice in close succession", "pod koniec tego okresu". Sequence and frequency matter, specific calendar dates do not.
+Never invent atmosphere you cannot see in the data. You see what she wrote, what words she used, what symbols appeared, what emotions she tagged. You do not see how she wrote, whether she paused, her tone. Do not write "you wrote briefly", "there was heaviness in your voice", "you held back". Stay with what is on the page.
+Write in correct Polish grammar and spelling. If you quote or paraphrase a word from her entries, preserve its exact form (for example: do not write "mania" when she wrote "mama").
+
+What she wrote since her last Reflection:
 
 Journal entries:
-${journalSummary || "None this week."}
+${journalSummary || "None."}
 
 Dreams:
-${dreamSummary || "None this week."}
+${dreamSummary || "None."}
 
 Shadow work:
-${shadowSummary || "None this week."}
+${shadowSummary || "None."}
 
-${workbookInsights ? `\n${workbookInsights}\n` : ""}
-${patternContext ? `\nPatterns Noctua has noticed earlier:\n${patternContext}\nIf any of these show up in this week's material, reference them concretely, using what she wrote this week.\n` : ""}
-
-Total entries across her time in the app: ${totalEntries || 0}.
+${workbookInsights ? `\n${workbookInsights}\n` : ""}${patternContext ? `\nPatterns Noctua has noticed earlier:\n${patternContext}\nIf any of these show up in this material, reference them concretely.\n` : ""}
 
 How to write this reading:
 
-Quote or paraphrase her own specific words. When something matters, name when she wrote it. "On [date] you wrote X" is stronger than "you mentioned a feeling." Use the dates that appear in square brackets in the data above.
-
-Name two or three things that appeared together. Not interpretations. Observations of what co-occurred. "On the same day you wrote X, you also dreamed Y."
-
-When you connect to patterns Noctua noticed before, anchor it in this week's actual material, not in abstractions.
+Quote or paraphrase her own specific words. Name what appeared together. Not interpretations. Observations of what co-occurred. "When you wrote X, you also dreamed Y."
 
 Do not philosophise. Do not write aphorisms. Do not say things like "sometimes what is absent is most meaningful" or "silence speaks louder than words." No poetry. No wellness-speak.
 
@@ -172,7 +210,7 @@ Do not diagnose. Do not tell her what her pattern means. Name what happened, usi
 
 Three or four short flowing paragraphs. Under 350 words. No headings, no lists, no markdown, no em dashes.
 
-The last line is short and concrete. It names something specific from this week that stays with her. Not a command, not a call to action, not an aphorism. A single observation about what she actually wrote or dreamed or worked on this week.`;
+The last line is short and concrete. It names something specific that stays with her. Not a command, not a call to action, not an aphorism. A single observation about what she actually wrote or dreamed or worked on.`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -204,16 +242,17 @@ The last line is short and concrete. It names something specific from this week 
       .replace(/ - /g, ", ")
       .replace(/#{1,3}\s/g, "");
 
-    // Save to DB
+    // Save to DB with current snapshot number (for snapshot-gate on next Reflection)
     await supabase.from("weekly_insights").insert({
       user_id: user.id,
       insight_text: insightText,
-      week_start: startOfWeek.toISOString().split("T")[0],
+      week_start: new Date().toISOString().split("T")[0],
+      snapshot_number_at_generation: currentSnapshotNumber,
     });
 
-    // Use credit if not premium
-    if (!profile?.is_premium) {
-      const { data: product } = await supabase.from("shop_products").select("id").eq("name", "Reflection").single();
+    // Use credit (everyone pays except admin)
+    if (!isAdmin) {
+      const { data: product } = await supabase.from("shop_products").select("id").eq("name", "Reflection").maybeSingle();
       if (product) {
         const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", product.id).is("used_at", null).limit(1);
         if (credit && credit.length > 0) {
