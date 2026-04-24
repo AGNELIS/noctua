@@ -25,6 +25,22 @@ type SavedReport = {
 
 type TabType = "weekly" | "monthly" | "pattern";
 
+type ProductStatus = {
+  status: "ready_to_generate" | "ready_to_buy" | "blocked_no_new_snapshot" | "blocked_not_enough_entries";
+  entries_total: number;
+  entries_required: number;
+  current_snapshot_number: number;
+  last_report_snapshot_number: number | null;
+};
+
+type ReportsStatusResponse = {
+  full_reading: ProductStatus;
+  pattern_reading: ProductStatus;
+  reflection: ProductStatus;
+  is_premium: boolean;
+  is_admin: boolean;
+};
+
 function getReportLabel(reportMonth: string, pl: boolean): { month: string; type: string } {
   const parts = reportMonth.split("-");
   const year = parts[0];
@@ -49,8 +65,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPremium, setIsPremium] = useState(false);
-  const [hasCredit, setHasCredit] = useState(false);
+  const [statusData, setStatusData] = useState<ReportsStatusResponse | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>("monthly");
 
   useEffect(() => {
@@ -70,16 +85,16 @@ export default function ReportsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
-    setIsPremium(profile?.is_premium || profile?.is_admin || false);
-
-    // Check for any unused credit across the 3 reading products
-    const productNames = ["Full Reading", "Reflection", "Pattern Reading"];
-    const { data: products } = await supabase.from("shop_products").select("id, name").in("name", productNames);
-    const productIds = (products || []).map(p => p.id);
-    if (productIds.length > 0) {
-      const { data: credits } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).in("product_id", productIds).is("used_at", null).limit(1);
-      setHasCredit((credits || []).length > 0);
+    // Fetch the full status for all three products from the backend
+    // This replaces manual credit checks and gives us snapshot-gate awareness
+    try {
+      const statusRes = await fetch("/api/reports-status");
+      if (statusRes.ok) {
+        const data: ReportsStatusResponse = await statusRes.json();
+        setStatusData(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch reports status:", err);
     }
 
     // Load monthly + pattern reports from smart_reports
@@ -230,33 +245,66 @@ export default function ReportsPage() {
       <main className="max-w-xl mx-auto px-6 pb-16">
         {/* Generate button */}
         <div className="text-center pt-4 pb-6">
-          {!isPremium && !hasCredit && (
-            <div className="rounded-2xl border p-5 mb-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-              <p className="text-sm leading-relaxed mb-3" style={{ color: "var(--color-dark)" }}>
-                {pl
-                  ? "Odczyty są dostępne dla użytkowników Premium. Możesz też kupić pojedynczy odczyt w sklepie."
-                  : "Readings are available for Premium subscribers. You can also buy a single reading in the shop."}
-              </p>
-              <div className="flex gap-2 justify-center">
-                <button onClick={() => router.push("/premium")} className="px-4 py-2 rounded-xl text-xs tracking-wide" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
-                  {pl ? "Premium" : "Go Premium"}
+          {(() => {
+            if (!statusData) return null;
+
+            // Determine the active product status based on tab
+            const activeStatus =
+              activeTab === "monthly" ? statusData.full_reading :
+              activeTab === "pattern" ? statusData.pattern_reading :
+              statusData.reflection;
+
+            const canGenerate = activeStatus.status === "ready_to_generate";
+            const needsPurchase = activeStatus.status === "ready_to_buy";
+            const notEnoughEntries = activeStatus.status === "blocked_not_enough_entries";
+            const noNewSnapshot = activeStatus.status === "blocked_no_new_snapshot";
+
+            // TODO: Agnieszka refine copy
+            const statusMessage = pl
+              ? notEnoughEntries
+                ? `Jeszcze nie masz wystarczająco wpisów. Napisałaś ${activeStatus.entries_total} z ${activeStatus.entries_required} potrzebnych.`
+                : noNewSnapshot
+                ? "Noctua nie widzi jeszcze nowego materiału od ostatniego odczytu. Pisz dalej, a kolejny odczyt będzie głębszy."
+                : needsPurchase
+                ? "Ten odczyt jest dostępny do zakupu w sklepie."
+                : ""
+              : notEnoughEntries
+                ? `You don't have enough entries yet. You have ${activeStatus.entries_total} of ${activeStatus.entries_required} needed.`
+                : noNewSnapshot
+                ? "Noctua has not yet gathered new material since your last reading. Write more, and the next one will be deeper."
+                : needsPurchase
+                ? "This reading is available for purchase in the shop."
+                : "";
+
+            return (
+              <>
+                {statusMessage && (
+                  <div className="rounded-2xl border p-5 mb-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>
+                      {statusMessage}
+                    </p>
+                    {needsPurchase && (
+                      <div className="flex gap-2 justify-center mt-3">
+                        <button onClick={() => router.push("/shop")} className="px-4 py-2 rounded-xl text-xs tracking-wide" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+                          {pl ? "Kup odczyt" : "Buy reading"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <button
+                  onClick={generateReport}
+                  disabled={generating || !canGenerate}
+                  className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase transition-all disabled:opacity-50"
+                  style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
+                >
+                  {generating
+                    ? (pl ? "Czytam Twoje wzorce..." : "Reading your patterns...")
+                    : (pl ? "Nowy odczyt" : "New reading")}
                 </button>
-                <button onClick={() => router.push("/shop")} className="px-4 py-2 rounded-xl text-xs tracking-wide border" style={{ borderColor: "var(--color-dusty-rose)", color: "var(--color-plum)", fontWeight: 500 }}>
-                  {pl ? "Kup odczyt" : "Buy reading"}
-                </button>
-              </div>
-            </div>
-          )}
-          <button
-            onClick={generateReport}
-            disabled={generating || (!isPremium && !hasCredit)}
-            className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase transition-all disabled:opacity-50"
-            style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
-          >
-            {generating
-              ? (pl ? "Czytam Twoje wzorce..." : "Reading your patterns...")
-              : (pl ? "Nowy odczyt" : "New reading")}
-          </button>
+              </>
+            );
+          })()}
           {error ? (
             <p className="text-sm leading-relaxed mt-3" style={{ color: "var(--color-dusty-rose)" }}>{error}</p>
           ) : (
