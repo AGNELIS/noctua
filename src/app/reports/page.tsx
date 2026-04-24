@@ -279,8 +279,18 @@ export default function ReportsPage() {
               <>
                 {statusMessage && (
                   <div className="rounded-2xl border p-5 mb-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>
-                      {statusMessage}
+                    <p className="text-sm leading-relaxed text-center" style={{ color: "var(--color-dark)" }}>
+                      {notEnoughEntries ? (
+                        <>
+                          {pl ? "Nie masz jeszcze wystarczająco wpisów." : "You don't have enough entries yet."}
+                          <br />
+                          <span className="text-base" style={{ color: "var(--color-plum)", fontWeight: 500 }}>
+                            {activeStatus.entries_total} / {activeStatus.entries_required}
+                          </span>
+                        </>
+                      ) : (
+                        statusMessage
+                      )}
                     </p>
                     {needsPurchase && (
                       <div className="flex gap-2 justify-center mt-3">
@@ -304,18 +314,8 @@ export default function ReportsPage() {
               </>
             );
           })()}
-          {error ? (
+          {error && (
             <p className="text-sm leading-relaxed mt-3" style={{ color: "var(--color-dusty-rose)" }}>{error}</p>
-          ) : (
-            <p className="text-xs mt-3" style={{ color: "var(--color-mauve)", opacity: 0.6 }}>
-              {pl
-                ? activeTab === "weekly" 
-                  ? "Refleksja odblokowuje się po 5 wpisach w sumie." 
-                  : "Pełen odczyt i Odczyt wzorców odblokowują się po 15 wpisach w sumie."
-                : activeTab === "weekly"
-                  ? "Reflection unlocks after 5 entries in total."
-                  : "Full Reading and Pattern Reading unlock after 15 entries in total."}
-            </p>
           )}
         </div>
 
