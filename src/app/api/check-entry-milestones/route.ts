@@ -1,11 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
+  // Fire-and-forget snapshot check (runs for all users, free and premium)
+  const cookieHeader = req.headers.get("cookie") || "";
+  const baseUrl = req.nextUrl.origin;
+  fetch(`${baseUrl}/api/check-snapshot`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Cookie": cookieHeader },
+    body: JSON.stringify({}),
+  }).catch(err => console.error("Snapshot trigger from milestones failed:", err));
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_premium")
