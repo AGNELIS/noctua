@@ -294,7 +294,7 @@ export default function ReportsPage() {
                     </p>
                     {needsPurchase && (
                       <div className="flex gap-2 justify-center mt-3">
-                   grep -c "Przejdź do sklepu" src/app/reports/page.tsx     <button onClick={() => router.push("/shop")} className="px-4 py-2 rounded-xl text-xs tracking-wide" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
+                   <button onClick={() => router.push("/shop")} className="px-4 py-2 rounded-xl text-xs tracking-wide" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
                           {pl ? "Przejdź do sklepu" : "Go to shop"}
                         </button>
                       </div>
