@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
+import { getUserMemory } from "@/lib/memory-context";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -122,6 +123,27 @@ const totalEntries = (journalData?.length || 0) + (dreamData?.length || 0) + (sh
   // Workbook context: self-work + planetary workbooks (via shared helper)
   const workbookInsights = await gatherWorkbookContext(user.id, supabase);
 
+  // Cumulative memory snapshot (Noctua's continuous knowledge of this user)
+  const memory = await getUserMemory(user.id, supabase);
+  const snapshotNumber = memory.lastSnapshotNumber || 0;
+
+  const memoryContext = memory.lastSnapshotContent
+    ? `CONTINUITY FROM HER CUMULATIVE MEMORY:
+This is what Noctua has already seen about her across ${snapshotNumber} previous snapshot${snapshotNumber === 1 ? "" : "s"} of her inner work. Treat this as what you already know. Build on it. Do not repeat it. Name what is returning, what is deepening, what has shifted since.
+
+${memory.lastSnapshotContent}
+
+`
+    : "";
+
+  // Length guidance scales with cumulative memory depth
+  // More snapshots means more accumulated context, so a longer, deeper reading is warranted
+  let lengthGuidance: string;
+  if (snapshotNumber === 0) lengthGuidance = "200 to 400 words";
+  else if (snapshotNumber <= 2) lengthGuidance = "400 to 700 words";
+  else if (snapshotNumber <= 5) lengthGuidance = "700 to 1000 words";
+  else lengthGuidance = "1000 to 1500 words";
+
   // Historical patterns Noctua has tracked over time
   const { data: patternData } = await supabase
     .from("user_patterns")
@@ -216,7 +238,7 @@ Never assume you know someone's life circumstances, support system, or responsib
 Never use "Droga" or "Dear" or any term of address. Write in second person but without greetings.
 Your role is to name patterns and tensions, not to prescribe solutions.
 
-Structure your response with these exact section headings on their own line. Write them in Title Case, not uppercase:
+${memoryContext}Structure your response with these exact section headings on their own line. Write them in Title Case, not uppercase:
 
 ${sectionHeadings.overview}
 3 to 4 sentences. What is the emotional story of this month? What is she going through underneath the surface? Describe the inner landscape, not external events.
@@ -253,11 +275,13 @@ Top shadow emotions: ${topEmotions.map(([k, v]) => `${k}(${v})`).join(", ") || "
 Top dream symbols: ${topSymbols.map(([k, v]) => `${k}(${v})`).join(", ") || "none"}
 
 CRITICAL FORMATTING RULES:
-Keep the response under 600 words. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in Title Case on their own line. Never use the word "Droga" or "Dear" or any greeting.`;
+Keep the response within ${lengthGuidance}. Do NOT use any markdown formatting. No asterisks. No bold. No bullet points. Never use dashes, hyphens, em dashes or en dashes anywhere in the text. Use commas and full stops only. Write section headings in Title Case on their own line. Never use the word "Droga" or "Dear" or any greeting.`;
 
   const patternPrompt = `This is a Pattern Reading. A different kind of reading from the Full Reading. You are not describing her month. You are naming what repeats in her material. Forensic, concrete, specific.
 
 Write in ${lang === "pl" ? "Polish" : "English"}.
+
+${memoryContext}
 
 Your task: identify the three strongest patterns that recur across her journal entries, dreams, shadow work and cycle entries. For each pattern, give concrete evidence with dates, and show what co-occurs with it.
 
