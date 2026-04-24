@@ -75,20 +75,41 @@ export async function POST(req: NextRequest) {
     }, { status: 400 });
   }
 
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-
-  // Check cache
-  const { data: cached } = await supabase
-    .from("smart_reports")
-    .select("report_text, report_data")
+  // Snapshot-gate: a reading can only be generated when there is new cumulative knowledge since the last reading of the same type
+  // Admin bypasses this gate (for testing and personal use)
+  const { data: latestSnapshot } = await supabase
+    .from("ai_memory_snapshots")
+    .select("snapshot_number")
     .eq("user_id", user.id)
-    .eq("report_month", `${monthKey}-${reportType}`)
-    .eq("language", lang)
-    .single();
+    .order("snapshot_number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (cached) {
-    return NextResponse.json({ report: cached.report_text, data: cached.report_data, reportType, cached: true });
+  const currentSnapshotNumber = latestSnapshot?.snapshot_number || 0;
+
+  const { data: lastReportOfSameType } = await supabase
+    .from("smart_reports")
+    .select("snapshot_number_at_generation, created_at")
+    .eq("user_id", user.id)
+    .eq("reading_type", readingType)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const lastReportSnapshotNumber = lastReportOfSameType?.snapshot_number_at_generation;
+
+  if (!isAdmin && lastReportSnapshotNumber !== null && lastReportSnapshotNumber !== undefined && lastReportSnapshotNumber >= currentSnapshotNumber) {
+    return NextResponse.json({
+      error: "no_new_snapshot",
+      message: lang === "pl"
+        ? "Noctua nie widzi jeszcze nowego materiału od ostatniego odczytu. Pisz dalej, a kolejny odczyt będzie głębszy."
+        : "Noctua has not yet gathered new material since your last reading. Write more, and the next reading will be deeper.",
+      current_snapshot: currentSnapshotNumber,
+      last_report_snapshot: lastReportSnapshotNumber,
+    }, { status: 400 });
   }
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   // Gather data
   const { data: journalData } = await supabase
@@ -375,6 +396,7 @@ Keep the response under 500 words. No markdown. No asterisks. No bullet points. 
       report_data: readingType === "pattern" ? null : reportData,
       language: lang,
       reading_type: readingType,
+      snapshot_number_at_generation: currentSnapshotNumber,
     });
 
     // Use report credit if not premium
