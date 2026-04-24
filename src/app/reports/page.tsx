@@ -259,21 +259,20 @@ export default function ReportsPage() {
             const notEnoughEntries = activeStatus.status === "blocked_not_enough_entries";
             const noNewSnapshot = activeStatus.status === "blocked_no_new_snapshot";
 
-            // TODO: Agnieszka refine copy
             const statusMessage = pl
               ? notEnoughEntries
-                ? `Jeszcze nie masz wystarczająco wpisów. Napisałaś ${activeStatus.entries_total} z ${activeStatus.entries_required} potrzebnych.`
+                ? `Nie masz jeszcze wystarczająco wpisów. ${activeStatus.entries_total} z ${activeStatus.entries_required}.`
                 : noNewSnapshot
-                ? "Noctua nie widzi jeszcze nowego materiału od ostatniego odczytu. Pisz dalej, a kolejny odczyt będzie głębszy."
+                ? "Noctua czeka na wystarczającą ilość wpisów. Kontynuuj pisanie, a kolejny odczyt będzie głębszy. ♡"
                 : needsPurchase
-                ? "Ten odczyt jest dostępny do zakupu w sklepie."
+                ? "Możesz otworzyć ten odczyt kupując go w sklepie."
                 : ""
               : notEnoughEntries
-                ? `You don't have enough entries yet. You have ${activeStatus.entries_total} of ${activeStatus.entries_required} needed.`
+                ? `You don't have enough entries yet. ${activeStatus.entries_total} of ${activeStatus.entries_required}.`
                 : noNewSnapshot
-                ? "Noctua has not yet gathered new material since your last reading. Write more, and the next one will be deeper."
+                ? "Noctua is waiting for enough entries. Keep writing, and the next reading will be deeper. ♡"
                 : needsPurchase
-                ? "This reading is available for purchase in the shop."
+                ? "You can open this reading by purchasing it in the shop."
                 : "";
 
             return (
