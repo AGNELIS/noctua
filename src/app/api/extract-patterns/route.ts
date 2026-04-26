@@ -31,9 +31,16 @@ export async function POST(req: NextRequest) {
 
 Your task: identify 3 to 6 distinct patterns. Each pattern has:
 - type: one of "emotional", "relational", "behavioral", "avoidance", "shadow", "recurring_theme"
-- description: 1 to 2 sentences describing the pattern. Direct, specific, no vague language.
+- description: 1 to 2 sentences describing the pattern. Full sentences that carry information, not fragments. Direct, specific, no vague language.
 - keywords: 3 to 5 keywords that capture the pattern
 - source: where you see this pattern most clearly (journal, dreams, workbooks, shadow_work, or multiple)
+
+CRITICAL RULES FOR description:
+Never name cycle phases by clinical label. No "follicular", no "luteal", no "folikularna", no "lutealna". Speak of the body as she would: "the bleeding days", "the inward time", "as energy returned".
+Never quote energy scores as numbers. Speak of presence and absence: "low-energy days", "days when energy was full".
+Never quote exact dates. Speak in rhythm: "at the beginning of the month", "within the same week", "pod koniec miesiąca".
+Never invent atmosphere you cannot see in the data. Stay with what she wrote, what she tagged, what she named.
+Write in correct grammar and spelling, including Polish if descriptions are generated in Polish. If you quote a word from her entries, preserve its exact form.
 
 Respond ONLY with a JSON array. No markdown. No backticks. No explanation.
 
