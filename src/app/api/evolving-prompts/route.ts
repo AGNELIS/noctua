@@ -15,9 +15,10 @@ export async function POST(req: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // Check premium
-  const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
-  if (!profile?.is_premium && !profile?.is_admin) return NextResponse.json({ skipped: "not premium" });
+  // Available for everyone (free and premium)
+  // Cooldown of 3 days and notification preferences are checked below
+  const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+  const isAdmin = profile?.is_admin || false;
 
   // Check notification preferences
   const { data: prefs } = await supabase.from("notification_prefs").select("workbook_progress").eq("user_id", user.id).single();
