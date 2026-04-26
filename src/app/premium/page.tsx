@@ -102,7 +102,7 @@ export default function PremiumPage() {
               fontWeight: 400,
             }}
           >
-            {language === "pl" ? "Widzę twoje wzorce." : "I see your patterns."}
+            {language === "pl" ? "Widzę Twoje wzorce." : "I see your patterns."}
             <br />
             {language === "pl" ? "Pokażę Ci je." : "Let me show you."}
           </h1>
