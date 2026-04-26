@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createClient } from "@supabase/supabase-js";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
+import { getUserMemory } from "@/lib/memory-context";
 
 export async function POST(req: NextRequest) {
   const serverSupabase = await createServerClient();
@@ -51,31 +52,39 @@ export async function POST(req: NextRequest) {
     supabase.from("user_patterns").select("pattern_type, description, keywords, frequency").eq("user_id", user.id).eq("status", "active").order("frequency", { ascending: false }).limit(6),
     supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
   ]);
-  const totalEntries = entryCount.count || 0;
-  const phase = totalEntries <= 15 ? "discovery" : totalEntries <= 40 ? "deepening" : "integration";
   const journalText = (journals.data || []).map(j => `Mood: ${(j.mood || []).join(", ")}. ${j.content?.substring(0, 150)}`).join("\n");
   const dreamText = (dreams.data || []).map(d => `Symbols: ${(d.symbols || []).join(", ")}. Tone: ${(d.emotional_tone || []).join(", ")}. ${d.content?.substring(0, 100)}`).join("\n");
   const workbookText = await gatherWorkbookContext(user.id, supabase);
   const shadowText = (shadow.data || []).map(s => `Emotions: ${(s.emotions || []).join(", ")}. ${s.response?.substring(0, 100)}`).join("\n");
   const patternText = (patterns.data || []).map(p => `[${p.pattern_type}, ${p.frequency}x] ${p.description}`).join("\n");
 
-  const phaseInstruction = phase === "discovery"
-    ? "This person is early in self-work. Ask something simple and grounding. Do not assume depth."
-    : phase === "deepening"
-    ? "This person is seeing patterns. Reference something specific from their data. Push gently."
-    : "This person knows her patterns. Do not explain. Challenge. Connect dots she has not connected.";
+  // Cumulative memory snapshot (Noctua's continuous knowledge of this user)
+  const memory = await getUserMemory(user.id, supabase);
+  const memoryContext = memory.lastSnapshotContent
+    ? `CONTINUITY FROM HER CUMULATIVE MEMORY:
+This is what Noctua has already seen about her across ${memory.lastSnapshotNumber} previous snapshot${memory.lastSnapshotNumber === 1 ? "" : "s"} of her inner work. Use it to ground the question. Ask something that pushes deeper into what she is already circling.
 
-  const prompt = `You are Noctua, the insight engine of a deep self-work app by AGNÉLIS. You are generating ONE personal observation or question for this person, to appear as a notification that opens their journal.
+${memory.lastSnapshotContent}
 
-${phaseInstruction}
+`
+    : "";
+
+  const prompt = `You are Noctua, the insight engine of a deep self-work app by AGNÉLIS. You are generating ONE personal observation or question for this person, to appear as a notification that opens her journal.
+
+Write in ${lang === "pl" ? "Polish" : "English"}.
+
+${memoryContext}CRITICAL VOICE RULES:
+Never name cycle phases by clinical label. No "follicular", no "luteal", no "folikularna", no "lutealna". Speak of the body as she would.
+Never quote energy scores as numbers. Speak in feeling: "a day when energy was present", "the low-energy days".
+Never quote exact dates. Speak in rhythm: "at the beginning of the month", "within the same week", "pod koniec miesiąca".
+Never invent atmosphere you cannot see in the data. You see what she wrote, what she tagged, what she named. You do not see how she wrote, whether she paused, her tone. Stay with what is on the page.
+Write in correct Polish grammar and spelling. If you quote or paraphrase a word from her entries, preserve its exact form.
 
 Your output must be EXACTLY two lines, nothing else:
 Line 1: A short title (max 8 words). This appears as the notification heading.
 Line 2: One observation or question (1 to 3 sentences). Specific to HER data. Not generic. This becomes the journal prompt.
 
 The question must make sense on its own. She must understand why you are asking it without needing to read her old entries. Reference the pattern or theme naturally within the question itself.
-
-Write in ${lang === "pl" ? "Polish" : "English"}.
 
 Journal entries:
 ${journalText || "None"}
@@ -92,9 +101,7 @@ ${shadowText || "None"}
 Known patterns:
 ${patternText || "None yet"}
 
-Phase: ${phase} (${totalEntries} entries)
-
-CRITICAL RULES:
+CRITICAL FORMATTING RULES:
 No markdown. No asterisks. No bold. No dashes or em dashes. No greetings. No "Dear" or "Droga". Do not use the word "journey". Do not give advice. Only two lines. Title and question.`;
 
   try {
