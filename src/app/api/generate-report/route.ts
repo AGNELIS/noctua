@@ -320,13 +320,13 @@ Your task: identify the three strongest patterns that recur across her journal e
 
 Structure:
 
-Pattern One.
+${lang === "pl" ? "Pierwszy wzorzec." : "Pattern One."}
 Name the most dominant pattern that repeats. Be concrete. Quote or paraphrase her specific words. Describe when things returned in terms of rhythm and sequence, not exact dates. Example: "Three times across the month you wrote 'I do not know' in your journal. First at the beginning, then twice within a week in the middle. On one of those middle days you also recorded a dream of looking through a small window."
 
-Pattern Two.
+${lang === "pl" ? "Drugi wzorzec." : "Pattern Two."}
 Name the second pattern. Same rules. Specific, dated, quoted.
 
-Pattern Three.
+${lang === "pl" ? "Trzeci wzorzec." : "Pattern Three."}
 Name the third pattern. Same rules.
 
 Then in one short paragraph, name one thing these three patterns have in common. What connects them. Not as interpretation. As observation of what co-occurs. Example: "All three appear more strongly in the first half of your cycle than in the second."
@@ -354,7 +354,7 @@ Top shadow emotions: ${topEmotions.map(([k, v]) => `${k}(${v})`).join(", ") || "
 Top dream symbols: ${topSymbols.map(([k, v]) => `${k}(${v})`).join(", ") || "none"}
 
 CRITICAL FORMATTING RULES:
-Keep the response under 500 words. No markdown. No asterisks. No bullet points. Never use dashes or em dashes. Use commas and full stops only. Section labels "Pattern One.", "Pattern Two.", "Pattern Three." on their own lines. Never use "Dear" or "Droga" or any greeting. Do not add a closing paragraph. The question at the end is the final line.`;
+Keep the response under 500 words. No markdown. No asterisks. No bullet points. Never use dashes or em dashes. Use commas and full stops only. Section labels ${lang === "pl" ? '"Pierwszy wzorzec.", "Drugi wzorzec.", "Trzeci wzorzec."' : '"Pattern One.", "Pattern Two.", "Pattern Three."'} on their own lines. Never use "Dear" or "Droga" or any greeting. Do not add a closing paragraph. The question at the end is the final line.`;
 
   const prompt = readingType === "pattern" ? patternPrompt : fullPrompt;
 
