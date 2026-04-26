@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getMoonPhase, getMoonSign, getGreeting, getDailyInsight, type MoonPhaseInfo, type MoonSignInfo } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
 import NotificationBell from "@/components/NotificationBell";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 const NAV_CARDS = [
   { titleKey: "nav_journal" as const, descKey: "nav_journal_desc" as const, href: "/journal" },
@@ -151,10 +152,11 @@ export default function DashboardPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data: profile } = await supabase.from("profiles").select("is_premium, birth_date").eq("id", user.id).single();
-      if (profile?.is_premium) {
+      const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin, admin_test_mode, birth_date").eq("id", user.id).single();
+      const { isPremium } = getEffectivePerms(profile);
+      if (isPremium) {
         setIsPremium(true);
-        if (!profile.birth_date) setNeedsOnboarding(true);
+        if (!profile?.birth_date) setNeedsOnboarding(true);
       }
     };
     checkOnboarding();

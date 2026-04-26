@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { useTheme } from "@/context/ThemeContext";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 const REWARDS = [
   { threshold: 3, type: "dream_analysis_1", en: "1 free dream reading", pl: "1 darmowy odczyt snu" },
@@ -53,8 +54,9 @@ export default function ReferralPage() {
     if (!user) { router.push("/login"); return; }
     setUserId(user.id);
 
-    const { data: profile } = await supabase.from("profiles").select("referral_code, is_admin").eq("id", user.id).single();
-    setIsAdmin(profile?.is_admin || false);
+    const { data: profile } = await supabase.from("profiles").select("referral_code, is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin } = getEffectivePerms(profile);
+    setIsAdmin(isAdmin);
     const [{ count: jCount }, { count: dCount }, { count: sCount }] = await Promise.all([
       supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),

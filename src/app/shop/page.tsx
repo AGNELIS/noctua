@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/lib/i18n";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Product = {
   id: string;
@@ -95,8 +96,9 @@ export default function ShopPage() {
     let premium = false;
     let unlimited = false;
     if (user) {
-      const { data: profile } = await supabase.from("profiles").select("is_premium").eq("id", user.id).single();
-      premium = !!profile?.is_premium;
+      const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
+      const { isPremium } = getEffectivePerms(profile);
+      premium = isPremium;
       const { data: unlimitedReward } = await supabase
         .from("referral_rewards").select("id").eq("user_id", user.id).eq("reward_type", "unlimited_dreams").maybeSingle();
       unlimited = !!unlimitedReward;

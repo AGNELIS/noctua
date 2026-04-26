@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { SunIcon, GreenSphereIcon, SphereIcon, SpikyIcon, MaskIcon, DropIcon, StarIcon } from "@/components/NoctuaIcons";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type DreamEntry = {
   id: string;
@@ -80,8 +81,9 @@ export default function DreamsPage() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data: profile } = await supabase.from("profiles").select("is_premium").eq("id", user.id).single();
-      setIsPremium(profile?.is_premium || false);
+      const { data: profile } = await supabase.from("profiles").select("is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
+      const { isPremium } = getEffectivePerms(profile);
+      setIsPremium(isPremium);
       const { data: unlimitedReward } = await supabase
         .from("referral_rewards")
         .select("id")

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { OwlIcon, LeafIcon, DiamondIcon, KeyIcon, BoltIcon, SilhouetteIcon, BodyIcon, BuildingIcon } from "@/components/NoctuaIcons";
+import { getEffectivePerms } from "@/lib/effective-perms";
 type DreamSymbol = {
   id: string;
   symbol: string;
@@ -50,10 +51,10 @@ export default function SymbolsPage() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("is_premium")
+      .select("is_premium, is_admin, admin_test_mode")
       .eq("id", user!.id)
       .single();
-    const userIsPremium = profile?.is_premium || false;
+    const { isPremium: userIsPremium } = getEffectivePerms(profile);
 
     const { data: purchases } = await supabase
       .from("user_purchases")

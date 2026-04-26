@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getMoonPhase, getDailyInsight, getSeasonalShadowPrompt, getSeason } from "@/lib/moon";
 import { useLanguage } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/i18n";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 const EMOTIONS = [
   "anger", "fear", "sadness", "shame", "guilt",
@@ -81,10 +82,11 @@ export default function ShadowWorkPage() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("is_premium")
+      .select("is_premium, is_admin, admin_test_mode")
       .eq("id", user.id)
       .single();
-    setIsPremium(profile?.is_premium || false);
+    const { isPremium } = getEffectivePerms(profile);
+    setIsPremium(isPremium);
 
     const { data } = await supabase
       .from("shadow_work_entries")

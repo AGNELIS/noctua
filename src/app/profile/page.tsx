@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/lib/i18n";
 import type { Language } from "@/lib/i18n";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Stats = {
   journalCount: number;
@@ -58,9 +59,10 @@ export default function ProfilePage() {
     setEmail(user.email || "");
     setCreatedAt(user.created_at);
 
-    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium, is_admin, birth_date, birth_time, birth_city").eq("id", user.id).single();
-    setIsPremium(profile?.is_premium || false);
-    setIsAdmin(profile?.is_admin || false);
+    const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium, is_admin, admin_test_mode, birth_date, birth_time, birth_city").eq("id", user.id).single();
+    const { isAdmin, isPremium } = getEffectivePerms(profile);
+    setIsPremium(isPremium);
+    setIsAdmin(isAdmin);
     setBirthDate(profile?.birth_date || null);
     setBirthTime(profile?.birth_time || null);
     setBirthCity(profile?.birth_city || null);

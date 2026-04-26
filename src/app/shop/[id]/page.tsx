@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { THEME_MAP, type ThemeColors } from "@/lib/themes";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Product = {
   id: string;
@@ -148,8 +149,9 @@ export default function ProductPage() {
       setOwned((purch || []).length > 0);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-        setIsAdmin(profile?.is_admin || false);
+        const { data: profile } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+        const { isAdmin } = getEffectivePerms(profile);
+        setIsAdmin(isAdmin);
         const [{ count: jCount }, { count: dCount }, { count: sCount }] = await Promise.all([
           supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
           supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
