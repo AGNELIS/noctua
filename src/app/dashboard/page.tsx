@@ -339,7 +339,7 @@ export default function DashboardPage() {
               </p>
               <p className="text-sm" style={{ color: "var(--color-dark)" }}>
                 {language === "pl"
-                  ? "Podaj dane urodzeniowe żebym mogła czytać twoje wzorce głębiej."
+                  ? "Podaj dane urodzeniowe żebym mogła czytać Twoje wzorce głębiej."
                   : "Add your birth data so I can read your patterns deeper."}
               </p>
             </button>
