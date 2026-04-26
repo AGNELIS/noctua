@@ -153,7 +153,7 @@ export default function JournalPage() {
           <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
         ) : entries.length === 0 ? (
           <div className="text-center pt-20 space-y-4">
-            <p className="text-4xl">✦</p>
+            <p className="text-4xl">♡</p>
             <p className="text-base" style={{ color: "var(--color-dark)", fontWeight: 500 }}>{t("journal_empty")}</p>
             <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Napisz swoja pierwsza refleksje." : "Begin by writing your first reflection."}</p>
             <button onClick={() => router.push("/journal/new")} className="mt-4 px-6 py-2.5 rounded-xl text-sm transition-all" style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>{t("journal_new")}</button>

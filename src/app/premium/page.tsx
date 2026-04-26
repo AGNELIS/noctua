@@ -125,7 +125,7 @@ export default function PremiumPage() {
           <div className="rounded-2xl p-5 space-y-4" style={{ background: "var(--color-blush)", border: "1px solid color-mix(in srgb, var(--color-dusty-rose) 40%, transparent)" }}>
             {features.map((f, i) => (
               <div key={f.key} className="flex items-start gap-3">
-                <span className="text-xs mt-0.5" style={{ color: "var(--color-gold)" }}>✦</span>
+                <span className="text-xs mt-0.5" style={{ color: "var(--color-gold)" }}>♡</span>
                 <span className="text-sm leading-relaxed" style={{ color: "var(--color-dark)" }}>
                   {t(f.key)}
                 </span>
