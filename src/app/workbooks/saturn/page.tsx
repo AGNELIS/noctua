@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { calculateNatalChart } from "@/lib/natal";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Session = {
   id: string;
@@ -238,26 +239,23 @@ export default function SaturnWorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: profile } = await supabase.from("profiles").select("birth_date, birth_time, birth_city, is_premium, is_admin").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("birth_date, birth_time, birth_city, is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
     if (!profile?.birth_date) {
       router.push("/onboarding");
       return;
     }
-
-    if (!profile.is_admin) {
+    const { isAdmin, isPremium } = getEffectivePerms(profile);
+    if (!isAdmin) {
       const { data: saturnProduct } = await supabase.from("shop_products").select("id").eq("name", "Saturn Workbook").single();
       const { data: bundleProduct } = await supabase.from("shop_products").select("id").eq("name", "Depth Work Bundle").single();
       const productIds = [saturnProduct?.id, bundleProduct?.id].filter(Boolean);
-
       const { data: purchases } = await supabase
         .from("user_purchases")
         .select("id")
         .eq("user_id", user.id)
         .in("product_id", productIds);
-
       const hasPurchased = (purchases || []).length > 0;
-
-      if (!hasPurchased && !profile.is_premium) {
+      if (!hasPurchased && !isPremium) {
         router.push("/shop");
         return;
       }

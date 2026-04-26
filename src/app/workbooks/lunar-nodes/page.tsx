@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { calculateNatalChart } from "@/lib/natal";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Session = {
   id: string;
@@ -244,7 +245,8 @@ export default function LunarNodesWorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: profile } = await supabase.from("profiles").select("birth_date, birth_time, birth_city, is_premium, is_admin").eq("id", user.id).single();
+    const { data: profile } = await supabase.from("profiles").select("birth_date, birth_time, birth_city, is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin, isPremium } = getEffectivePerms(profile);
     if (!profile?.birth_date) { router.push("/onboarding"); return; }
 
     // Check how many planetary workbooks completed
@@ -259,18 +261,18 @@ export default function LunarNodesWorkbookPage() {
     const uniquePlanetary = new Set(planetaryCompleted.map(w => w.workbook_type)).size;
     setCompletedWorkbooks(uniquePlanetary);
 
-    if (uniquePlanetary < 2 && !profile.is_admin) {
+    if (uniquePlanetary < 2 && !isAdmin) {
       setLocked(true);
       setLoading(false);
       return;
     }
 
-    if (!profile.is_admin) {
+    if (!isAdmin) {
       const { data: nodesProduct } = await supabase.from("shop_products").select("id").eq("name", "Lunar Nodes Workbook").single();
       const { data: bundleProduct } = await supabase.from("shop_products").select("id").eq("name", "Depth Work Bundle").single();
       const productIds = [nodesProduct?.id, bundleProduct?.id].filter(Boolean);
       const { data: purchases } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).in("product_id", productIds);
-      if ((purchases || []).length === 0 && !profile.is_premium) { router.push("/shop"); return; }
+      if ((purchases || []).length === 0 && !isPremium) { router.push("/shop"); return; }
     }
 
     const chart = calculateNatalChart(profile.birth_date, profile.birth_time, profile.birth_city);
