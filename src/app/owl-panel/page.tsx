@@ -45,6 +45,7 @@ export default function OwlPanelPage() {
 
   // Toggles
   const [premiumStatus, setPremiumStatus] = useState(false);
+  const [testMode, setTestMode] = useState<"admin" | "premium" | "free">("admin");
   const [actionMsg, setActionMsg] = useState("");
 
   useEffect(() => { load(); loadSnapshots(); }, []);
@@ -62,14 +63,17 @@ export default function OwlPanelPage() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("is_admin, is_premium, referral_code")
+      .select("is_admin, is_premium, referral_code, admin_test_mode")
       .eq("id", user.id)
       .single();
-
     if (!profile?.is_admin) { router.push("/dashboard"); return; }
     setIsAdmin(true);
     setPremiumStatus(profile.is_premium || false);
     setReferralCode(profile.referral_code || "");
+    const savedMode = profile.admin_test_mode;
+    if (savedMode === "free" || savedMode === "premium" || savedMode === "admin") {
+      setTestMode(savedMode);
+    }
 
     // Dream analyses this month
     const now = new Date();
@@ -129,6 +133,13 @@ export default function OwlPanelPage() {
     await supabase.from("profiles").update({ is_premium: newVal }).eq("id", myId);
     setPremiumStatus(newVal);
     showMsg(newVal ? "Premium ON" : "Premium OFF");
+  };
+
+  const changeTestMode = async (mode: "admin" | "premium" | "free") => {
+    const supabase = createClient();
+    await supabase.from("profiles").update({ admin_test_mode: mode }).eq("id", myId);
+    setTestMode(mode);
+    showMsg(`Test mode: ${mode}`);
   };
 
   const resetDreamAnalyses = async () => {
@@ -321,6 +332,51 @@ export default function OwlPanelPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-5">
+        {/* Test mode toggle (admin only) */}
+        <div style={{ ...sectionStyle, background: "var(--color-blush)", borderColor: "var(--color-plum)" }}>
+          <p style={labelStyle}>Test Mode</p>
+          <p className="text-xs mt-1 mb-3" style={{ color: "var(--color-mauve)", opacity: 0.8 }}>
+            View the app as a different user type. Saves to your profile.
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => changeTestMode("admin")}
+              className="flex-1 py-2 rounded-xl text-xs tracking-widest uppercase transition-all"
+              style={{
+                background: testMode === "admin" ? "var(--color-plum)" : "transparent",
+                color: testMode === "admin" ? "var(--color-cream)" : "var(--color-mauve)",
+                border: `1px solid ${testMode === "admin" ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
+                fontWeight: testMode === "admin" ? 600 : 500,
+              }}
+            >
+              Admin
+            </button>
+            <button
+              onClick={() => changeTestMode("premium")}
+              className="flex-1 py-2 rounded-xl text-xs tracking-widest uppercase transition-all"
+              style={{
+                background: testMode === "premium" ? "var(--color-plum)" : "transparent",
+                color: testMode === "premium" ? "var(--color-cream)" : "var(--color-mauve)",
+                border: `1px solid ${testMode === "premium" ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
+                fontWeight: testMode === "premium" ? 600 : 500,
+              }}
+            >
+              Premium
+            </button>
+            <button
+              onClick={() => changeTestMode("free")}
+              className="flex-1 py-2 rounded-xl text-xs tracking-widest uppercase transition-all"
+              style={{
+                background: testMode === "free" ? "var(--color-plum)" : "transparent",
+                color: testMode === "free" ? "var(--color-cream)" : "var(--color-mauve)",
+                border: `1px solid ${testMode === "free" ? "var(--color-plum)" : "var(--color-dusty-rose)"}`,
+                fontWeight: testMode === "free" ? 600 : 500,
+              }}
+            >
+              Free
+            </button>
+          </div>
+        </div>
 
         {/* Premium toggle */}
         <div style={sectionStyle}>
