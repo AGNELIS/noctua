@@ -44,7 +44,6 @@ export default function OwlPanelPage() {
   const [purchases, setPurchases] = useState<any[]>([]);
 
   // Toggles
-  const [premiumStatus, setPremiumStatus] = useState(false);
   const [testMode, setTestMode] = useState<"admin" | "premium" | "free">("admin");
   const [actionMsg, setActionMsg] = useState("");
 
@@ -68,7 +67,6 @@ export default function OwlPanelPage() {
       .single();
     if (!profile?.is_admin) { router.push("/dashboard"); return; }
     setIsAdmin(true);
-    setPremiumStatus(profile.is_premium || false);
     setReferralCode(profile.referral_code || "");
     const savedMode = profile.admin_test_mode;
     if (savedMode === "free" || savedMode === "premium" || savedMode === "admin") {
@@ -125,14 +123,6 @@ export default function OwlPanelPage() {
     setWeeklyInsight(insight?.insight_text || null);
 
     setLoading(false);
-  };
-
-  const togglePremium = async () => {
-    const supabase = createClient();
-    const newVal = !premiumStatus;
-    await supabase.from("profiles").update({ is_premium: newVal }).eq("id", myId);
-    setPremiumStatus(newVal);
-    showMsg(newVal ? "Premium ON" : "Premium OFF");
   };
 
   const changeTestMode = async (mode: "admin" | "premium" | "free") => {
@@ -374,21 +364,6 @@ export default function OwlPanelPage() {
               }}
             >
               Free
-            </button>
-          </div>
-        </div>
-
-        {/* Premium toggle */}
-        <div style={sectionStyle}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p style={labelStyle}>Premium Status</p>
-              <p style={{ ...valueStyle, color: premiumStatus ? "var(--color-plum)" : "var(--color-dusty-rose)", fontWeight: 600 }}>
-                {premiumStatus ? "ACTIVE" : "INACTIVE"}
-              </p>
-            </div>
-            <button onClick={togglePremium} style={premiumStatus ? btnOutline : btnStyle}>
-              {premiumStatus ? "Turn OFF" : "Turn ON"}
             </button>
           </div>
         </div>
