@@ -171,7 +171,7 @@ const translations = {
   weekly_insight_more: { en: "Read more", pl: "Czytaj dalej" },
   premium_hero_line1: { en: "I see your patterns.", pl: "Widzę twoje wzorce." },
   premium_hero_line2: { en: "Let me show you.", pl: "Pokażę ci je." },
-  premium_hero_desc: { en: "You are not paying for features. You are paying for someone to see what you cannot see yourself.", pl: "Nie płacisz za funkcje. Płacisz za to, że ktoś widzi to, czego sama nie widzisz." },
+  premium_hero_desc: { en: "You are not paying for features. You are paying for someone to see what you cannot see yourself.", pl: "Nie płacisz za funkcje. Płacisz za to, że ktoś widzi to, czego sama nie dostrzegasz." },
   premium_formula: { en: "Premium = I understand you. I guide you. I show you patterns.", pl: "Premium = Rozumiem cię. Prowadzę cię. Pokazuję ci wzorce." },
   season_spring: { en: "Spring", pl: "Wiosna" },
   season_summer: { en: "Summer", pl: "Lato" },

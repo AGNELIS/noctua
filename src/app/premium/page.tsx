@@ -104,20 +104,20 @@ export default function PremiumPage() {
           >
             {language === "pl" ? "Widzę twoje wzorce." : "I see your patterns."}
             <br />
-            {language === "pl" ? "Pokażę ci je." : "Let me show you."}
+            {language === "pl" ? "Pokażę Ci je." : "Let me show you."}
           </h1>
           <p className="text-sm leading-relaxed max-w-xs mx-auto" style={{ color: "var(--color-mauve)" }}>
             {language === "pl"
-              ? "Nie płacisz za funkcje. Płacisz za to, że ktoś widzi to, czego sama nie widzisz."
+              ? "Nie płacisz za funkcje. Płacisz za to, że ktoś widzi to, czego sama nie dostrzegasz."
               : "You are not paying for features. You are paying for someone to see what you cannot see yourself."}
           </p>
         </section>
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4">
-          <div className="h-px w-16" style={{ background: "linear-gradient(to right, transparent, var(--color-gold))" }} />
-          <span style={{ color: "var(--color-gold)", fontSize: "10px", opacity: 0.5 }}>&#10023;</span>
-          <div className="h-px w-16" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
+          <div className="h-px w-20" style={{ background: "linear-gradient(to right, transparent, var(--color-plum))" }} />
+          <span style={{ color: "var(--color-plum)", fontSize: "16px" }}>♡</span>
+          <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-plum))" }} />
         </div>
 
         {/* What you get */}
