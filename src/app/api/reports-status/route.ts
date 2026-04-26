@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type ReadingType = "monthly" | "pattern";
 
@@ -227,12 +228,10 @@ export async function GET() {
   // Load admin/premium flags
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_admin, is_premium")
+    .select("is_admin, is_premium, admin_test_mode")
     .eq("id", user.id)
     .single();
-
-  const isAdmin = profile?.is_admin || false;
-  const isPremium = profile?.is_premium || false;
+  const { isAdmin, isPremium } = getEffectivePerms(profile);
 
   // Count all entries (journal + dreams + shadow work)
   const [{ count: j }, { count: d }, { count: s }] = await Promise.all([

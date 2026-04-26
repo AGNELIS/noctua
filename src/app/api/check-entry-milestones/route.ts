@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { getEffectivePerms } from "@/lib/effective-perms";
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -15,11 +16,12 @@ export async function POST(req: NextRequest) {
   }).catch(err => console.error("Snapshot trigger from milestones failed:", err));
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_premium")
+    .select("is_admin, is_premium, admin_test_mode")
     .eq("id", user.id)
     .single();
+  const { isPremium } = getEffectivePerms(profile);
 
-  if (!profile?.is_premium) return NextResponse.json({ skipped: true });
+  if (!isPremium) return NextResponse.json({ skipped: true });
 
   // Find last report date
   const { data: lastReport } = await supabase

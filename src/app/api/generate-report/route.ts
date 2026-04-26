@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
 import { getUserMemory } from "@/lib/memory-context";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -33,9 +34,8 @@ export async function POST(req: NextRequest) {
   const { count: cSince } = await supabase.from("cycle_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDate);
 
   const totalSinceLastReading = (jSince || 0) + (dSince || 0) + (sSince || 0) + (cSince || 0);
-  const { data: adminProfile } = await supabase.from("profiles").select("is_admin, is_premium").eq("id", user.id).single();
-  const isAdmin = adminProfile?.is_admin || false;
-  const isPremium = adminProfile?.is_premium || false;
+  const { data: adminProfile } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+  const { isAdmin, isPremium } = getEffectivePerms(adminProfile);
 
   if (!isAdmin && !isPremium) {
     // Check if user has a purchased report credit

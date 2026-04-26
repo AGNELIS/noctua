@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
 import { getUserMemory } from "@/lib/memory-context";
 import { NOCTUA_VOICE_SYSTEM_PROMPT } from "@/lib/noctua-voice";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -14,11 +15,10 @@ export async function GET(req: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_premium, is_admin, preferred_language")
+    .select("is_premium, is_admin, admin_test_mode, preferred_language")
     .eq("id", user.id)
     .single();
-
-  const isAdmin = profile?.is_admin || false;
+  const { isAdmin } = getEffectivePerms(profile);
 
   // Access check: everyone (free and premium) needs to have purchased a Reflection credit
   // Admin bypasses this for testing

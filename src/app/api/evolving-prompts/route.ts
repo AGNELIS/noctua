@@ -3,6 +3,7 @@ import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createClient } from "@supabase/supabase-js";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
 import { getUserMemory } from "@/lib/memory-context";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 export async function POST(req: NextRequest) {
   const serverSupabase = await createServerClient();
@@ -17,8 +18,8 @@ export async function POST(req: NextRequest) {
 
   // Available for everyone (free and premium)
   // Cooldown of 3 days and notification preferences are checked below
-  const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-  const isAdmin = profile?.is_admin || false;
+  const { data: profile } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+  const { isAdmin } = getEffectivePerms(profile);
 
   // Check notification preferences
   const { data: prefs } = await supabase.from("notification_prefs").select("workbook_progress").eq("user_id", user.id).single();

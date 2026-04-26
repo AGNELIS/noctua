@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { gatherWorkbookContext } from "@/lib/workbook-context";
 import { getUserMemory } from "@/lib/memory-context";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 const PREMIUM_MONTHLY_LIMIT = 5;
 
@@ -31,11 +32,10 @@ export async function POST(req: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("is_premium, is_admin")
+    .select("is_premium, is_admin, admin_test_mode")
     .eq("id", user.id)
     .single();
-  const isPremium = profile?.is_premium || false;
-  const isAdmin = profile?.is_admin || false;
+  const { isAdmin, isPremium } = getEffectivePerms(profile);
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
