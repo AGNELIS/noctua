@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Patterns = {
   topSymbols: string[];
@@ -180,11 +181,12 @@ export default function DreamWorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: diProfile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
-    if (!diProfile?.is_admin) {
+    const { data: diProfile } = await supabase.from("profiles").select("is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin: diIsAdmin, isPremium: diIsPremium } = getEffectivePerms(diProfile);
+    if (!diIsAdmin) {
       const { data: diProduct } = await supabase.from("shop_products").select("id").eq("name", "Dream Integration Workbook").single();
       const { data: diPurchase } = diProduct ? await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", diProduct.id).limit(1) : { data: [] };
-      if (!(diPurchase || []).length && !diProfile?.is_premium) { router.push("/shop"); return; }
+      if (!(diPurchase || []).length && !diIsPremium) { router.push("/shop"); return; }
     }
 
     const { count } = await supabase
@@ -202,8 +204,9 @@ export default function DreamWorkbookPage() {
     const { count: newDreams } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDream);
     const { count: newJournal } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDream);
     const totalNewDream = (newDreams || 0) + (newJournal || 0);
-    const { data: adminCheck } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-    if (totalNewDream < 5 && !adminCheck?.is_admin) {
+    const { data: adminCheck } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin: adminCheckIsAdmin } = getEffectivePerms(adminCheck);
+    if (totalNewDream < 5 && !adminCheckIsAdmin) {
       setGateBlocked(true);
       setLoading(false);
       return;

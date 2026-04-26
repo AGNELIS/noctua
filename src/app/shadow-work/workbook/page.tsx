@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Patterns = {
   topEmotions: string[];
@@ -141,11 +142,12 @@ export default function WorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: swProfile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
-    if (!swProfile?.is_admin) {
+    const { data: swProfile } = await supabase.from("profiles").select("is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin: swIsAdmin, isPremium: swIsPremium } = getEffectivePerms(swProfile);
+    if (!swIsAdmin) {
       const { data: swProduct } = await supabase.from("shop_products").select("id").eq("name", "Shadow Work Workbook").single();
       const { data: swPurchase } = swProduct ? await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", swProduct.id).limit(1) : { data: [] };
-      if (!(swPurchase || []).length && !swProfile?.is_premium) { router.push("/shop"); return; }
+      if (!(swPurchase || []).length && !swIsPremium) { router.push("/shop"); return; }
     }
 
     const { count: jRaw } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id);
@@ -163,8 +165,9 @@ export default function WorkbookPage() {
     const { count: newS } = await supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
     const { count: newD } = await supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceDateWb);
     const totalNewEntries = (newJ || 0) + (newS || 0) + (newD || 0);
-    const { data: adminCheck } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-    if (totalNewEntries < 5 && !adminCheck?.is_admin) {
+    const { data: adminCheck } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin: adminCheckIsAdmin } = getEffectivePerms(adminCheck);
+    if (totalNewEntries < 5 && !adminCheckIsAdmin) {
       setGateBlocked(true);
       setLoading(false);
       return;

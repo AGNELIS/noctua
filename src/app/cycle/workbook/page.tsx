@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Patterns = {
   dominantPhase: string | null;
@@ -163,11 +164,12 @@ export default function CycleWorkbookPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push("/login"); return; }
 
-    const { data: caProfile } = await supabase.from("profiles").select("is_premium, is_admin").eq("id", user.id).single();
-    if (!caProfile?.is_admin) {
+    const { data: caProfile } = await supabase.from("profiles").select("is_premium, is_admin, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin: caIsAdmin, isPremium: caIsPremium } = getEffectivePerms(caProfile);
+    if (!caIsAdmin) {
       const { data: caProduct } = await supabase.from("shop_products").select("id").eq("name", "Cycle Alignment Workbook").single();
       const { data: caPurchase } = caProduct ? await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", caProduct.id).limit(1) : { data: [] };
-      if (!(caPurchase || []).length && !caProfile?.is_premium) { router.push("/shop"); return; }
+      if (!(caPurchase || []).length && !caIsPremium) { router.push("/shop"); return; }
     }
 
     const { count } = await supabase
@@ -185,8 +187,9 @@ export default function CycleWorkbookPage() {
     const { count: newCycleEntries } = await supabase.from("cycle_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceCycle);
     const { count: newJournalCycle } = await supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", sinceCycle);
     const totalNewCycle = (newCycleEntries || 0) + (newJournalCycle || 0);
-    const { data: adminCheck } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-    if (totalNewCycle < 5 && !adminCheck?.is_admin) {
+    const { data: adminCheck } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
+    const { isAdmin: adminCheckIsAdmin } = getEffectivePerms(adminCheck);
+    if (totalNewCycle < 5 && !adminCheckIsAdmin) {
       setGateBlocked(true);
       setLoading(false);
       return;
