@@ -94,7 +94,7 @@ export default function ProfilePage() {
       .select("product_id, purchased_at, shop_products(name, category, preview_emoji)")
       .order("purchased_at", { ascending: false });
     setPurchases((purch as any[]) || []);
-    const { data: notifPrefs } = await supabase.from("notification_prefs").select("moon_phase, report_ready, workbook_progress").eq("user_id", user.id).single();
+    const { data: notifPrefs } = await supabase.from("notification_prefs").select("moon_phase, report_ready, workbook_progress").eq("user_id", user.id).maybeSingle();
     if (notifPrefs) {
       setNotifMoon(notifPrefs.moon_phase);
       setNotifReport(notifPrefs.report_ready);

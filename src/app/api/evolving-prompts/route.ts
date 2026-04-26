@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   const { isAdmin } = getEffectivePerms(profile);
 
   // Check notification preferences
-  const { data: prefs } = await supabase.from("notification_prefs").select("workbook_progress").eq("user_id", user.id).single();
+  const { data: prefs } = await supabase.from("notification_prefs").select("workbook_progress").eq("user_id", user.id).maybeSingle();
   if (prefs && prefs.workbook_progress === false) return NextResponse.json({ skipped: "notifications disabled" });
 
   // Check if we already sent an evolving prompt in the last 3 days
