@@ -46,19 +46,12 @@ const PRODUCT_NAME_PL: Record<string, string> = {
   "Depth Work Bundle": "Pakiet Go Deeper",
 };
 
-const MIN_ENTRIES_REQUIRED: Record<string, number> = {
-  report: 7,
-  interpretation: 1,
-  workbook: 3,
-};
-
 export default function ShopPage() {
   const router = useRouter();
   const { t, language } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [purchased, setPurchased] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [buying, setBuying] = useState<string | null>(null);
   const [credits, setCredits] = useState<Record<string, number>>({});
   const [isPremium, setIsPremium] = useState(false);
   const [hasUnlimited, setHasUnlimited] = useState(false);
@@ -109,27 +102,6 @@ export default function ShopPage() {
     setIsPremium(premium);
     setHasUnlimited(unlimited);
     setLoading(false);
-  };
-
-  const handlePurchase = async (productId: string) => {
-    setBuying(productId);
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    const { error } = await supabase
-      .from("user_purchases")
-      .insert({ user_id: user.id, product_id: productId });
-
-    if (!error) {
-      setPurchased((prev) => new Set([...prev, productId]));
-    }
-    setBuying(null);
   };
 
   const handleActivateTheme = async (productId: string, productName: string) => {
@@ -214,8 +186,7 @@ export default function ShopPage() {
                               router.push(`/shop/${product.id}`);
                             }
                           }}
-                          disabled={buying === product.id}
-                          className="flex-shrink-0 flex flex-col items-center transition-all duration-300 hover:scale-[1.05] focus:outline-none disabled:opacity-50"
+                          className="flex-shrink-0 flex flex-col items-center transition-all duration-300 hover:scale-[1.05] focus:outline-none"
                           style={{ width: "90px" }}
                         >
                           <div

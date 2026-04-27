@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { countEntries, type EntryGateConfig } from "@/lib/entry-gate";
+import { getEffectivePerms } from "@/lib/effective-perms";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2025-03-31.basil" });
 
@@ -13,6 +15,36 @@ export async function POST(req: NextRequest) {
   if (!productId || !productName || !priceGbp) {
     return NextResponse.json({ error: "Missing product data" }, { status: 400 });
   }
+
+  // Server-side entry gate check
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("is_admin, is_premium, admin_test_mode")
+    .eq("id", user.id)
+    .single();
+  const { isAdmin } = getEffectivePerms(profile);
+
+  const { data: gateProduct } = await supabase
+    .from("shop_products")
+    .select("entry_gate, entry_gate_type, entry_gate_scope")
+    .eq("id", productId)
+    .single();
+
+  if (gateProduct && gateProduct.entry_gate && !isAdmin) {
+    const config: EntryGateConfig = {
+      entry_gate: gateProduct.entry_gate,
+      entry_gate_type: gateProduct.entry_gate_type,
+      entry_gate_scope: gateProduct.entry_gate_scope,
+    };
+    const status = await countEntries(user.id, productId, config, supabase);
+    if (status.blocked) {
+      return NextResponse.json(
+        { error: "entry_gate_not_met", entries_total: status.entries_total, entries_required: status.entries_required },
+        { status: 403 }
+      );
+    }
+  }
+
   let promotionCodeId: string | null = null;
   if (promoCode) {
     try {

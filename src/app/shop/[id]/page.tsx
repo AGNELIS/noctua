@@ -5,7 +5,6 @@ import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/lib/i18n";
 import { THEME_MAP, type ThemeColors } from "@/lib/themes";
-import { getEffectivePerms } from "@/lib/effective-perms";
 
 type Product = {
   id: string;
@@ -14,6 +13,12 @@ type Product = {
   category: string;
   price_gbp: number;
   entry_gate: number | null;
+};
+
+type ShopStatus = {
+  entries_total: number;
+  entries_required: number;
+  blocked: boolean;
 };
 
 const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
@@ -137,8 +142,7 @@ export default function ProductPage() {
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPercent: number } | null>(null);
   const [promoError, setPromoError] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
-  const [entryCount, setEntryCount] = useState(0);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [gateStatus, setGateStatus] = useState<ShopStatus | null>(null);
   useEffect(() => {
     const load = async () => {
       const supabase = createClient();
@@ -147,18 +151,24 @@ export default function ProductPage() {
       setProduct(prod);
       const { data: purch } = await supabase.from("user_purchases").select("product_id").eq("product_id", id);
       setOwned((purch || []).length > 0);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from("profiles").select("is_admin, is_premium, admin_test_mode").eq("id", user.id).single();
-        const { isAdmin } = getEffectivePerms(profile);
-        setIsAdmin(isAdmin);
-        const [{ count: jCount }, { count: dCount }, { count: sCount }] = await Promise.all([
-          supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-          supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-          supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        ]);
-        setEntryCount((jCount || 0) + (dCount || 0) + (sCount || 0));
+
+      // Fetch gate status from server (handles admin bypass, scope, type correctly)
+      try {
+        const res = await fetch("/api/shop-status");
+        if (res.ok) {
+          const allStatuses = await res.json();
+          if (allStatuses[id]) {
+            setGateStatus({
+              entries_total: allStatuses[id].entries_total,
+              entries_required: allStatuses[id].entries_required,
+              blocked: allStatuses[id].blocked,
+            });
+          }
+        }
+      } catch {
+        // Silent fail — if endpoint unavailable, gate UI just won't show
       }
+
       setLoading(false);
     };
     load();
@@ -269,7 +279,7 @@ export default function ProductPage() {
         )}
 
         <section className="text-center space-y-4">
-          {appliedPromo ? (
+          {!owned && gateStatus && gateStatus.blocked ? null : appliedPromo ? (
             <div className="space-y-1">
               <p className="text-sm line-through" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
                 £{product.price_gbp.toFixed(2)}
@@ -349,10 +359,10 @@ export default function ProductPage() {
             >
               {language === "pl" ? "Otwórz" : "Open"}
             </button>
-          ) : product.entry_gate && !isAdmin && entryCount < product.entry_gate ? (
+          ) : gateStatus && gateStatus.blocked ? (
             <div className="w-full py-6 rounded-xl text-center space-y-2" style={{ background: "var(--color-blush)", border: "1.5px solid var(--color-dusty-rose)" }}>
               <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "0.02em" }}>
-                {language === "pl" ? `${entryCount} / ${product.entry_gate} wpisów` : `${entryCount} / ${product.entry_gate} entries`}
+                {language === "pl" ? `${gateStatus.entries_total} / ${gateStatus.entries_required} wpisów` : `${gateStatus.entries_total} / ${gateStatus.entries_required} entries`}
               </p>
               <p className="px-4" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", fontStyle: "italic", fontWeight: 500, opacity: 0.85 }}>
                 {language === "pl" ? "Odblokuje się po zebraniu wystarczającej ilości danych" : "Unlocks once you have enough data to read"}
