@@ -66,7 +66,7 @@ export default function OnboardingPage() {
             {pl ? "Żeby widzieć głębiej, muszę wiedzieć skąd przychodzisz." : "To see deeper, I need to know where you come from."}
           </h1>
           <p className="text-sm" style={{ color: "var(--color-mauve)" }}>
-            {pl ? "Te dane pozwolą mi czytać twoje wzorce przez pryzmat planet." : "This data lets me read your patterns through the lens of the planets."}
+            {pl ? "Te dane pozwolą mi czytać Twoje wzorce przez pryzmat planet." : "This data lets me read your patterns through the lens of the planets."}
           </p>
         </section>
 

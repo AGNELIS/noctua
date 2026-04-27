@@ -54,7 +54,7 @@ function SuccessContent() {
           <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)" }}>
             {hasBirthData
               ? (pl ? "Masz teraz dostęp do wszystkich funkcji Noctua." : "You now have access to all Noctua features.")
-              : (pl ? "Żeby odblokować workbooki planetarne, potrzebuję poznać twoją datę urodzenia." : "To unlock planetary workbooks, I need to know your birth date.")}
+              : (pl ? "Żeby odblokować workbooki planetarne, potrzebuję poznać Twoją datę urodzenia." : "To unlock planetary workbooks, I need to know your birth date.")}
           </p>
           <button onClick={() => router.push(hasBirthData ? "/dashboard" : "/onboarding")} className="px-8 py-3 rounded-xl text-sm tracking-widest uppercase"
             style={{ backgroundColor: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
