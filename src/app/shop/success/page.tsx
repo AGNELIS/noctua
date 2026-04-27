@@ -17,16 +17,23 @@ function SuccessContent() {
   useEffect(() => {
     const verify = async () => {
       const sessionId = searchParams.get("session_id");
-      const productId = searchParams.get("product_id");
-      if (!sessionId || !productId) { setStatus("error"); return; }
+      if (!sessionId) { setStatus("error"); return; }
 
+      const res = await fetch("/api/verify-stripe-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, expectedMode: "payment" }),
+      });
+      const data = await res.json();
+      if (!data.verified || !data.productId) { setStatus("error"); return; }
+
+      const productId = data.productId;
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setStatus("error"); return; }
 
       const { data: existing } = await supabase.from("user_purchases")
         .select("id").eq("user_id", user.id).eq("product_id", productId).limit(1);
-
       if (existing && existing.length > 0) {
         setStatus("success");
         return;
@@ -34,7 +41,6 @@ function SuccessContent() {
 
       const { error } = await supabase.from("user_purchases")
         .insert({ user_id: user.id, product_id: productId, stripe_session_id: sessionId });
-
       setStatus(error ? "error" : "success");
     };
     verify();

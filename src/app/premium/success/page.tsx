@@ -18,12 +18,19 @@ function SuccessContent() {
     const verify = async () => {
       const sessionId = searchParams.get("session_id");
       if (!sessionId) { setStatus("error"); return; }
+
+      const res = await fetch("/api/verify-stripe-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, expectedMode: "subscription" }),
+      });
+      const data = await res.json();
+      if (!data.verified) { setStatus("error"); return; }
+
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setStatus("error"); return; }
 
-      // Webhook handles is_premium, but set it here too for immediate UI
-      await supabase.from("profiles").update({ is_premium: true }).eq("id", user.id);
       const { data: profile } = await supabase.from("profiles").select("birth_date").eq("id", user.id).single();
       setHasBirthData(!!profile?.birth_date);
       setStatus("success");
