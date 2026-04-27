@@ -51,13 +51,13 @@ export async function countEntries(
   if (config.entry_gate_scope === "since_last_purchase") {
     const { data: lastPurchase } = await supabase
       .from("user_purchases")
-      .select("created_at")
+      .select("purchased_at")
       .eq("user_id", userId)
       .eq("product_id", productId)
-      .order("created_at", { ascending: false })
+      .order("purchased_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (lastPurchase) sinceDate = lastPurchase.created_at;
+    if (lastPurchase) sinceDate = lastPurchase.purchased_at;
   }
 
   // Count entries from relevant tables
