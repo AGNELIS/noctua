@@ -350,9 +350,9 @@ export default function DashboardPage() {
 
         {/* Divider */}
         <div className="flex items-center justify-center gap-4">
-          <div className="h-px w-20" style={{ background: "linear-gradient(to right, transparent, var(--color-gold))" }} />
-          <span style={{ color: "var(--color-gold)", fontSize: "12px", opacity: 0.6 }}>&#10023;</span>
-          <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-gold))" }} />
+          <div className="h-px w-20" style={{ background: "linear-gradient(to right, transparent, var(--color-plum))" }} />
+          <span style={{ color: "var(--color-plum)", fontSize: "16px" }}>♡</span>
+          <div className="h-px w-20" style={{ background: "linear-gradient(to left, transparent, var(--color-plum))" }} />
         </div>
 
         {/* Cloud navigation */}
