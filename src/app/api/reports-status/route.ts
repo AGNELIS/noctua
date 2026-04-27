@@ -9,6 +9,7 @@ type ProductStatus = {
   entries_required: number;
   current_snapshot_number: number;
   last_report_snapshot_number: number | null;
+  has_credit: boolean;
 };
 
 async function buildProductStatus(
@@ -37,6 +38,7 @@ async function buildProductStatus(
       entries_required: 0,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: null,
+      has_credit: false,
     };
   }
 
@@ -69,6 +71,22 @@ async function buildProductStatus(
 
   const lastReportSnapshotNumber = lastReport?.snapshot_number_at_generation ?? null;
 
+  // Check credit availability ALWAYS (independent of gate state)
+  // This lets the UI show "Your Reflection is waiting, write X more entries"
+  // when user has paid but doesn't yet meet the gate.
+  const hasFreeAccess = isFreeFor?.isPremium && isPremium;
+  let hasCredit = false;
+  if (!hasFreeAccess) {
+    const { data: credit } = await supabase
+      .from("user_purchases")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("product_id", product.id)
+      .is("used_at", null)
+      .limit(1);
+    hasCredit = !!(credit && credit.length > 0);
+  }
+
   // Admin bypasses all gates (testing)
   if (isAdmin) {
     return {
@@ -77,6 +95,7 @@ async function buildProductStatus(
       entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: lastReportSnapshotNumber,
+      has_credit: hasCredit,
     };
   }
 
@@ -88,6 +107,7 @@ async function buildProductStatus(
       entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: lastReportSnapshotNumber,
+      has_credit: hasCredit,
     };
   }
 
@@ -102,39 +122,30 @@ async function buildProductStatus(
       entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: lastReportSnapshotNumber,
-    };
-  }
-
-  // Access check: free pass for premium users (Full Reading), or credit required
-  const hasFreeAccess = isFreeFor?.isPremium && isPremium;
-
-  if (!hasFreeAccess) {
-    const { data: credit } = await supabase
-      .from("user_purchases")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("product_id", product.id)
-      .is("used_at", null)
-      .limit(1);
-
-    const hasCredit = credit && credit.length > 0;
-
-    return {
-      status: hasCredit ? "ready_to_generate" : "ready_to_buy",
-      entries_total: gateStatus.entries_total,
-      entries_required: gateStatus.entries_required,
-      current_snapshot_number: currentSnapshotNumber,
-      last_report_snapshot_number: lastReportSnapshotNumber,
+      has_credit: hasCredit,
     };
   }
 
   // Premium with free access (Full Reading)
+  if (hasFreeAccess) {
+    return {
+      status: "ready_to_generate",
+      entries_total: gateStatus.entries_total,
+      entries_required: gateStatus.entries_required,
+      current_snapshot_number: currentSnapshotNumber,
+      last_report_snapshot_number: lastReportSnapshotNumber,
+      has_credit: hasCredit,
+    };
+  }
+
+  // Paid product — credit determines whether user can generate or needs to buy
   return {
-    status: "ready_to_generate",
+    status: hasCredit ? "ready_to_generate" : "ready_to_buy",
     entries_total: gateStatus.entries_total,
     entries_required: gateStatus.entries_required,
     current_snapshot_number: currentSnapshotNumber,
     last_report_snapshot_number: lastReportSnapshotNumber,
+    has_credit: hasCredit,
   };
 }
 

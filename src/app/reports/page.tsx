@@ -31,6 +31,7 @@ type ProductStatus = {
   entries_required: number;
   current_snapshot_number: number;
   last_report_snapshot_number: number | null;
+  has_credit: boolean;
 };
 
 type ReportsStatusResponse = {
@@ -258,16 +259,21 @@ export default function ReportsPage() {
             const needsPurchase = activeStatus.status === "ready_to_buy";
             const notEnoughEntries = activeStatus.status === "blocked_not_enough_entries";
             const noNewSnapshot = activeStatus.status === "blocked_no_new_snapshot";
-
+            const waitingWithCredit = notEnoughEntries && activeStatus.has_credit;
+            const remaining = activeStatus.entries_required - activeStatus.entries_total;
             const statusMessage = pl
-              ? notEnoughEntries
+              ? waitingWithCredit
+                ? `Twoja Refleksja czeka. Dopisz jeszcze ${remaining}, a Ją wygeneruję. ♡`
+                : notEnoughEntries
                 ? `Nie masz jeszcze wystarczająco wpisów. ${activeStatus.entries_total} z ${activeStatus.entries_required}.`
                 : noNewSnapshot
                 ? "Noctua czeka na wystarczającą ilość wpisów. Kontynuuj pisanie, a kolejny odczyt będzie głębszy. ♡"
                 : needsPurchase
                 ? "Możesz otworzyć ten odczyt kupując go w sklepie."
                 : ""
-              : notEnoughEntries
+              : waitingWithCredit
+                ? `Your Reflection is waiting. Write ${remaining} more, and I will generate it. ♡`
+                : notEnoughEntries
                 ? `You don't have enough entries yet. ${activeStatus.entries_total} of ${activeStatus.entries_required}.`
                 : noNewSnapshot
                 ? "Noctua is waiting for enough entries. Keep writing, and the next reading will be deeper. ♡"
@@ -280,7 +286,9 @@ export default function ReportsPage() {
                 {statusMessage && (
                   <div className="rounded-2xl border p-5 mb-4" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
                     <p className="text-sm leading-relaxed text-center" style={{ color: "var(--color-dark)" }}>
-                      {notEnoughEntries ? (
+                      {waitingWithCredit ? (
+                        statusMessage
+                      ) : notEnoughEntries ? (
                         <>
                           {pl ? "Nie masz jeszcze wystarczająco wpisów." : "You don't have enough entries yet."}
                           <br />
