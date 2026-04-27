@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { getEffectivePerms } from "@/lib/effective-perms";
-
-type ReadingType = "monthly" | "pattern";
+import { countEntries, type EntryGateType, type EntryGateScope } from "@/lib/entry-gate";
 
 type ProductStatus = {
   status: "ready_to_generate" | "ready_to_buy" | "blocked_no_new_snapshot" | "blocked_not_enough_entries";
@@ -12,22 +11,58 @@ type ProductStatus = {
   last_report_snapshot_number: number | null;
 };
 
-const GATE = 15;
-
-async function buildStatus(
+async function buildProductStatus(
   userId: string,
-  readingType: ReadingType,
+  productName: string,
+  snapshotTable: "smart_reports" | "weekly_insights",
+  snapshotFilter: { reading_type?: string },
+  isFreeFor: { isPremium: boolean } | null,
   supabase: Awaited<ReturnType<typeof createClient>>,
   isAdmin: boolean,
   isPremium: boolean,
-  totalEntries: number,
   currentSnapshotNumber: number
 ): Promise<ProductStatus> {
-  const { data: lastReport } = await supabase
-    .from("smart_reports")
+  // Load product config from shop_products (id + entry_gate)
+  const { data: product } = await supabase
+    .from("shop_products")
+    .select("id, entry_gate, entry_gate_type, entry_gate_scope")
+    .eq("name", productName)
+    .maybeSingle();
+
+  if (!product) {
+    // Product not in DB — fail safe
+    return {
+      status: "ready_to_buy",
+      entries_total: 0,
+      entries_required: 0,
+      current_snapshot_number: currentSnapshotNumber,
+      last_report_snapshot_number: null,
+    };
+  }
+
+  // Count entries via shared engine (respects gate type and scope)
+  const gateStatus = await countEntries(
+    userId,
+    product.id,
+    {
+      entry_gate: product.entry_gate,
+      entry_gate_type: product.entry_gate_type as EntryGateType | null,
+      entry_gate_scope: product.entry_gate_scope as EntryGateScope | null,
+    },
+    supabase
+  );
+
+  // Get last report/insight snapshot for snapshot-gate
+  let snapshotQuery = supabase
+    .from(snapshotTable)
     .select("snapshot_number_at_generation")
-    .eq("user_id", userId)
-    .eq("reading_type", readingType)
+    .eq("user_id", userId);
+
+  if (snapshotFilter.reading_type) {
+    snapshotQuery = snapshotQuery.eq("reading_type", snapshotFilter.reading_type);
+  }
+
+  const { data: lastReport } = await snapshotQuery
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -38,160 +73,42 @@ async function buildStatus(
   if (isAdmin) {
     return {
       status: "ready_to_generate",
-      entries_total: totalEntries,
-      entries_required: GATE,
+      entries_total: gateStatus.entries_total,
+      entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: lastReportSnapshotNumber,
     };
   }
 
   // Gate 1: minimum entries threshold
-  if (totalEntries < GATE) {
+  if (gateStatus.blocked) {
     return {
       status: "blocked_not_enough_entries",
-      entries_total: totalEntries,
-      entries_required: GATE,
+      entries_total: gateStatus.entries_total,
+      entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: lastReportSnapshotNumber,
     };
   }
 
-  // Gate 2: snapshot-gate
-  // If last report of this type was generated with current or higher snapshot, wait for new snapshot
+  // Gate 2: snapshot-gate — cannot regenerate on the same snapshot
   if (
     lastReportSnapshotNumber !== null &&
     lastReportSnapshotNumber >= currentSnapshotNumber
   ) {
     return {
       status: "blocked_no_new_snapshot",
-      entries_total: totalEntries,
-      entries_required: GATE,
+      entries_total: gateStatus.entries_total,
+      entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
       last_report_snapshot_number: lastReportSnapshotNumber,
     };
   }
 
-  // User can proceed, but check access model:
-  // Full Reading is free for premium, everyone else needs to buy
-  // Pattern Reading requires purchase for everyone (premium and free alike)
-  const needsPurchase =
-    readingType === "pattern" || (readingType === "monthly" && !isPremium);
+  // Access check: free pass for premium users (Full Reading), or credit required
+  const hasFreeAccess = isFreeFor?.isPremium && isPremium;
 
-  if (needsPurchase) {
-    // Check for an unused credit for this product
-    const productName = readingType === "monthly" ? "Full Reading" : "Pattern Reading";
-    const { data: product } = await supabase
-      .from("shop_products")
-      .select("id")
-      .eq("name", productName)
-      .maybeSingle();
-
-    if (product) {
-      const { data: credit } = await supabase
-        .from("user_purchases")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("product_id", product.id)
-        .is("used_at", null)
-        .limit(1);
-
-      const hasCredit = credit && credit.length > 0;
-
-      return {
-        status: hasCredit ? "ready_to_generate" : "ready_to_buy",
-        entries_total: totalEntries,
-        entries_required: GATE,
-        current_snapshot_number: currentSnapshotNumber,
-        last_report_snapshot_number: lastReportSnapshotNumber,
-      };
-    }
-  }
-
-  // Premium user with access to Full Reading, or fallback
-  return {
-    status: "ready_to_generate",
-    entries_total: totalEntries,
-    entries_required: GATE,
-    current_snapshot_number: currentSnapshotNumber,
-    last_report_snapshot_number: lastReportSnapshotNumber,
-  };
-}
-
-async function buildReflectionStatus(
-  userId: string,
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  isAdmin: boolean,
-  currentSnapshotNumber: number
-): Promise<ProductStatus> {
-  const REFLECTION_GATE = 5;
-
-  // Find the last Reflection (to count entries added since then)
-  const { data: lastReflection } = await supabase
-    .from("weekly_insights")
-    .select("created_at, snapshot_number_at_generation")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  const sinceDate = lastReflection?.created_at
-    ? lastReflection.created_at
-    : new Date(0).toISOString();
-
-  // Count entries since last Reflection
-  const [{ count: j }, { count: d }, { count: s }] = await Promise.all([
-    supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", sinceDate),
-    supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", sinceDate),
-    supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", sinceDate),
-  ]);
-  const entriesSinceLastReflection = (j || 0) + (d || 0) + (s || 0);
-
-  const lastReflectionSnapshotNumber = lastReflection?.snapshot_number_at_generation ?? null;
-
-  // Admin bypasses everything
-  if (isAdmin) {
-    return {
-      status: "ready_to_generate",
-      entries_total: entriesSinceLastReflection,
-      entries_required: REFLECTION_GATE,
-      current_snapshot_number: currentSnapshotNumber,
-      last_report_snapshot_number: lastReflectionSnapshotNumber,
-    };
-  }
-
-  // Gate 1: at least 5 entries since last Reflection
-  if (entriesSinceLastReflection < REFLECTION_GATE) {
-    return {
-      status: "blocked_not_enough_entries",
-      entries_total: entriesSinceLastReflection,
-      entries_required: REFLECTION_GATE,
-      current_snapshot_number: currentSnapshotNumber,
-      last_report_snapshot_number: lastReflectionSnapshotNumber,
-    };
-  }
-
-  // Gate 2: snapshot-gate — Reflection cannot be regenerated on the same snapshot
-  if (
-    lastReflectionSnapshotNumber !== null &&
-    lastReflectionSnapshotNumber >= currentSnapshotNumber
-  ) {
-    return {
-      status: "blocked_no_new_snapshot",
-      entries_total: entriesSinceLastReflection,
-      entries_required: REFLECTION_GATE,
-      current_snapshot_number: currentSnapshotNumber,
-      last_report_snapshot_number: lastReflectionSnapshotNumber,
-    };
-  }
-
-  // Access: everyone (free and premium) needs a Reflection credit
-  const { data: product } = await supabase
-    .from("shop_products")
-    .select("id")
-    .eq("name", "Reflection")
-    .maybeSingle();
-
-  if (product) {
+  if (!hasFreeAccess) {
     const { data: credit } = await supabase
       .from("user_purchases")
       .select("id")
@@ -204,19 +121,20 @@ async function buildReflectionStatus(
 
     return {
       status: hasCredit ? "ready_to_generate" : "ready_to_buy",
-      entries_total: entriesSinceLastReflection,
-      entries_required: REFLECTION_GATE,
+      entries_total: gateStatus.entries_total,
+      entries_required: gateStatus.entries_required,
       current_snapshot_number: currentSnapshotNumber,
-      last_report_snapshot_number: lastReflectionSnapshotNumber,
+      last_report_snapshot_number: lastReportSnapshotNumber,
     };
   }
 
+  // Premium with free access (Full Reading)
   return {
-    status: "ready_to_buy",
-    entries_total: entriesSinceLastReflection,
-    entries_required: REFLECTION_GATE,
+    status: "ready_to_generate",
+    entries_total: gateStatus.entries_total,
+    entries_required: gateStatus.entries_required,
     current_snapshot_number: currentSnapshotNumber,
-    last_report_snapshot_number: lastReflectionSnapshotNumber,
+    last_report_snapshot_number: lastReportSnapshotNumber,
   };
 }
 
@@ -225,7 +143,6 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-  // Load admin/premium flags
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_admin, is_premium, admin_test_mode")
@@ -233,15 +150,6 @@ export async function GET() {
     .single();
   const { isAdmin, isPremium } = getEffectivePerms(profile);
 
-  // Count all entries (journal + dreams + shadow work)
-  const [{ count: j }, { count: d }, { count: s }] = await Promise.all([
-    supabase.from("journal_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    supabase.from("dream_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-  ]);
-  const totalEntries = (j || 0) + (d || 0) + (s || 0);
-
-  // Current snapshot number
   const { data: latestSnapshot } = await supabase
     .from("ai_memory_snapshots")
     .select("snapshot_number")
@@ -252,10 +160,41 @@ export async function GET() {
 
   const currentSnapshotNumber = latestSnapshot?.snapshot_number || 0;
 
-  // Build status for all three product types
-  const fullReading = await buildStatus(user.id, "monthly", supabase, isAdmin, isPremium, totalEntries, currentSnapshotNumber);
-  const patternReading = await buildStatus(user.id, "pattern", supabase, isAdmin, isPremium, totalEntries, currentSnapshotNumber);
-  const reflection = await buildReflectionStatus(user.id, supabase, isAdmin, currentSnapshotNumber);
+  const fullReading = await buildProductStatus(
+    user.id,
+    "Full Reading",
+    "smart_reports",
+    { reading_type: "monthly" },
+    { isPremium: true },
+    supabase,
+    isAdmin,
+    isPremium,
+    currentSnapshotNumber
+  );
+
+  const patternReading = await buildProductStatus(
+    user.id,
+    "Pattern Reading",
+    "smart_reports",
+    { reading_type: "pattern" },
+    null,
+    supabase,
+    isAdmin,
+    isPremium,
+    currentSnapshotNumber
+  );
+
+  const reflection = await buildProductStatus(
+    user.id,
+    "Reflection",
+    "weekly_insights",
+    {},
+    null,
+    supabase,
+    isAdmin,
+    isPremium,
+    currentSnapshotNumber
+  );
 
   return NextResponse.json({
     full_reading: fullReading,
