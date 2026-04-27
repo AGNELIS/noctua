@@ -36,6 +36,7 @@ export default function ProfilePage() {
   const [createdAt, setCreatedAt] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [birthTime, setBirthTime] = useState<string | null>(null);
   const [birthCity, setBirthCity] = useState<string | null>(null);
@@ -60,9 +61,10 @@ export default function ProfilePage() {
     setCreatedAt(user.created_at);
 
     const { data: profile } = await supabase.from("profiles").select("display_name, avatar_url, is_premium, is_admin, admin_test_mode, birth_date, birth_time, birth_city").eq("id", user.id).single();
-    const { isAdmin, isPremium } = getEffectivePerms(profile);
+    const { isAdmin, isAdminUser, isPremium } = getEffectivePerms(profile);
     setIsPremium(isPremium);
     setIsAdmin(isAdmin);
+    setIsAdminUser(isAdminUser);
     setBirthDate(profile?.birth_date || null);
     setBirthTime(profile?.birth_time || null);
     setBirthCity(profile?.birth_city || null);
@@ -474,12 +476,12 @@ const saveName = async () => {
         </section>
 
         {/* Admin */}
-        {isAdmin && (
+        {isAdminUser && (
           <section>
             <button onClick={() => router.push("/owl-panel")}
               className="w-full text-center py-2 text-sm tracking-wide"
               style={{ color: "var(--color-mauve)", opacity: 0.5 }}>
-              ◇ ◇ ◇
+              ♡
             </button>
           </section>
         )}

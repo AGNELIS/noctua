@@ -18,27 +18,29 @@ export type ProfilePerms = {
 };
 export type EffectivePerms = {
   isAdmin: boolean;
+  isAdminUser: boolean;
   isPremium: boolean;
 };
 export function getEffectivePerms(profile: ProfilePerms | null | undefined): EffectivePerms {
   if (!profile) {
-    return { isAdmin: false, isPremium: false };
+    return { isAdmin: false, isAdminUser: false, isPremium: false };
   }
   // Non-admin: real permissions apply, test mode is ignored
   if (!profile.is_admin) {
     return {
       isAdmin: false,
+      isAdminUser: false,
       isPremium: profile.is_premium === true,
     };
   }
   // Admin: test mode determines effective perms
   const mode = profile.admin_test_mode;
   if (mode === "free") {
-    return { isAdmin: false, isPremium: false };
+    return { isAdmin: false, isAdminUser: true, isPremium: false };
   }
   if (mode === "premium") {
-    return { isAdmin: false, isPremium: true };
+    return { isAdmin: false, isAdminUser: true, isPremium: true };
   }
   // mode === 'admin' or null -> full admin
-  return { isAdmin: true, isPremium: true };
+  return { isAdmin: true, isAdminUser: true, isPremium: true };
 }
