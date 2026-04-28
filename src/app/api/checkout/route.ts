@@ -45,8 +45,11 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Block purchase if user has unused credit for consumable products (report/interpretation categories)
-  // Admin bypasses this for testing
+  // Block purchase if user already owns this product
+  // Two cases:
+  //   1. Consumable products (report/interpretation): block if there's an unused credit
+  //   2. Permanent products (theme/self_work/depth_work/symbol_pack): block if any purchase exists
+  // Admin bypasses both checks for testing
   if (!isAdmin) {
     const { data: productCategory } = await supabase
       .from("shop_products")
@@ -54,7 +57,9 @@ export async function POST(req: NextRequest) {
       .eq("id", productId)
       .single();
 
-    const isConsumable = productCategory?.category === "report" || productCategory?.category === "interpretation";
+    const category = productCategory?.category;
+    const isConsumable = category === "report" || category === "interpretation";
+    const isPermanent = category === "theme" || category === "self_work" || category === "depth_work" || category === "symbol_pack";
 
     if (isConsumable) {
       const { data: unusedCredit } = await supabase
@@ -68,6 +73,22 @@ export async function POST(req: NextRequest) {
       if (unusedCredit && unusedCredit.length > 0) {
         return NextResponse.json(
           { error: "already_owns", message: "You already have an unused credit for this product. Use it before buying another." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (isPermanent) {
+      const { data: existingPurchase } = await supabase
+        .from("user_purchases")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("product_id", productId)
+        .limit(1);
+
+      if (existingPurchase && existingPurchase.length > 0) {
+        return NextResponse.json(
+          { error: "already_owns", message: "You already own this product." },
           { status: 400 }
         );
       }
