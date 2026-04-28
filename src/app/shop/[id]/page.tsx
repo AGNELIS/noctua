@@ -19,6 +19,7 @@ type ShopStatus = {
   entries_total: number;
   entries_required: number;
   blocked: boolean;
+  has_unused_credit: boolean;
 };
 
 const PRODUCT_PL: Record<string, { name: string; desc: string }> = {
@@ -162,6 +163,7 @@ export default function ProductPage() {
               entries_total: allStatuses[id].entries_total,
               entries_required: allStatuses[id].entries_required,
               blocked: allStatuses[id].blocked,
+              has_unused_credit: allStatuses[id].has_unused_credit || false,
             });
           }
         }
@@ -279,7 +281,7 @@ export default function ProductPage() {
         )}
 
         <section className="text-center space-y-4">
-          {!owned && gateStatus && gateStatus.blocked ? null : appliedPromo ? (
+          {!owned && gateStatus && (gateStatus.blocked || gateStatus.has_unused_credit) ? null : appliedPromo ? (
             <div className="space-y-1">
               <p className="text-sm line-through" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
                 £{product.price_gbp.toFixed(2)}
@@ -359,6 +361,31 @@ export default function ProductPage() {
             >
               {language === "pl" ? "Otwórz" : "Open"}
             </button>
+          ) : gateStatus && gateStatus.has_unused_credit ? (
+            <div className="w-full py-6 rounded-xl text-center space-y-3" style={{ background: "var(--color-blush)", border: "1.5px solid var(--color-dusty-rose)" }}>
+              <p className="px-4" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.1rem", fontWeight: 500, opacity: 0.9 }}>
+                {language === "pl" ? "Masz już ten produkt. Użyj go zanim kupisz kolejny. ♡" : "You already have this. Use it before buying another. ♡"}
+              </p>
+              <button
+                onClick={() => {
+                  const routes: Record<string, string> = {
+                    "Reflection": "/reports?tab=weekly",
+                    "Full Reading": "/reports?tab=monthly",
+                    "Pattern Reading": "/reports?tab=pattern",
+                    "Dream Reading": "/dreams",
+                  };
+                  const route = routes[product.name];
+                  if (route) {
+                    const separator = route.includes("?") ? "&" : "?";
+                    router.push(route + separator + "from=shop");
+                  }
+                }}
+                className="px-6 py-2 rounded-xl text-sm tracking-wide transition-all"
+                style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
+              >
+                {language === "pl" ? "Otwórz" : "Open"}
+              </button>
+            </div>
           ) : gateStatus && gateStatus.blocked ? (
             <div className="w-full py-6 rounded-xl text-center space-y-2" style={{ background: "var(--color-blush)", border: "1.5px solid var(--color-dusty-rose)" }}>
               <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "0.02em" }}>
