@@ -387,12 +387,24 @@ export default function ProductPage() {
               </button>
             </div>
           ) : gateStatus && gateStatus.blocked ? (
-            <div className="w-full py-6 rounded-xl text-center space-y-2" style={{ background: "var(--color-blush)", border: "1.5px solid var(--color-dusty-rose)" }}>
-              <p style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "0.02em" }}>
-                {language === "pl" ? `${gateStatus.entries_total} / ${gateStatus.entries_required} wpisów` : `${gateStatus.entries_total} / ${gateStatus.entries_required} entries`}
-              </p>
-              <p className="px-4" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1rem", fontStyle: "italic", fontWeight: 500, opacity: 0.85 }}>
-                {language === "pl" ? "Odblokuje się po zebraniu wystarczającej ilości danych" : "Unlocks once you have enough data to read"}
+            <div className="w-full py-4 text-center">
+              <div className="flex flex-wrap gap-1.5 justify-center items-center mb-3 px-4">
+                {Array.from({ length: gateStatus.entries_required }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="rounded-full"
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      background: i < gateStatus.entries_total ? "var(--color-mauve)" : "rgba(160, 130, 160, 0.2)",
+                    }}
+                  />
+                ))}
+              </div>
+              <p className="px-4" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.95rem", fontStyle: "italic", lineHeight: "1.5" }}>
+                {language === "pl"
+                  ? `Jeszcze ${gateStatus.entries_required - gateStatus.entries_total} ${gateStatus.entries_required - gateStatus.entries_total === 1 ? "wpis" : "wpisów"} do odblokowania`
+                  : `${gateStatus.entries_required - gateStatus.entries_total} more ${gateStatus.entries_required - gateStatus.entries_total === 1 ? "entry" : "entries"} until unlock`}
               </p>
             </div>
           ) : (
