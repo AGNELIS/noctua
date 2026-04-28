@@ -35,8 +35,16 @@ export async function POST(req: NextRequest) {
         const { data: product } = await supabase.from("shop_products")
           .select("is_consumable").eq("id", productId).single();
         const isConsumable = !!product?.is_consumable;
-        if (isConsumable) {
-          // Always insert for consumables (each purchase = new credit)
+
+        // Idempotency check: skip if this exact Stripe session was already processed
+        // Protects against Stripe webhook retries causing duplicate inserts
+        const { data: alreadyProcessed } = await supabase.from("user_purchases")
+          .select("id").eq("stripe_session_id", sessionId).limit(1);
+
+        if (alreadyProcessed && alreadyProcessed.length > 0) {
+          console.log(`Webhook: session ${sessionId} already processed, skipping insert`);
+        } else if (isConsumable) {
+          // Insert credit for consumables (each unique purchase = new credit)
           await supabase.from("user_purchases").insert({
             user_id: userId,
             product_id: productId,
