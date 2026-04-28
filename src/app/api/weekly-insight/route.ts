@@ -4,6 +4,7 @@ import { gatherWorkbookContext } from "@/lib/workbook-context";
 import { getUserMemory } from "@/lib/memory-context";
 import { NOCTUA_VOICE_SYSTEM_PROMPT } from "@/lib/noctua-voice";
 import { getEffectivePerms } from "@/lib/effective-perms";
+import { countEntries, type EntryGateType, type EntryGateScope } from "@/lib/entry-gate";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
@@ -20,24 +21,25 @@ export async function GET(req: NextRequest) {
     .single();
   const { isAdmin } = getEffectivePerms(profile);
 
+  // Load Reflection product config (id + entry_gate from shop_products)
+  const { data: reflectionProduct } = await supabase
+    .from("shop_products")
+    .select("id, entry_gate, entry_gate_type, entry_gate_scope")
+    .eq("name", "Reflection")
+    .maybeSingle();
+
+  if (!reflectionProduct) {
+    return NextResponse.json({ error: "Reflection product not found" }, { status: 500 });
+  }
+
   // Access check: everyone (free and premium) needs to have purchased a Reflection credit
   // Admin bypasses this for testing
   if (!isAdmin) {
-    const { data: product } = await supabase
-      .from("shop_products")
-      .select("id")
-      .eq("name", "Reflection")
-      .maybeSingle();
-
-    if (!product) {
-      return NextResponse.json({ error: "Reflection product not found" }, { status: 500 });
-    }
-
     const { data: credit } = await supabase
       .from("user_purchases")
       .select("id")
       .eq("user_id", user.id)
-      .eq("product_id", product.id)
+      .eq("product_id", reflectionProduct.id)
       .is("used_at", null)
       .limit(1);
 
@@ -51,9 +53,7 @@ export async function GET(req: NextRequest) {
 
   const lang = profile?.preferred_language === "pl" ? "pl" : "en";
 
-  const now = new Date();
-
-  // Find the date of her last Reflection (to count entries added since then)
+  // Find the date of her last Reflection (used for snapshot-gate AND as sinceDate for AI material)
   const { data: lastReflection } = await supabase
     .from("weekly_insights")
     .select("created_at, snapshot_number_at_generation")
@@ -66,7 +66,9 @@ export async function GET(req: NextRequest) {
     ? lastReflection.created_at
     : new Date(0).toISOString();
 
-  // Gather data since her last Reflection (not last 7 days)
+  // Gather data since her last Reflection (so AI sees rich material across the period)
+  // Note: this is independent of the gate check below — AI reads "since last Reflection",
+  // but the gate counts "since last purchase" (config in shop_products).
   const { data: journals } = await supabase
     .from("journal_entries")
     .select("content, mood, entry_date")
@@ -88,21 +90,30 @@ export async function GET(req: NextRequest) {
     .gte("created_at", sinceDate)
     .order("created_at", { ascending: false });
 
-  // Count entries since her last Reflection (not total, not per-week)
-  const entriesSinceLastReflection = (journals?.length || 0) + (dreams?.length || 0) + (shadowEntries?.length || 0);
-  const GATE = 5;
-
-  // Gate 1: minimum 5 entries since last Reflection (or 5 total if no previous Reflection)
+  // Gate 1: minimum entries threshold via shared engine (reads gate config from shop_products)
   // Admin bypasses this for testing
-  if (!isAdmin && entriesSinceLastReflection < GATE) {
-    return NextResponse.json({
-      error: "not_enough_entries",
-      message: lang === "pl"
-        ? `Refleksja potrzebuje co najmniej ${GATE} wpisów od ostatniej Refleksji. Masz teraz ${entriesSinceLastReflection}.`
-        : `A Reflection needs at least ${GATE} entries since your last Reflection. You have ${entriesSinceLastReflection}.`,
-      current: entriesSinceLastReflection,
-      required: GATE,
-    }, { status: 400 });
+  if (!isAdmin) {
+    const gateStatus = await countEntries(
+      user.id,
+      reflectionProduct.id,
+      {
+        entry_gate: reflectionProduct.entry_gate,
+        entry_gate_type: reflectionProduct.entry_gate_type as EntryGateType | null,
+        entry_gate_scope: reflectionProduct.entry_gate_scope as EntryGateScope | null,
+      },
+      supabase
+    );
+
+    if (gateStatus.blocked) {
+      return NextResponse.json({
+        error: "not_enough_entries",
+        message: lang === "pl"
+          ? `Refleksja potrzebuje co najmniej ${gateStatus.entries_required} wpisów. Masz teraz ${gateStatus.entries_total}.`
+          : `A Reflection needs at least ${gateStatus.entries_required} entries. You have ${gateStatus.entries_total}.`,
+        current: gateStatus.entries_total,
+        required: gateStatus.entries_required,
+      }, { status: 400 });
+    }
   }
 
   // Gate 2: snapshot-gate (cumulative memory)
@@ -252,12 +263,15 @@ The last line is short and concrete. It names something specific that stays with
 
     // Use credit (everyone pays except admin)
     if (!isAdmin) {
-      const { data: product } = await supabase.from("shop_products").select("id").eq("name", "Reflection").maybeSingle();
-      if (product) {
-        const { data: credit } = await supabase.from("user_purchases").select("id").eq("user_id", user.id).eq("product_id", product.id).is("used_at", null).limit(1);
-        if (credit && credit.length > 0) {
-          await supabase.from("user_purchases").update({ used_at: new Date().toISOString() }).eq("id", credit[0].id);
-        }
+      const { data: credit } = await supabase
+        .from("user_purchases")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("product_id", reflectionProduct.id)
+        .is("used_at", null)
+        .limit(1);
+      if (credit && credit.length > 0) {
+        await supabase.from("user_purchases").update({ used_at: new Date().toISOString() }).eq("id", credit[0].id);
       }
     }
 
