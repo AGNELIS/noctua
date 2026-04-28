@@ -388,20 +388,20 @@ export default function ProductPage() {
             </div>
           ) : gateStatus && gateStatus.blocked ? (
             <div className="w-full py-4 text-center">
-              <div className="flex flex-wrap gap-1.5 justify-center items-center mb-3 px-4">
+              <div className="flex flex-wrap gap-2 justify-center items-center mb-4 px-4">
                 {Array.from({ length: gateStatus.entries_required }).map((_, i) => (
                   <span
                     key={i}
                     className="rounded-full"
                     style={{
-                      width: "6px",
-                      height: "6px",
+                      width: "10px",
+                      height: "10px",
                       background: i < gateStatus.entries_total ? "var(--color-mauve)" : "rgba(160, 130, 160, 0.2)",
                     }}
                   />
                 ))}
               </div>
-              <p className="px-4" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.95rem", fontStyle: "italic", lineHeight: "1.5" }}>
+              <p className="px-4" style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.15rem", fontStyle: "italic", lineHeight: "1.5" }}>
                 {language === "pl"
                   ? `Jeszcze ${gateStatus.entries_required - gateStatus.entries_total} ${gateStatus.entries_required - gateStatus.entries_total === 1 ? "wpis" : "wpisów"} do odblokowania`
                   : `${gateStatus.entries_required - gateStatus.entries_total} more ${gateStatus.entries_required - gateStatus.entries_total === 1 ? "entry" : "entries"} until unlock`}
