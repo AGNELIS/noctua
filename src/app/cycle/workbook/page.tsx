@@ -332,7 +332,7 @@ export default function CycleWorkbookPage() {
           </button>
         </header>
         <main className="max-w-md mx-auto px-6 pt-16 text-center space-y-6">
-          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.3 }}>◈</div>
+          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.3 }}>♡</div>
           <h1 className="text-2xl tracking-wide" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {pl ? "Jeszcze nie teraz" : "Not yet"}
           </h1>
@@ -370,7 +370,7 @@ export default function CycleWorkbookPage() {
           </button>
         </header>
         <main className="max-w-md mx-auto px-6 pt-12 text-center space-y-6">
-          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.4 }}>◇</div>
+          <div className="text-5xl mb-2" style={{ color: "var(--color-plum)", opacity: 0.4 }}>♡</div>
           <h1 className="text-2xl tracking-wide" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {pl ? "Twoje ciało pamięta." : "Your body remembers."}
           </h1>

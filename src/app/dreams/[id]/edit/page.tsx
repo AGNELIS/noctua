@@ -175,7 +175,7 @@ export default function EditDreamEntry() {
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setLucidity(lucidity === n ? 0 : n)} className="text-lg transition-all"
-                style={{ color: n <= lucidity ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>◆</button>
+                style={{ color: n <= lucidity ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>♡</button>
             ))}
           </div>
         </div>
@@ -223,7 +223,7 @@ export default function EditDreamEntry() {
 
         <div className="flex items-center justify-center gap-4 mt-2">
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
-          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>◇</span>
+          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>♡</span>
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 

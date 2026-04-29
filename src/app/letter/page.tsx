@@ -69,7 +69,7 @@ export default function LetterPage() {
 
         <div className="flex items-center justify-center gap-4 mt-10 mb-6">
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
-          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>◇</span>
+          <span className="text-xs" style={{ color: "var(--color-gold)", opacity: 0.6 }}>♡</span>
           <div className="h-px w-16" style={{ background: "var(--color-dusty-rose)" }} />
         </div>
 

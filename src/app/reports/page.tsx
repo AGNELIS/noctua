@@ -338,7 +338,7 @@ export default function ReportsPage() {
         {/* Empty state */}
         {!loading && filteredReports.length === 0 && (
           <div className="text-center pt-12 space-y-4">
-            <div className="text-4xl" style={{ color: "var(--color-plum)", opacity: 0.3 }}>◈</div>
+            <div className="text-4xl" style={{ color: "var(--color-plum)", opacity: 0.3 }}>♡</div>
             <p className="text-base" style={{ color: "var(--color-dark)" }}>
               {pl ? "Brak odczytów. Wygeneruj swój pierwszy." : "No readings yet. Generate your first one."}
             </p>

@@ -231,7 +231,7 @@ export default function DreamsPage() {
                         ? (<span className="text-xs uppercase" style={{ color: "var(--color-plum)", fontWeight: 500, letterSpacing: "0.15em", opacity: 0.75 }}>{language === "pl" ? "przeanalizowany" : "analysed"}</span>)
                         : (<span className="text-xs uppercase" style={{ color: "var(--color-gold)", fontWeight: 500, letterSpacing: "0.15em" }}>{language === "pl" ? "do analizy" : "ready to analyse"}</span>)
                       }
-                      {entry.lucidity && (<span className="text-xs" style={{ color: "var(--color-plum)", opacity: 0.6 }}>{"◆".repeat(entry.lucidity)}{"◇".repeat(5 - entry.lucidity)}</span>)}
+                      {entry.lucidity && (<span className="text-xs"><span style={{ color: "var(--color-plum)" }}>{"♡".repeat(entry.lucidity)}</span><span style={{ color: "var(--color-dusty-rose)" }}>{"♡".repeat(5 - entry.lucidity)}</span></span>)}
                     </div>
                     {entry.title && (<h3 className="mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: "1.5rem", lineHeight: 1.25 }}>{entry.title}</h3>)}
                     <p className="leading-relaxed line-clamp-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.0625rem", opacity: 0.75 }}>{entry.content}</p>

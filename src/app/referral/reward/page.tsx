@@ -203,7 +203,7 @@ function RewardContent() {
         {/* Generate button */}
         {!text && !generating && (
           <div className="text-center pt-10 space-y-6">
-            <div className="text-4xl" style={{ color: "var(--color-plum)", opacity: 0.3 }}>◈</div>
+            <div className="text-4xl" style={{ color: "var(--color-plum)", opacity: 0.3 }}>♡</div>
             <p className="text-base leading-relaxed" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.05rem" }}>
               {pl ? desc.pl : desc.en}
             </p>

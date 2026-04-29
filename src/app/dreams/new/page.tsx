@@ -95,7 +95,7 @@ export default function NewDreamEntry() {
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setLucidity(lucidity === n ? 0 : n)} className="text-lg transition-all"
-                style={{ color: n <= lucidity ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>◆</button>
+                style={{ color: n <= lucidity ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>♡</button>
             ))}
           </div>
         </div>
