@@ -558,7 +558,7 @@ export default function LunarNodesWorkbookPage() {
                   className="w-full text-left p-3 rounded-xl" style={{ background: "var(--color-blush)" }}>
                   <div className="flex justify-between items-center">
                     <span className="text-sm" style={{ color: "var(--color-dark)" }}>{pl ? `Cykl ${s.cycle_number}` : `Cycle ${s.cycle_number}`}</span>
-                    <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{new Date(s.started_at).toLocaleDateString()}</span>
+                    <span className="text-xs" style={{ color: "var(--color-mauve)" }}>{new Date(s.started_at).toLocaleDateString(pl ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
                 </button>
                 {expandedPast === s.id && (

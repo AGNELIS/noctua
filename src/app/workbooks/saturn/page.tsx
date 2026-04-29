@@ -565,7 +565,7 @@ export default function SaturnWorkbookPage() {
                       {pl ? `Cykl ${s.cycle_number}` : `Cycle ${s.cycle_number}`}
                     </span>
                     <span className="text-xs" style={{ color: "var(--color-mauve)" }}>
-                      {new Date(s.started_at).toLocaleDateString()}
+                      {new Date(s.started_at).toLocaleDateString(pl ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
                   </div>
                 </button>

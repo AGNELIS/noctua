@@ -458,7 +458,7 @@ export default function OwlPanelPage() {
                     Snapshot #{s.snapshot_number} — {s.entry_count_in_period} entries in period, {s.cumulative_entry_count} cumulative
                   </summary>
                   <p style={{ fontSize: "10px", color: "var(--color-mauve)", marginTop: "4px" }}>
-                    {new Date(s.created_at).toLocaleString()}
+                    {new Date(s.created_at).toLocaleString(language === "pl" ? "pl-PL" : "en-GB")}
                   </p>
                   <p style={{ fontSize: "12px", color: "var(--color-dark)", marginTop: "8px", lineHeight: "1.5", whiteSpace: "pre-wrap" }}>
                     {s.content}
