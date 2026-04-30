@@ -59,11 +59,11 @@ export default function AnimatedBackground() {
       for (let i = 0; i < 18; i++) {
         const p = document.createElement("div");
         p.className = "noctua-cherry";
+        p.textContent = "🍒";
         p.style.left = (Math.random() * 100) + "%";
         p.style.top = (-10 - Math.random() * 20) + "%";
-        p.style.width = (5 + Math.random() * 8) + "px";
-        p.style.height = (6 + Math.random() * 8) + "px";
-        p.style.background = `rgba(${200 + Math.floor(Math.random() * 55)},${80 + Math.floor(Math.random() * 60)},${100 + Math.floor(Math.random() * 60)},0.5)`;
+        p.style.fontSize = (14 + Math.random() * 10) + "px";
+        p.style.opacity = "0";
         p.style.setProperty("--rot", (Math.random() * 360) + "deg");
         p.style.animation = `noctuaCherryFall ${6 + Math.random() * 8}s ease-in-out infinite`;
         p.style.animationDelay = (Math.random() * 10) + "s";
@@ -74,12 +74,12 @@ export default function AnimatedBackground() {
       for (let i = 0; i < 14; i++) {
         const p = document.createElement("div");
         p.className = "noctua-petal";
+        p.textContent = "🌸";
         p.style.left = (5 + Math.random() * 90) + "%";
         p.style.setProperty("--dur", (8 + Math.random() * 10) + "s");
         p.style.setProperty("--rot", (Math.random() * 360) + "deg");
         p.style.animationDelay = (Math.random() * 12) + "s";
-        p.style.width = (6 + Math.random() * 6) + "px";
-        p.style.height = (8 + Math.random() * 8) + "px";
+        p.style.fontSize = (16 + Math.random() * 8) + "px";
         petalsRef.current.appendChild(p);
       }
     }
@@ -188,8 +188,7 @@ export default function AnimatedBackground() {
         }
         .noctua-petal {
           position: absolute;
-          background: rgba(192, 88, 120, 0.5);
-          border-radius: 50% 50% 50% 0;
+          line-height: 1;
           animation: noctuaPetalRise var(--dur) linear infinite;
           bottom: -20px;
           transform: rotate(var(--rot));
@@ -229,7 +228,7 @@ export default function AnimatedBackground() {
         }
         .noctua-cherry {
           position: absolute;
-          border-radius: 50% 50% 50% 0;
+          line-height: 1;
           opacity: 0;
         }
         @keyframes noctuaCherryFall {
