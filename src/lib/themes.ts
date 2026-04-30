@@ -128,10 +128,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Obsidian Rose": {
     cream: "#faf5f5",
     blush: "#f5e8e8",
-    "dusty-rose": "#c08888",
+    "dusty-rose": "#964e52",
     mauve: "#905060",
     plum: "#6a2838",
-    gold: "#b08878",
+    gold: "#8a5e4c",
     dark: "#381820",
     deep: "#280e14",
     gradient: "linear-gradient(180deg, #faf5f5 0%, #f5e8e8 35%, #ecd4d8 100%)",

@@ -317,7 +317,7 @@ export default function ProductPage() {
                   onClick={handleApplyPromo}
                   disabled={promoLoading || !promoInput.trim()}
                   className="px-4 py-2 rounded-lg text-xs tracking-wide transition-all disabled:opacity-50"
-                  style={{ background: "var(--color-gold)", color: "var(--color-dark)", fontWeight: 600 }}
+                  style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}
                 >
                   {promoLoading ? "..." : (language === "pl" ? "Zastosuj" : "Apply")}
                 </button>
