@@ -84,7 +84,7 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Velvet Night": {
     cream: "#0c0c1e",
     blush: "#141428",
-    "dusty-rose": "#9858a0",
+    "dusty-rose": "#a66fad",
     mauve: "#d090c0",
     plum: "#e8a0d0",
     gold: "#c8a0e0",
