@@ -73,10 +73,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Moonstone": {
     cream: "#f5f2fa",
     blush: "#ebe4f4",
-    "dusty-rose": "#b8a8d0",
-    mauve: "#7868a0",
+    "dusty-rose": "#6a6178",
+    mauve: "#6c5d90",
     plum: "#4a3870",
-    gold: "#a898c0",
+    gold: "#6b617a",
     dark: "#221830",
     deep: "#140e20",
     gradient: "linear-gradient(180deg, #f5f2fa 0%, #ebe4f4 35%, #ddd4ec 100%)",
