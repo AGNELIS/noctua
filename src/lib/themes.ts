@@ -62,10 +62,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Amber Glow": {
     cream: "#fdf9f2",
     blush: "#f5eadc",
-    "dusty-rose": "#c89860",
-    mauve: "#a07030",
+    "dusty-rose": "#80613d",
+    mauve: "#896029",
     plum: "#7a4e10",
-    gold: "#d4a030",
+    gold: "#83631d",
     dark: "#3a2810",
     deep: "#281c08",
     gradient: "linear-gradient(180deg, #fdf9f2 0%, #f5eadc 35%, #ecdcc4 100%)",
