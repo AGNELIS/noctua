@@ -106,10 +106,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Cherry Rain": {
     cream: "#fff5f8",
     blush: "#fce8ee",
-    "dusty-rose": "#d08090",
+    "dusty-rose": "#915964",
     mauve: "#b04060",
     plum: "#8a2040",
-    gold: "#c87090",
+    gold: "#98556d",
     dark: "#4a1020",
     deep: "#2a0810",
     gradient: "linear-gradient(180deg, #fff5f8 0%, #fce8ee 35%, #f8d8e2 100%)",
