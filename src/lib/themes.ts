@@ -50,10 +50,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Lilac Dream": {
     cream: "#f8f4fc",
     blush: "#f0e6f5",
-    "dusty-rose": "#c4a0d8",
-    mauve: "#8e5aab",
+    "dusty-rose": "#756081",
+    mauve: "#82529d",
     plum: "#5c2d82",
-    gold: "#b498c8",
+    gold: "#736180",
     dark: "#2a1838",
     deep: "#1a0e28",
     gradient: "linear-gradient(180deg, #f8f4fc 0%, #f0e6f5 35%, #e4d4ec 100%)",
