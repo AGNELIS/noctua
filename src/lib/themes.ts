@@ -117,10 +117,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Ocean Drift": {
     cream: "#e8f4f8",
     blush: "#c8e4f0",
-    "dusty-rose": "#6090b0",
-    mauve: "#3070a0",
+    "dusty-rose": "#43647b",
+    mauve: "#2b6490",
     plum: "#1a4060",
-    gold: "#50a0c8",
+    gold: "#336680",
     dark: "#102838",
     deep: "#081820",
     gradient: "linear-gradient(180deg, #e8f4f8 0%, #c8e4f0 35%, #a8d0e4 100%)",
