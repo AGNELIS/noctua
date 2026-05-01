@@ -27,10 +27,10 @@ export const THEME_MAP: Record<string, ThemeColors> = {
   "Cherry Blossom": {
     cream: "#fdf5f7",
     blush: "#f5e4ea",
-    "dusty-rose": "#c98a9a",
-    mauve: "#a05570",
+    "dusty-rose": "#845b65",
+    mauve: "#964f69",
     plum: "#7a2e4a",
-    gold: "#c8907a",
+    gold: "#835f50",
     dark: "#3a1828",
     deep: "#28101c",
     gradient: "linear-gradient(180deg, #fdf5f7 0%, #f5e4ea 35%, #ecd0dc 100%)",
