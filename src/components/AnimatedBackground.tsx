@@ -65,7 +65,7 @@ export default function AnimatedBackground() {
         p.style.fontSize = (14 + Math.random() * 10) + "px";
         p.style.opacity = "0";
         p.style.setProperty("--rot", (Math.random() * 360) + "deg");
-        p.style.animation = `noctuaCherryFall ${6 + Math.random() * 8}s ease-in-out infinite`;
+        p.style.animation = `noctuaCherryFall ${12 + Math.random() * 10}s ease-in-out infinite`;
         p.style.animationDelay = (Math.random() * 10) + "s";
         petalsRef.current.appendChild(p);
       }
@@ -76,7 +76,7 @@ export default function AnimatedBackground() {
         p.className = "noctua-petal";
         p.textContent = "🌸";
         p.style.left = (5 + Math.random() * 90) + "%";
-        p.style.setProperty("--dur", (8 + Math.random() * 10) + "s");
+        p.style.setProperty("--dur", (14 + Math.random() * 12) + "s");
         p.style.setProperty("--rot", (Math.random() * 360) + "deg");
         p.style.animationDelay = (Math.random() * 12) + "s";
         p.style.fontSize = (16 + Math.random() * 8) + "px";
