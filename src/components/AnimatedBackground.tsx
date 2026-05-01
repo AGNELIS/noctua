@@ -4,6 +4,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useEffect, useRef } from "react";
 
 const ANIMATED_THEMES: Record<string, string> = {
+  "Default": "default-owls",
   "Moonstone": "moonstone",
   "Velvet Night": "velvet",
   "Obsidian Rose": "obsidian",
@@ -17,7 +18,7 @@ export default function AnimatedBackground() {
   const starsRef = useRef<HTMLDivElement>(null);
   const petalsRef = useRef<HTMLDivElement>(null);
 
-  const animationType = activeThemeName ? ANIMATED_THEMES[activeThemeName] || null : null;
+  const animationType = activeThemeName ? ANIMATED_THEMES[activeThemeName] || null : "default-owls";
 
   useEffect(() => {
     if (animationType === "velvet" && starsRef.current && starsRef.current.childNodes.length === 0) {
@@ -327,6 +328,37 @@ export default function AnimatedBackground() {
           <>
             <div className="noctua-volcanic-glow" />
             <div ref={petalsRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", overflow: "hidden" }} />
+          </>
+        )}
+
+        {animationType === "default-owls" && (
+          <>
+            {[
+              { x: "9%",  y: "7%",  size: 26 },
+              { x: "88%", y: "15%", size: 18 },
+              { x: "4%",  y: "38%", size: 22 },
+              { x: "94%", y: "55%", size: 28 },
+              { x: "18%", y: "78%", size: 16 },
+              { x: "78%", y: "88%", size: 24 },
+              { x: "78%", y: "30%", size: 14 },
+              { x: "44%", y: "68%", size: 20 },
+            ].map((o, i) => (
+              <span
+                key={i}
+                style={{
+                  position: "absolute",
+                  left: o.x,
+                  top: o.y,
+                  fontSize: o.size + "px",
+                  lineHeight: 1,
+                  opacity: 0.35,
+                  pointerEvents: "none",
+                  userSelect: "none",
+                }}
+              >
+                🦉
+              </span>
+            ))}
           </>
         )}
       </div>

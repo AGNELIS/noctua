@@ -11,15 +11,15 @@ export type ThemeColors = {
 };
 
 export const DEFAULT_THEME: ThemeColors = {
-  cream: "#FAF7F5",
-  blush: "#F5EBE8",
-  "dusty-rose": "#D4A5A5",
-  mauve: "#9B6B8D",
-  plum: "#4A2545",
-  gold: "#C8A87C",
-  dark: "#2A1A28",
-  deep: "#1A0E1A",
-  gradient: "#FAF7F5",
+  cream: "#ffffff",
+  blush: "#fdf9f3",
+  "dusty-rose": "#a6856a",
+  mauve: "#8a6a4a",
+  plum: "#6e5032",
+  gold: "#a6856a",
+  dark: "#4a2f15",
+  deep: "#2a1808",
+  gradient: "#ffffff",
 };
 
 export const THEME_MAP: Record<string, ThemeColors> = {
