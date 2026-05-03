@@ -34,7 +34,7 @@ export default function ReferralPage() {
   const { switchTheme, activeThemeId } = useTheme();
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [completedCount, setCompletedCount] = useState(0);
-  const [journalCount, setJournalCount] = useState(0);
+  const [entryCount, setEntryCount] = useState(0);
   const [rewards, setRewards] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -63,7 +63,7 @@ export default function ReferralPage() {
       supabase.from("shadow_work_entries").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     ]);
     const totalEntries = (jCount || 0) + (dCount || 0) + (sCount || 0);
-    setJournalCount(totalEntries);
+    setEntryCount(totalEntries);
     if (profile?.referral_code) {
       setReferralCode(profile.referral_code);
     } else if (totalEntries >= 3) {
@@ -157,7 +157,7 @@ export default function ReferralPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const canRefer = isAdmin || journalCount >= 3;
+  const canRefer = isAdmin || entryCount >= 3;
   const currentRewards = REWARDS;
   const isAmbassador = completedCount >= 30;
 
@@ -212,7 +212,7 @@ export default function ReferralPage() {
                 : "You need 3 entries in the app to start inviting."}
             </p>
             <p className="text-lg mt-2" style={{ color: "var(--color-plum)", fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
-              {pl ? `Masz: ${journalCount}/3` : `You have: ${journalCount}/3`}
+              {pl ? `Masz: ${entryCount}/3` : `You have: ${entryCount}/3`}
             </p>
           </section>
         ) : (
