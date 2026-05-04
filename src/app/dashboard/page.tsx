@@ -65,7 +65,7 @@ function ElegantMoon({ phase, illumination }: { phase: string; illumination: num
   } else if (isWaxing) {
     shadowPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 0 ${cx} ${cy + r} A ${Math.abs(curve)} ${r} 0 0 ${curve > 0 ? 1 : 0} ${cx} ${cy - r} Z`;
   } else {
-    shadowPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} A ${Math.abs(curve)} ${r} 0 0 ${curve > 0 ? 0 : 1} ${cx} ${cy - r} Z`;
+    shadowPath = `M ${cx} ${cy - r} A ${r} ${r} 0 0 1 ${cx} ${cy + r} A ${Math.abs(curve)} ${r} 0 0 ${curve > 0 ? 1 : 0} ${cx} ${cy - r} Z`;
   }
 
   const craters = [
@@ -232,7 +232,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-5">
+      <header className="relative z-10 flex items-center justify-between px-6 py-6">
         <h1
           className="text-lg md:text-xl tracking-[0.3em] uppercase transition-colors duration-500"
           style={{ color: "var(--color-plum)", fontWeight: 700, fontFamily: "'Cinzel Decorative', serif" }}
@@ -260,7 +260,7 @@ export default function DashboardPage() {
         {/* Greeting */}
         <section className="text-center space-y-2 pt-6">
           <p
-            className="text-xl md:text-2xl tracking-wide transition-colors duration-500"
+            className="text-2xl md:text-3xl tracking-wide transition-colors duration-500"
             style={{ color: "var(--color-plum)", fontWeight: 500 }}
           >
             {greeting}
