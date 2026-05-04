@@ -123,7 +123,7 @@ export default function ShopPage() {
       className="min-h-screen transition-colors duration-500"
       style={{ background: "var(--color-gradient)" }}
     >
-      <header className="px-6 pt-6 pb-4">
+      <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
           <button
             onClick={() => router.push("/dashboard")}
@@ -135,7 +135,7 @@ export default function ShopPage() {
           <div className="w-12" />
         </div>
         <h1
-          className="text-3xl tracking-widest uppercase text-center mt-6 transition-colors duration-500"
+          className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3 transition-colors duration-500"
           style={{
             color: "var(--color-plum)",
             fontFamily: "'Cormorant Garamond', Georgia, serif",
@@ -146,7 +146,7 @@ export default function ShopPage() {
         </h1>
       </header>
 
-      <main className="max-w-2xl mx-auto px-6 pt-8 pb-16">
+      <main className="max-w-2xl mx-auto px-6 pb-16">
 
 
         {loading ? (
@@ -158,13 +158,15 @@ export default function ShopPage() {
             {grouped.map((group) => (
               <section key={group.category}>
                 <h2
-                  className="text-xs uppercase tracking-widest mb-4 transition-colors duration-500"
-                  style={{
-                    color: "var(--color-mauve)",
-                    fontWeight: 600,
-                    fontFamily: "Georgia, 'Times New Roman', serif",
-                  }}
-                >
+  className="uppercase mb-4 transition-colors duration-500"
+  style={{
+    color: "var(--color-mauve)",
+    fontWeight: 600,
+    fontFamily: "Georgia, 'Times New Roman', serif",
+    fontSize: "0.8rem",
+    letterSpacing: "0.15em",
+  }}
+>
                   {language === "pl" ? group.label.pl : group.label.en}
                 </h2>
 
