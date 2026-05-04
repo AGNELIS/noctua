@@ -161,8 +161,8 @@ export default function DashboardPage() {
     };
     checkOnboarding();
 
-    // Check entry milestones (notifications)
-    try { fetch("/api/check-entry-milestones", { method: "POST" }); } catch {}
+    // Check entry milestones (notifications) — fire-and-forget, ignore network failures
+    fetch("/api/check-entry-milestones", { method: "POST" }).catch(() => {});
 
     // Check referral completion
     const checkReferral = async () => {
