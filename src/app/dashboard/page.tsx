@@ -29,16 +29,17 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
       <img
         src="/noctua-cloud.png"
         alt=""
-        className="w-60 md:w-48 h-auto"
-        style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))" }}
+        className="w-60 md:w-48 h-auto relative"
+        style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))", zIndex: 1 }}
       />
-      <div className="absolute inset-0 flex items-center justify-center px-8">
+      <div className="absolute inset-0 flex items-center justify-center px-8" style={{ zIndex: 2 }}>
         <span
           style={{
             color: "#3a0825",
             fontFamily: "var(--font-antic), 'Antic Didone', Georgia, serif",
             fontSize: "1.25rem",
-            fontWeight: 400,
+            fontWeight: 500,
+            textShadow: "0 1px 2px rgba(255, 245, 248, 0.8)",
           }}
         >
           {title}
