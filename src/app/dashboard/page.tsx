@@ -38,8 +38,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
             color: "#3a0825",
             fontFamily: "var(--font-antic), 'Antic Didone', Georgia, serif",
             fontSize: "1.25rem",
-            fontWeight: 600,
-            textShadow: "0 1px 0 rgba(255, 245, 248, 1), 0 -1px 0 rgba(255, 245, 248, 0.5)",
+            fontWeight: 500,
           }}
         >
           {title}
