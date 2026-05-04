@@ -282,7 +282,7 @@ const saveName = async () => {
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1, fontWeight: 600 }}>{s.value}</p>
-                <p style={{ fontSize: "12px", color: "var(--color-dark)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "6px", fontWeight: 500 }}>{s.label}</p>
+                <p style={{ fontSize: "14px", color: "var(--color-dark)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "6px", fontWeight: 500 }}>{s.label}</p>
               </div>
             ))}
           </div>
@@ -314,7 +314,7 @@ const saveName = async () => {
         {isPremium && (
           <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <div className="flex items-center justify-between mb-3">
-              <p style={{ fontSize: "13px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 500 }}>
+              <p style={{ fontSize: "14px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 500 }}>
                 {language === "pl" ? "Dane urodzeniowe" : "Birth data"}
               </p>
               {!editingBirth && (
@@ -368,7 +368,7 @@ const saveName = async () => {
                     <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, lineHeight: 1 }}>
                       {new Date(birthDate + "T12:00:00").getDate()}
                     </p>
-                    <p style={{ fontSize: "13px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
+                    <p style={{ fontSize: "14px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
                       {new Date(birthDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "short" })}
                     </p>
                   </div>
