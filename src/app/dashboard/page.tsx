@@ -306,22 +306,27 @@ export default function DashboardPage() {
               );
             })()}
             <p
-              className="text-base md:text-lg tracking-widest uppercase transition-colors duration-500"
-              style={{ color: "var(--color-mauve)", fontWeight: 500 }}
+              className="text-sm tracking-wide transition-colors duration-500"
+              style={{ color: "var(--color-mauve)", fontStyle: "italic" }}
             >
-              {moon.illumination}% {t("illuminated")}
+              {moon.illumination}% {language === "pl" ? "oświetlenia" : "illuminated"}
             </p>
           </div>
-          <div className="max-w-md mx-auto text-center">
+          <div className="max-w-md mx-auto text-center pt-6">
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <div className="h-px w-12" style={{ background: "linear-gradient(to right, transparent, var(--color-dusty-rose))" }} />
+              <span style={{ color: "var(--color-dusty-rose)", fontSize: "14px" }}>♡</span>
+              <div className="h-px w-12" style={{ background: "linear-gradient(to left, transparent, var(--color-dusty-rose))" }} />
+            </div>
             <p
-              className="text-sm uppercase tracking-widest mb-3"
-              style={{ color: "var(--color-dark)", fontWeight: 600 }}
+              className="text-xs uppercase tracking-[0.2em] mb-4"
+              style={{ color: "var(--color-mauve)" }}
             >
               {language === "pl" ? "Praca z cieniem" : "Shadow Work"}
             </p>
             <p
-              className="text-lg md:text-xl leading-relaxed transition-colors duration-500"
-              style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}
+              className="text-xl md:text-2xl leading-relaxed transition-colors duration-500"
+              style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontWeight: 400 }}
             >
               {getDailyInsight(moon.phase, language)}
             </p>
@@ -336,10 +341,10 @@ export default function DashboardPage() {
               className="w-full rounded-2xl p-4 text-center transition-all hover:opacity-90"
               style={{ background: "var(--color-blush)", border: "1px solid color-mix(in srgb, var(--color-gold) 40%, transparent)" }}
             >
-              <p className="text-xs tracking-[0.2em] uppercase mb-1" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
+              <p className="text-sm tracking-[0.2em] uppercase mb-1" style={{ color: "var(--color-gold)", fontWeight: 600 }}>
                 {language === "pl" ? "Dokończ konfigurację" : "Complete your setup"}
               </p>
-              <p className="text-sm" style={{ color: "var(--color-dark)" }}>
+              <p className="text-base" style={{ color: "var(--color-dark)" }}>
                 {language === "pl"
                   ? "Podaj dane urodzeniowe żebym mogła czytać Twoje wzorce głębiej."
                   : "Add your birth data so I can read your patterns deeper."}
@@ -373,7 +378,7 @@ export default function DashboardPage() {
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "0.85rem",
             fontWeight: 500,
-            background: "linear-gradient(135deg, #B8860B, #D4AF37, #E8C860, #D4AF37, #B8860B)",
+            background: "linear-gradient(135deg, #6b4f1a, #8a6420, #a07a28, #8a6420, #6b4f1a)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
