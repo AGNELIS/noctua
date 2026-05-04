@@ -26,15 +26,12 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
       className="group relative w-full flex items-center justify-center transition-all duration-300 ease-out hover:scale-[1.05] focus:outline-none active:scale-[0.97]"
       style={{ background: "none", border: "none", padding: "8px 0" }}
     >
-      <div className="relative w-60 md:w-48" style={{ zIndex: 1 }}>
-        <div className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(ellipse at center, var(--color-cream) 0%, var(--color-cream) 50%, transparent 75%)", transform: "scale(0.95)" }} />
-        <img
-          src="/noctua-cloud.png"
-          alt=""
-          className="w-full h-auto relative"
-          style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))" }}
-        />
-      </div>
+      <img
+        src="/noctua-cloud.png"
+        alt=""
+        className="w-60 md:w-48 h-auto relative"
+        style={{ filter: "drop-shadow(0 2px 8px rgba(180,140,170,0.2))", zIndex: 1 }}
+      />
       <div className="absolute inset-0 flex items-center justify-center px-8" style={{ zIndex: 2 }}>
         <span
           style={{
