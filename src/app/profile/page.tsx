@@ -314,7 +314,7 @@ const saveName = async () => {
         {isPremium && (
           <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <div className="flex items-center justify-between mb-3">
-              <p style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 500 }}>
+              <p style={{ fontSize: "13px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 500 }}>
                 {language === "pl" ? "Dane urodzeniowe" : "Birth data"}
               </p>
               {!editingBirth && (
@@ -323,7 +323,7 @@ const saveName = async () => {
                   setBirthTimeInput(birthTime || "");
                   setBirthCityInput(birthCity || "");
                   setEditingBirth(true);
-                }} className="text-xs" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
+                }} className="text-sm" style={{ color: "var(--color-gold)", fontWeight: 500 }}>
                   {birthDate ? (language === "pl" ? "Edytuj" : "Edit") : (language === "pl" ? "Dodaj" : "Add")}
                 </button>
               )}
@@ -368,13 +368,13 @@ const saveName = async () => {
                     <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, lineHeight: 1 }}>
                       {new Date(birthDate + "T12:00:00").getDate()}
                     </p>
-                    <p style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
+                    <p style={{ fontSize: "13px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
                       {new Date(birthDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "short" })}
                     </p>
                   </div>
                   <div className="h-8" style={{ width: "1px", background: "var(--color-dusty-rose)", opacity: 0.4 }} />
                   <div>
-                    <p style={{ fontSize: "16px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
+                    <p style={{ fontSize: "18px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
                       {new Date(birthDate + "T12:00:00").getFullYear()}
                       {birthTime && <span style={{ color: "var(--color-mauve)" }}> · {birthTime}</span>}
                     </p>
