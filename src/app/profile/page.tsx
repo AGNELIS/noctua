@@ -186,12 +186,12 @@ const saveName = async () => {
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
-      <header className="px-6 pt-5 pb-2">
+      <header className="px-6 pt-6 pb-2">
         <div className="flex items-center justify-between">
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
           <div className="w-12" />
         </div>
-        <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("profile_title")}</h1>
+        <h1 className="text-3xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("profile_title")}</h1>
       </header>
 
       <main className="max-w-xl mx-auto px-6 pb-16 space-y-8">
@@ -225,7 +225,7 @@ const saveName = async () => {
               </span>
             </div>
           </button>
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{uploading ? t("profile_uploading") : t("profile_tap_photo")}</p>
+          <p className="text-sm" style={{ color: "var(--color-dusty-rose)" }}>{uploading ? t("profile_uploading") : t("profile_tap_photo")}</p>
           {editingName ? (
             <div className="flex items-center justify-center gap-2 mt-1">
               <input
@@ -244,7 +244,7 @@ const saveName = async () => {
                 }}
                 autoFocus
               />
-              <button onClick={saveName} className="text-sm px-3 py-1 rounded-lg"
+              <button onClick={saveName} className="text-sm px-4 py-2 rounded-lg"
                 style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>{t("save")}</button>
               <button onClick={() => setEditingName(false)} className="text-sm"
                 style={{ color: "var(--color-mauve)" }}>✕</button>
@@ -258,7 +258,7 @@ const saveName = async () => {
               )}
             </button>
           )}
-          <p className="text-sm" style={{ color: "var(--color-mauve)" }}>{email}</p>
+          <p className="text-base" style={{ color: "var(--color-mauve)" }}>{email}</p>
           <p className="text-base italic" style={{ color: "var(--color-mauve)" }}>{createdAt ? (language === "pl" ? `W Noctui od ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} dni` : `In Noctua for ${Math.max(1, Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24)))} days`) : ""}</p>
         </section>
 
@@ -270,7 +270,7 @@ const saveName = async () => {
         </div>
 
         {/* Journey stats */}
-        <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+        <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
           <p className="text-center mb-4" style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.18em", fontWeight: 500 }}>{language === "pl" ? "Twoja podróż" : "Your journey"}</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px" }}>
             {[
@@ -282,7 +282,7 @@ const saveName = async () => {
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1, fontWeight: 600 }}>{s.value}</p>
-                <p style={{ fontSize: "11px", color: "var(--color-dark)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "6px", fontWeight: 500 }}>{s.label}</p>
+                <p style={{ fontSize: "12px", color: "var(--color-dark)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "6px", fontWeight: 500 }}>{s.label}</p>
               </div>
             ))}
           </div>
@@ -291,7 +291,7 @@ const saveName = async () => {
 {/* Language & Theme */}
         <section className="space-y-5">
           <div className="flex items-center justify-between">
-            <p style={{ fontSize: "14px", color: "var(--color-mauve)", letterSpacing: "0.05em", fontWeight: 500 }}>{t("profile_language")}</p>
+            <p style={{ fontSize: "16px", color: "var(--color-mauve)", letterSpacing: "0.05em", fontWeight: 500 }}>{t("profile_language")}</p>
             <div className="flex items-center rounded-full overflow-hidden border" style={{ borderColor: "var(--color-dusty-rose)" }}>
               <button onClick={() => setLanguage("en")} className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "en" ? "var(--color-plum)" : "transparent", color: language === "en" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "en" ? 600 : 400 }}>EN</button>
               <button onClick={() => setLanguage("pl")} className="px-3 py-1.5 text-xs tracking-wide transition-all duration-300" style={{ backgroundColor: language === "pl" ? "var(--color-plum)" : "transparent", color: language === "pl" ? "var(--color-cream)" : "var(--color-mauve)", fontWeight: language === "pl" ? 600 : 400 }}>PL</button>
@@ -300,7 +300,7 @@ const saveName = async () => {
           <div className="h-px" style={{ background: "var(--color-dusty-rose)", opacity: 0.3 }} />
           <div className="flex items-center justify-between">
             <div>
-              <p style={{ fontSize: "14px", color: "var(--color-mauve)", letterSpacing: "0.05em", fontWeight: 500 }}>{t("profile_active_theme")}</p>
+              <p style={{ fontSize: "16px", color: "var(--color-mauve)", letterSpacing: "0.05em", fontWeight: 500 }}>{t("profile_active_theme")}</p>
               <p className="mt-1 italic" style={{ fontSize: "16px", color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{activeThemeName || t("profile_default_theme")}</p>
             </div>
             {activeThemeName ? (
@@ -312,7 +312,7 @@ const saveName = async () => {
         </section>
 {/* Birth Data (Premium) */}
         {isPremium && (
-          <section className="rounded-2xl border p-5 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
+          <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ backgroundColor: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <div className="flex items-center justify-between mb-3">
               <p style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 500 }}>
                 {language === "pl" ? "Dane urodzeniowe" : "Birth data"}
@@ -332,31 +332,31 @@ const saveName = async () => {
             {editingBirth ? (
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Data urodzenia" : "Date of birth"}</p>
+                  <p className="text-sm mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Data urodzenia" : "Date of birth"}</p>
                   <input type="date" value={birthDateInput} onChange={e => setBirthDateInput(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                     style={{ background: "var(--color-cream)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
                 </div>
                 <div>
-                  <p className="text-xs mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Godzina urodzenia" : "Time of birth"}</p>
+                  <p className="text-sm mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Godzina urodzenia" : "Time of birth"}</p>
                   <input type="time" value={birthTimeInput} onChange={e => setBirthTimeInput(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                     style={{ background: "var(--color-cream)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
-                  <p className="text-xs mt-1" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Opcjonalne" : "Optional"}</p>
+                  <p className="text-sm mt-1" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Opcjonalne" : "Optional"}</p>
                 </div>
                 <div>
-                  <p className="text-xs mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Miejsce urodzenia" : "Place of birth"}</p>
+                  <p className="text-sm mb-1" style={{ color: "var(--color-mauve)" }}>{language === "pl" ? "Miejsce urodzenia" : "Place of birth"}</p>
                   <input type="text" value={birthCityInput} onChange={e => setBirthCityInput(e.target.value)}
                     placeholder={language === "pl" ? "np. Warszawa" : "e.g. London"}
                     className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                     style={{ background: "var(--color-cream)", border: "1px solid var(--color-dusty-rose)", color: "var(--color-dark)" }} />
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={saveBirthData} className="px-4 py-2 rounded-lg text-xs"
+                  <button onClick={saveBirthData} className="px-4 py-2 rounded-lg text-sm"
                     style={{ background: "var(--color-plum)", color: "var(--color-cream)", fontWeight: 600 }}>
                     {language === "pl" ? "Zapisz" : "Save"}
                   </button>
-                  <button onClick={() => setEditingBirth(false)} className="px-4 py-2 text-xs" style={{ color: "var(--color-mauve)" }}>
+                  <button onClick={() => setEditingBirth(false)} className="px-4 py-2 text-sm" style={{ color: "var(--color-mauve)" }}>
                     {language === "pl" ? "Anuluj" : "Cancel"}
                   </button>
                 </div>
@@ -368,7 +368,7 @@ const saveName = async () => {
                     <p style={{ fontSize: "28px", color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, lineHeight: 1 }}>
                       {new Date(birthDate + "T12:00:00").getDate()}
                     </p>
-                    <p style={{ fontSize: "11px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
+                    <p style={{ fontSize: "12px", color: "var(--color-mauve)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "2px" }}>
                       {new Date(birthDate + "T12:00:00").toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "short" })}
                     </p>
                   </div>
@@ -379,7 +379,7 @@ const saveName = async () => {
                       {birthTime && <span style={{ color: "var(--color-mauve)" }}> · {birthTime}</span>}
                     </p>
                     {birthCity && (
-                      <p style={{ fontSize: "14px", color: "var(--color-mauve)", marginTop: "2px" }}>{birthCity}</p>
+                      <p style={{ fontSize: "14px", color: "var(--color-mauve)", marginTop: "2px", fontStyle: "italic" }}>{birthCity}</p>
                     )}
                   </div>
                 </div>
@@ -397,7 +397,7 @@ const saveName = async () => {
 
 {/* Notification Preferences */}
         <section>
-          <p className="text-sm tracking-wide mb-3" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
+          <p className="text-base tracking-wide mb-3" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
             {language === "pl" ? "Powiadomienia" : "Notifications"}
           </p>
           <div className="space-y-3">
@@ -407,7 +407,7 @@ const saveName = async () => {
               { key: "workbook", label: language === "pl" ? "Postęp w zeszycie" : "Workbook progress", value: notifWorkbook, set: setNotifWorkbook },
             ].map(n => (
               <div key={n.key} className="flex items-center justify-between">
-                <span className="text-sm" style={{ color: "var(--color-mauve)" }}>{n.label}</span>
+                <span className="text-base" style={{ color: "var(--color-mauve)" }}>{n.label}</span>
                 <button onClick={async () => {
                   const next = !n.value;
                   n.set(next);
