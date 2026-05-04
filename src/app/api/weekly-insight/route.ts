@@ -261,18 +261,12 @@ The last line is short and concrete. It names something specific that stays with
       snapshot_number_at_generation: currentSnapshotNumber,
     });
 
-    // Use credit (everyone pays except admin)
+    // Use credit (everyone pays except admin) — atomic consume to prevent race condition
     if (!isAdmin) {
-      const { data: credit } = await supabase
-        .from("user_purchases")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("product_id", reflectionProduct.id)
-        .is("used_at", null)
-        .limit(1);
-      if (credit && credit.length > 0) {
-        await supabase.from("user_purchases").update({ used_at: new Date().toISOString() }).eq("id", credit[0].id);
-      }
+      await supabase.rpc("consume_reflection_credit", {
+        p_user_id: user.id,
+        p_product_id: reflectionProduct.id,
+      });
     }
 
     return NextResponse.json({ insight: insightText, cached: false });
