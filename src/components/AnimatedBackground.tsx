@@ -235,8 +235,8 @@ export default function AnimatedBackground() {
         }
         @keyframes noctuaCherryFall {
           0% { transform: translateY(0) rotate(var(--rot)) translateX(0); opacity: 0; }
-          8% { opacity: 0.8; }
-          50% { transform: translateY(50vh) rotate(calc(var(--rot) + 120deg)) translateX(40px); opacity: 0.6; }
+          8% { opacity: 0.55; }
+          50% { transform: translateY(50vh) rotate(calc(var(--rot) + 120deg)) translateX(40px); opacity: 0.4; }
           100% { transform: translateY(110vh) rotate(calc(var(--rot) + 260deg)) translateX(-20px); opacity: 0; }
         }
         .noctua-ripple {
