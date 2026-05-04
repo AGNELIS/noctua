@@ -35,7 +35,7 @@ function WatercolorCloud({ title, desc, onClick }: { title: string; desc: string
       <div className="absolute inset-0 flex items-center justify-center px-8" style={{ zIndex: 2 }}>
         <span
           style={{
-            color: "#3a0825",
+            color: "#1a0210",
             fontFamily: "var(--font-antic), 'Antic Didone', Georgia, serif",
             fontSize: "1.25rem",
             fontWeight: 500,
