@@ -267,14 +267,14 @@ export default function ProductPage() {
           <section className="space-y-4">
             <ThemePreview name={product.name} colors={THEME_MAP[product.name]} />
             {product.description && (
-              <p className="text-sm text-justify leading-relaxed" style={{ color: "var(--color-mauve)" }}>
+              <p lang={language} className="text-sm text-justify leading-relaxed hyphens-auto" style={{ color: "var(--color-mauve)" }}>
                 {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
               </p>
             )}
           </section>
         ) : (
           <section className="rounded-2xl border p-6 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
-            <p className="text-base text-justify leading-relaxed" style={{ color: "var(--color-dark)" }}>
+            <p lang={language} className="text-base text-justify leading-relaxed hyphens-auto" style={{ color: "var(--color-dark)" }}>
               {language === "pl" ? (PRODUCT_PL[product.name]?.desc || product.description) : product.description}
             </p>
           </section>
