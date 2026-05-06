@@ -133,6 +133,7 @@ const translations = {
 
   // Shop
   shop_title: { en: "Shop", pl: "Sklep" },
+  shop_subtitle: { en: "The more you bring, the more you see.", pl: "Im więcej wnosisz, tym więcej widzisz." },
   shop_owned: { en: "Owned", pl: "Posiadane" },
   shop_buy: { en: "Buy", pl: "Kup" },
   shop_activate: { en: "Activate", pl: "Aktywuj" },

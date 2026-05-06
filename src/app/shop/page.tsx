@@ -144,6 +144,17 @@ export default function ShopPage() {
         >
           {t("shop_title")}
         </h1>
+        <p
+          className="text-center mt-3 italic transition-colors duration-500"
+          style={{
+            color: "var(--color-mauve)",
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: "0.95rem",
+            opacity: 0.85,
+          }}
+        >
+          {t("shop_subtitle")}
+        </p>
       </header>
 
       <main className="max-w-2xl mx-auto px-6 pb-16">
