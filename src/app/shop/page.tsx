@@ -156,7 +156,7 @@ export default function ShopPage() {
         </p>
       </header>
 
-      <main className="max-w-2xl mx-auto px-6 pb-16">
+      <main className="max-w-2xl mx-auto px-6 pt-10 pb-16">
 
 
         {loading ? (
