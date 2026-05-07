@@ -119,7 +119,7 @@ export default function JournalPage() {
     <div className="min-h-screen relative transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       {deleteId && <ConfirmModal message={language === "pl" ? "Na pewno chcesz usunac ten wpis?" : "Are you sure you want to delete this entry?"} onConfirm={confirmDelete} onCancel={() => setDeleteId(null)} />}
 
-      <header className="px-6 pt-5 pb-2">
+      <header className="px-6 pt-6 pb-4">
         <div className="flex items-center justify-between">
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
           <button onClick={() => router.push("/journal/new")} className="text-sm tracking-wide px-3 py-1.5 rounded-lg transition-colors" style={{ background: "var(--color-blush)", color: "var(--color-plum)", fontWeight: 500 }}>+ {t("journal_new")}</button>
@@ -148,7 +148,7 @@ export default function JournalPage() {
           </div>
         )}
 
-      <main className="max-w-xl mx-auto px-6 pt-10 pb-12">
+      <main className="max-w-xl mx-auto px-6 pt-4 pb-12">
         {loading ? (
           <p className="text-center text-sm pt-20" style={{ color: "var(--color-dusty-rose)" }}>{t("loading")}</p>
         ) : entries.length === 0 ? (
