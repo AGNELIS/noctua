@@ -141,7 +141,7 @@ export default function EditDreamEntry() {
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       <header className="px-6 pt-5 pb-2">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/dreams")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>
+          <button onClick={() => router.push("/dreams")} className="text-sm" style={{ color: "var(--color-mauve)" }}>← {t("back")}</button>
           <button onClick={handleSave} disabled={saving}
             className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
             style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
@@ -154,14 +154,14 @@ export default function EditDreamEntry() {
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
-        <p className="text-xs text-center tracking-wide" style={{ color: "var(--color-dusty-rose)" }}>
+        <p className="text-sm text-center" style={{ color: "var(--color-mauve)" }}>
           {dreamDate && new Date(dreamDate).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         <div className="flex justify-center gap-2 flex-wrap">
           {TONES.map((t) => (
             <button key={t.value} onClick={() => toggleTone(t.value)}
-              className="px-3 py-1.5 rounded-full text-xs transition-all border"
+              className="px-4 py-2 rounded-full text-sm transition-all border"
               style={{
                 background: tones.includes(t.value) ? "var(--color-blush)" : "transparent",
                 borderColor: tones.includes(t.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
@@ -171,7 +171,7 @@ export default function EditDreamEntry() {
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-xs" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Świadomość" : "Lucidity"}</p>
+          <p className="text-sm" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{language === "pl" ? "Świadomość" : "Lucidity"}</p>
           <div className="flex justify-center gap-1">
             {[1, 2, 3, 4, 5].map((n) => (
               <button key={n} onClick={() => setLucidity(lucidity === n ? 0 : n)} className="text-lg transition-all"
@@ -199,7 +199,7 @@ export default function EditDreamEntry() {
           style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "12px", padding: "16px" }} />
 
         <div className="space-y-2">
-          <p className="text-xs text-center" style={{ color: "var(--color-dusty-rose)" }}>{language === "pl" ? "Symbole snu" : "Dream symbols"}</p>
+          <p className="text-sm text-center" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>{language === "pl" ? "Symbole snu" : "Dream symbols"}</p>
           <div className="flex justify-center gap-2">
             <input type="text" placeholder={language === "pl" ? "np. woda, waz, latanie" : "e.g. water, snake, flying"} value={symbolInput}
               onChange={(e) => setSymbolInput(e.target.value)}
