@@ -175,25 +175,25 @@ export default function JournalPage() {
                   <h2 className={`text-base ${groupIdx === 0 ? "mb-3" : "mt-8 mb-3"}`} style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
                     {monthLabel}
                   </h2>
-                  <div className="space-y-3">
+                  <div>
                     {monthEntries.map((entry) => (
-                      <div key={entry.id} className="p-5 rounded-2xl border transition-all shadow-sm" style={{ background: "var(--color-blush)", borderColor: "var(--color-mauve)" }}>
+                      <div key={entry.id} className="py-6 transition-all" style={{ borderBottom: "1px solid rgba(101, 74, 112, 0.35)" }}>
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 cursor-pointer" onClick={() => router.push(`/journal/${entry.id}/edit`)}>
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
                               <span className="text-sm" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
                                 {new Date(entry.entry_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                               </span>
                               {entry.mood?.map((m) => (<span key={m} className="inline-flex items-center gap-1.5 text-sm" style={{ color: "var(--color-plum)", fontWeight: 500 }}>{MOOD_ICONS[m]?.icon}{MOOD_ICONS[m]?.label || m}</span>))}
                             </div>
                             {entry.title && (
-                              <h3 className="text-base mb-1" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>{entry.title}</h3>
+                              <h3 className="mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: "1.5rem", lineHeight: 1.25 }}>{entry.title}</h3>
                             )}
                             <p className="text-base leading-relaxed line-clamp-2" style={{ color: "var(--color-dark)" }}>{entry.content}</p>
                           </div>
-                          <div className="flex flex-col gap-1 shrink-0">
-                            <button onClick={() => toggleFavorite(entry.id, entry.is_favorite)} className="text-lg leading-none" style={{ color: entry.is_favorite ? "var(--color-plum)" : "var(--color-dusty-rose)" }}>{entry.is_favorite ? "♥" : "♡"}</button>
-                            <button onClick={() => setDeleteId(entry.id)} className="text-sm leading-none" style={{ color: "var(--color-dusty-rose)" }}>✕</button>
+                          <div className="flex flex-col gap-2 shrink-0">
+                            <button onClick={() => toggleFavorite(entry.id, entry.is_favorite)} className="text-lg leading-none transition-all" style={{ color: "var(--color-plum)", opacity: entry.is_favorite ? 1 : 0.4 }}>{entry.is_favorite ? "♥" : "♡"}</button>
+                            <button onClick={() => setDeleteId(entry.id)} className="text-sm leading-none transition-all" style={{ color: "var(--color-plum)", opacity: 0.4 }}>✕</button>
                           </div>
                         </div>
                       </div>

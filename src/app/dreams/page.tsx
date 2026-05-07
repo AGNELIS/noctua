@@ -207,12 +207,28 @@ export default function DreamsPage() {
           </div>
         ) : (
           <div className="pt-4">
-            {entries.map((entry) => (
+            {(() => {
+              const groups: { [key: string]: typeof entries } = {};
+              entries.forEach((entry) => {
+                const d = new Date(entry.dream_date);
+                const monthName = d.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long" });
+                const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+                const key = `${capitalizedMonth} ${d.getFullYear()}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(entry);
+              });
+              return Object.entries(groups).map(([monthLabel, monthEntries], groupIdx) => (
+                <div key={monthLabel}>
+                  <h2 className={`text-base ${groupIdx === 0 ? "mb-3" : "mt-8 mb-3"}`} style={{ color: "var(--color-mauve)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 }}>
+                    {monthLabel}
+                  </h2>
+                  <div>
+            {monthEntries.map((entry) => (
               <div key={entry.id} className="py-6 transition-all" style={{ borderBottom: "1px solid rgba(101, 74, 112, 0.35)" }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 cursor-pointer" onClick={() => router.push(`/dreams/${entry.id}/edit`)}>
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      <span className="text-xs uppercase" style={{ color: "var(--color-plum)", fontWeight: 500, letterSpacing: "0.15em", opacity: 0.75 }}>
+                      <span className="text-sm" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
                         {new Date(entry.dream_date).toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                       {entry.emotional_tone?.length > 0 && (
@@ -234,7 +250,7 @@ export default function DreamsPage() {
                       {entry.lucidity && (<span className="text-xs"><span style={{ color: "var(--color-plum)" }}>{"♡".repeat(entry.lucidity)}</span><span style={{ color: "var(--color-dusty-rose)" }}>{"♡".repeat(5 - entry.lucidity)}</span></span>)}
                     </div>
                     {entry.title && (<h3 className="mb-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: "1.5rem", lineHeight: 1.25 }}>{entry.title}</h3>)}
-                    <p className="leading-relaxed line-clamp-2" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "1.0625rem", opacity: 0.75 }}>{entry.content}</p>
+                    <p className="text-base leading-relaxed line-clamp-2" style={{ color: "var(--color-dark)" }}>{entry.content}</p>
                     {entry.symbols?.length > 0 && (
                       <div className="flex gap-3 mt-3 flex-wrap">
                         {entry.symbols.map((s) => (<span key={s} className="text-xs uppercase" style={{ color: "var(--color-plum)", fontWeight: 500, letterSpacing: "0.15em", opacity: 0.6 }}>{s}</span>))}
@@ -248,6 +264,10 @@ export default function DreamsPage() {
                 </div>
               </div>
             ))}
+                  </div>
+                </div>
+              ));
+            })()}
           </div>
         )}
       </main>
