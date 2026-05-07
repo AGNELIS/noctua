@@ -163,7 +163,7 @@ export default function CycleTrackerPage() {
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
       {deleteConfirm && <ConfirmModal message={language === "pl" ? "Usunac ten wpis?" : "Delete this entry?"} onConfirm={confirmDelete} onCancel={() => setDeleteConfirm(false)} />}
 
-      <header className="px-6 pt-5 pb-2">
+      <header className="px-6 pt-6 pb-4">
         <div className="flex items-center justify-between">
           <button onClick={() => router.push("/dashboard")} className="text-sm tracking-wide" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>← {t("back")}</button>
           <div className="w-12" />
@@ -171,7 +171,7 @@ export default function CycleTrackerPage() {
         <h1 className="text-lg md:text-xl tracking-[0.25em] uppercase text-center mt-3" style={{ color: "var(--color-plum)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 400 }}>{t("cycle_title")}</h1>
       </header>
 
-      <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
+      <main className="max-w-xl mx-auto px-6 pt-4 pb-12 space-y-6">
         {!loading && entries.length >= 5 && (
           <section className="text-center pt-2 pb-2">
             <button
@@ -191,7 +191,10 @@ export default function CycleTrackerPage() {
           <div className="flex items-center justify-between mb-4">
             <button onClick={prevMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>‹</button>
             <h2 className="text-base font-medium tracking-wide" style={{ color: "var(--color-dark)", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600 }}>
-              {currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" })}
+              {(() => {
+                const m = currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long", year: "numeric" });
+                return m.charAt(0).toUpperCase() + m.slice(1);
+              })()}
             </h2>
             <button onClick={nextMonth} className="text-lg px-2" style={{ color: "var(--color-mauve)" }}>›</button>
           </div>
@@ -236,7 +239,10 @@ export default function CycleTrackerPage() {
           return monthEvents.length > 0 && (
           <section className="rounded-2xl border p-4 transition-colors duration-500" style={{ background: "var(--color-blush)", borderColor: "var(--color-dusty-rose)" }}>
             <p className="text-xs text-center uppercase tracking-widest mb-3" style={{ color: "var(--color-mauve)", fontWeight: 500 }}>
-              {language === "pl" ? "Wydarzenia księżycowe" : "Lunar events"} · {currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long" })}
+              {language === "pl" ? "Wydarzenia księżycowe" : "Lunar events"} · {(() => {
+                const m = currentMonth.toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { month: "long" });
+                return m.charAt(0).toUpperCase() + m.slice(1);
+              })()}
             </p>
             <div className="space-y-2">
               {monthEvents.map((e, i) => (
