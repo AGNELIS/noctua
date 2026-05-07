@@ -65,9 +65,9 @@ function NewJournalEntryContent() {
 
   return (
     <div className="min-h-screen transition-colors duration-500" style={{ background: "var(--color-gradient)" }}>
-      <header className="px-6 pt-5 pb-2">
+      <header className="px-6 pt-6 pb-4">
         <div className="flex items-center justify-between">
-          <button onClick={() => router.push("/journal")} className="text-xs tracking-wide" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
+          <button onClick={() => router.push("/journal")} className="text-sm" style={{ color: "var(--color-mauve)" }}>← {t("cancel")}</button>
           <button onClick={handleSave} disabled={saving}
             className="px-4 py-2 rounded-lg text-sm tracking-wide transition-colors disabled:opacity-50"
             style={{ background: "var(--color-plum)", color: "var(--color-cream)" }}>
@@ -83,14 +83,14 @@ function NewJournalEntryContent() {
       <main className="max-w-xl mx-auto px-6 pb-12 space-y-6">
         {error && <p className="text-sm text-center" style={{ color: "#c45050" }}>{error}</p>}
 
-        <p className="text-xs text-center tracking-wide" style={{ color: "var(--color-dusty-rose)" }}>
+        <p className="text-sm text-center" style={{ color: "var(--color-mauve)" }}>
           {new Date().toLocaleDateString(language === "pl" ? "pl-PL" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         <div className="flex justify-center gap-2 flex-wrap">
           {MOODS.map((m) => (
             <button key={m.value} onClick={() => toggleMood(m.value)}
-              className="px-3 py-1.5 rounded-full text-xs transition-all border"
+              className="px-4 py-2 rounded-full text-sm transition-all border"
               style={{
                 background: moods.includes(m.value) ? "var(--color-blush)" : "transparent",
                 borderColor: moods.includes(m.value) ? "var(--color-mauve)" : "var(--color-dusty-rose)",
@@ -100,27 +100,25 @@ function NewJournalEntryContent() {
         </div>
 
         <div className="flex flex-col items-center gap-2">
+          <p className="text-sm leading-relaxed max-w-md" style={{ color: "var(--color-mauve)", textAlign: "center" }}>
+            {language === "pl"
+              ? "Nazwij nawyk lub wzorzec, który obserwujesz. Noctua będzie szukać powiązań z Twoimi emocjami i snami."
+              : "Name a habit or pattern you're tracking. Noctua will look for connections with your emotions and dreams."}
+          </p>
           <button onClick={() => setPatternTag(patternTag === null ? "" : null)}
-            className="px-3 py-1.5 rounded-full text-xs transition-all border"
+            className="px-4 py-2 rounded-full text-sm transition-all border"
             style={{
               background: patternTag !== null ? "var(--color-blush)" : "transparent",
               borderColor: patternTag !== null ? "var(--color-mauve)" : "var(--color-dusty-rose)",
               color: patternTag !== null ? "var(--color-plum)" : "var(--color-mauve)",
             }}>
-            <span className="inline-flex items-center gap-1.5">◎ {language === "pl" ? "Wzorzec / nawyk" : "Pattern / habit"}</span>
+            <span className="inline-flex items-center gap-1.5">◎ {language === "pl" ? "Zaznacz nawyk lub wzorzec" : "Mark a habit or pattern"}</span>
           </button>
           {patternTag !== null && (
-            <>
-              <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--color-mauve)", textAlign: "center" }}>
-                {language === "pl"
-                  ? "Nazwij nawyk lub wzorzec, który obserwujesz. Noctua będzie szukać powiązań z Twoimi emocjami i snami."
-                  : "Name a habit or pattern you're tracking. Noctua will look for connections with your emotions and dreams."}
-              </p>
-              <input type="text" value={patternTag} onChange={(e) => setPatternTag(e.target.value)}
-                placeholder={language === "pl" ? "np. kawa, doomscrolling..." : "e.g. coffee, doomscrolling..."}
-                className="text-xs text-center outline-none transition-colors duration-500 w-48"
-                style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "8px", padding: "6px 10px", borderBottom: "1px solid var(--color-dusty-rose)" }} />
-            </>
+            <input type="text" value={patternTag} onChange={(e) => setPatternTag(e.target.value)}
+              placeholder={language === "pl" ? "np. kawa, doomscrolling..." : "e.g. coffee, doomscrolling..."}
+              className="text-sm text-center outline-none transition-colors duration-500 w-64"
+              style={{ color: "var(--color-dark)", backgroundColor: "var(--color-blush)", borderRadius: "8px", padding: "8px 12px", borderBottom: "1px solid var(--color-dusty-rose)" }} />
           )}
         </div>
 
